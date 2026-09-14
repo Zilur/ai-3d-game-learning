@@ -77,4 +77,6 @@ func respawn() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		Input.release_pressed_events()
+		for action in ["move_left", "move_right", "move_forward", "move_back", "sprint", "jump"]:
+			if InputMap.has_action(action):
+				Input.action_release(action)
