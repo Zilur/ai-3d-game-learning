@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import runpy
 import sys
+from scenario_sections import validate_scenarios, decorate_lesson, enrich_output
 
 ROOT = Path(__file__).resolve().parents[1]
 AUTHOR = ROOT / 'curriculum/authoring'
@@ -64,6 +65,7 @@ def validate(lessons, sources):
     for row in lessons:
         if any(pos[x] >= pos[row['id']] for x in row['prereq'] + row['recall']):
             raise ValueError(f"{row['id']}: recall or dependency appears before it is learned")
+    validate_scenarios(by_id)
     return by_id
 
 def make_lesson(row, sources, teacher):
@@ -116,7 +118,7 @@ def make_lesson(row, sources, teacher):
             '- [ ] 可用键盘/点击操作，文字可读，可暂停；不强制自动音频或高强度闪烁。',
             '- [ ] 技术实测、审美喜好和学习掌握没有混作同一个通过状态。',
             '- [ ] 外部原图/动作仅在许可允许的情况下展示；未伪造来源和运行记录。', '']
-    return '\n'.join(lines)
+    return decorate_lesson(row, '\n'.join(lines), teacher)
 
 def generated(lessons, sources, by_id):
     output = {}
@@ -174,7 +176,8 @@ def generated(lessons, sources, by_id):
         key = path.relative_to(ROOT).as_posix()
         if key not in output and ident in by_id:
             output[key] = f'# {ident}旧入口\n\n请复制 [{ident}完整OpenMAIC课件](../lessons/{ident}.md) 全文。本页只是兼容旧链接的入口，不是生成要求。\n'
-    manifest = {'version':'v4','date':'2026-09-15','lesson_count':45,
+    enrich_output(output, by_id, ORDER)
+    manifest = {'version':'v5-application','date':'2026-09-15','lesson_count':45,
         'units':[{'id':ident,'prerequisites':by_id[ident]['prereq'],'concepts':by_id[ident]['concepts'],
                   'status':'manuscript-reviewed; classroom-not-generated; learner-not-tested'} for ident in ORDER],
         'source_sha256':{path.relative_to(ROOT).as_posix():hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(AUTHOR.glob('*.py'))},

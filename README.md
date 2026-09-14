@@ -1,3 +1,5 @@
+> v5更新：[逐课实际应用地图](curriculum/application-map.md) · [ABCDE主题索引](curriculum/series-guide.md)。45课已回填具体AI指令、亲调入口和应用验收；当前仍是课程设计，不能把它写成45课真机已通过。
+
 # AI时代的3D游戏与风格化美术学习
 
 **当前主线：先完成课程Markdown，再验证OpenMAIC课堂，最后统一完善Godot/Blender配套。**
