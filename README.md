@@ -1,41 +1,42 @@
-# AI 时代 3D 游戏学习
+# AI时代的3D游戏与风格化美术学习
 
-**从 [START-HERE.md](START-HERE.md) 开始。统一使用 main，不需要选择历史分支。**
+**当前主线：先完成课程Markdown，再验证OpenMAIC课堂，最后统一完善Godot/Blender配套。**
 
-Godot + Blender 是真实实验室，OpenMAIC 是互动课堂生成器，AI负责重复实现；学员负责目标、判断、手感、审美、性能取舍和验收。
+我们训练的是：能说清需求、看懂关键参数、预测结果、选择方案、验收AI改动。不是软件功能百科，也不要求不用AI手写所有代码。
 
-学习闭环：**先预测 → 亲手操作 → 解释结果 → 修复一个错误 → 换场景应用 → 隔次复测**。不以背API、题量、观看时长或生成代码量代表掌握。
+## 从哪里开始
 
-## 学什么、学到哪里
+- 学员从 [START-HERE](START-HERE.md) 进入。
+- 教师直接打开 [45份课件索引](curriculum/lesson-index.md)，每课都提供**学生讲义**和**可整份复制给OpenMAIC的教师输入**。
+- 先看学习安排：[路线](curriculum/roadmap.md) · [两轮大纲审核](curriculum/outline-review.md) · [逐课自审](curriculum/lesson-review.md)。
+- 看美术：[参考作品与艺术家](art/reference-gallery.md) · [美术词汇](art/visual-vocabulary.md) · [长期资产库思路](art/style-and-library.md)。
 
-|路线|目标|当前状态|
-|---|---|---|
-|初级 B01–B16|小型星星收集游戏；建立空间、玩法、资产和验收能力|路线与深度齐全；B01样板、B02课包、B04/B08/B10工作坊；其余逐课包待补|
-|中级 I01–I12|角色动画、复用、模块化、简单交互、存档和交付|路线和考核设计已有，不是全部课件/游戏已经完成|
-|高级 A01–A06|按实际瓶颈选择专项|不作为做小游戏的全套必修要求|
+## 课程结构
 
-**M 必须掌握：** 能选方案、操作、解释、排错；关键能力需要迁移验证。**K 理解即可：** 知道用途和何时查询即可，不深入实现。每课都有停止线，考试不得超出当前阶段。[学习深度合同](curriculum/learning-contract.md)
+|系列|内容|本轮课件数量|是否所有人必修|
+|---|---|---:|---|
+|B 初级|空间、场景、走跑跳、镜头、资产、材质、拾取、反馈、性能与排错|17|主线；B01分A/B两次学习|
+|I 中级|角色与动画接入、资源复用、机关、UV、光照、交互、恢复与交付|12|按原型目标；I08导航可跳过|
+|R 审美与美术|基础美术对话、训练眼睛、看作品，再到基底打磨和资产库|8|R01–R04穿插主线；R05–R08作为Blender美术进阶|
+|X 动作复用|现成动作筛选、适配、武打表现节奏|2|选修；不从零做复杂动画|
+|A 高级|测量、Shader、复杂旋转、大场景、多人认识、专项验收|6|按实际问题选修，不阻塞小游戏|
 
-## 只看你当前需要的入口
+**45是独立课件输入数量，不是要求新手一次完成45堂课。** B01保留原编号但拆成A/B；原技术C01–C32编号与`assessments/`继续保留，美术新词使用ART编号，不制造第二套技术编号。
 
-|用途|入口|
-|---|---|
-|今天打开什么|[学习入口](START-HERE.md)|
-|整体安排|[路线](curriculum/roadmap.md) · [32组概念的分阶段深度](curriculum/concept-map.md)|
-|B02实际操作|[课包](curriculum/beginner/02-scene-node/lesson.md) · [本课题目](curriculum/beginner/02-scene-node/assessment.md)|
-|生成课堂|[使用规则](openmaic/generation-guide.md) · [B01输入](openmaic/requirements/B01-3d-space.md) · [B02输入](openmaic/requirements/B02-scene-node.md)|
-|后续工作坊|[B04碰撞 / B08材质 / B10事件](curriculum/workshop-recipes.md)|
-|题库与考核|[考核蓝图](assessments/exam-blueprint.md) · [题库](assessments/question-bank.md) · [评分](assessments/mastery.md)|
-|纸面复习|[必须牢记](print/必须牢记.md)，只复习已学阶段|
-|运行示例|[Godot工程](game/README.md) · [Blender素材](blender/README.md)|
-|做到哪了|[交付进度](curriculum/delivery-status.md) · [测试边界](docs/validation.md)|
+## 学习深度与考核
 
-## 开发与内容统一规则
+**M 必须掌握**：针对本课具体需求，会选、会调、会说明、会验收。关键M再做排错、换情境与隔次复测。**K 理解即可**：知道用途和需要时去哪里查，一道轻量情境题即可。按需查询的API、菜单和快捷键不做记忆考试。
 
-概念编号以 `curriculum/concept-map.md` 为准，题库统一在 `assessments/`，不再并列两套C编号和0–2/0–3评分。源码来自整合后的单一工程，完整参考关卡默认10颗星，可用Inspector的star_count做0/1边界实验。
+每课有：任务卡 → 必要讲解 → 界面深度 → 互动实验 → 一项故障/反例 → 训练和反馈 → 必记要点 → 延迟变式。完整规则见 [学习合同](curriculum/learning-contract.md)、[考核蓝图](assessments/exam-blueprint.md)。
 
-只更新main；使用小提交便于回退。确实需要临时分支时只保留一条，验证合并后清理，不长期维护平行教材。[AI协作规则](AGENTS.md)
+## 已完成与未完成
 
-大纲齐全不等于全部课堂生成、全部源码实测或学习效果已验证。技术测试和真人操作/延迟复测分别记录。
+本轮完成45份教师课件输入及45份对应学生讲义的内容编写、结构校验与作者自审；新课堂尚未逐课调用OpenMAIC生成、运行和试教。已有游戏/网页/Blender材料保留，但**没有宣称每课都具备完整配套**。具体状态以 [交付进度](curriculum/delivery-status.md) 为准。
 
-[本次整合说明](docs/consolidation.md) · [剩余优先事项](docs/improvements.md)
+## OpenMAIC参考与维护
+
+[官方Skill参考说明](openmaic/upstream-reference.md)保留固定上游提交、原文、许可证与摘要；参考文件不自动执行。它规定部署/生成流程，不替代课程教学设计。课件入口统一为`openmaic/lessons/`，旧`requirements/`仅作迁移入口。
+
+人工编写的单课内容存于`curriculum/authoring/`；运行`python3 tools/build_course_materials.py`展开Markdown，`--check`确认两份输出没有漂移。这只是文档展开，**不调用大模型、不生成课堂、不改游戏实现**。学员无需学习这些工具。
+
+[打印技术要点](print/必须牢记.md) · [打印美术要点](print/art-must-remember.md) · [下一阶段清单](docs/improvements.md)

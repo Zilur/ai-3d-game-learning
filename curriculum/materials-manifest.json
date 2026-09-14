@@ -1,0 +1,512 @@
+{
+  "version": "v4",
+  "date": "2026-09-15",
+  "lesson_count": 45,
+  "units": [
+    {
+      "id": "R01",
+      "prerequisites": [],
+      "concepts": "ART01/ART02",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B01A",
+      "prerequisites": [],
+      "concepts": "C01/C02",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B02",
+      "prerequisites": [
+        "B01A"
+      ],
+      "concepts": "C05/C20/C26",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B04",
+      "prerequisites": [
+        "B02"
+      ],
+      "concepts": "C06/C07",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B03",
+      "prerequisites": [
+        "B04"
+      ],
+      "concepts": "C08",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B05",
+      "prerequisites": [
+        "B03"
+      ],
+      "concepts": "C09",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B01B",
+      "prerequisites": [
+        "B01A",
+        "B02"
+      ],
+      "concepts": "C03/C04",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B06",
+      "prerequisites": [
+        "B05",
+        "B01B"
+      ],
+      "concepts": "C03/C04/C10",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "R02",
+      "prerequisites": [
+        "R01",
+        "B01A"
+      ],
+      "concepts": "ART02/ART03",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B07",
+      "prerequisites": [
+        "B06",
+        "R02"
+      ],
+      "concepts": "C02/C11/C26",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "R03",
+      "prerequisites": [
+        "R02"
+      ],
+      "concepts": "ART04/ART05",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B08",
+      "prerequisites": [
+        "B07",
+        "R03"
+      ],
+      "concepts": "C12/C13/C17",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B09",
+      "prerequisites": [
+        "B08"
+      ],
+      "concepts": "C14/C15",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B10",
+      "prerequisites": [
+        "B09",
+        "B04"
+      ],
+      "concepts": "C16/C06/C07",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B11",
+      "prerequisites": [
+        "B10"
+      ],
+      "concepts": "C18",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B12",
+      "prerequisites": [
+        "B11"
+      ],
+      "concepts": "C16/C18",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B13",
+      "prerequisites": [
+        "B12",
+        "R03"
+      ],
+      "concepts": "C13/C25",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "R04",
+      "prerequisites": [
+        "R03",
+        "B13"
+      ],
+      "concepts": "ART06/ART05",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B14",
+      "prerequisites": [
+        "B13"
+      ],
+      "concepts": "C19/C26",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B15",
+      "prerequisites": [
+        "B14"
+      ],
+      "concepts": "C20",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "B16",
+      "prerequisites": [
+        "B15"
+      ],
+      "concepts": "C05/C06/C07/C12/C16/C18/C20",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "I01",
+      "prerequisites": [
+        "B16"
+      ],
+      "concepts": "C21/C15/C26",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "I02",
+      "prerequisites": [
+        "I01"
+      ],
+      "concepts": "C21/C16",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "I03",
+      "prerequisites": [
+        "I02"
+      ],
+      "concepts": "C05/C17",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "I04",
+      "prerequisites": [
+        "I03"
+      ],
+      "concepts": "C04/C07/C16",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "I05",
+      "prerequisites": [
+        "I03",
+        "B09"
+      ],
+      "concepts": "C14/C22",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "I06",
+      "prerequisites": [
+        "I05",
+        "B13"
+      ],
+      "concepts": "C25",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "I07",
+      "prerequisites": [
+        "I06"
+      ],
+      "concepts": "C19/C29/C30",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "I08",
+      "prerequisites": [
+        "I07"
+      ],
+      "concepts": "C23",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "I09",
+      "prerequisites": [
+        "I04"
+      ],
+      "concepts": "C16/C17",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "I10",
+      "prerequisites": [
+        "I09"
+      ],
+      "concepts": "C24",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "I11",
+      "prerequisites": [
+        "I10",
+        "I07"
+      ],
+      "concepts": "C20/C24/C26",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "I12",
+      "prerequisites": [
+        "I11",
+        "I02",
+        "I04"
+      ],
+      "concepts": "C16/C21/C24/C25/C26",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "R05",
+      "prerequisites": [
+        "I05",
+        "R04"
+      ],
+      "concepts": "ART02/ART03/C11/C15",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "R06",
+      "prerequisites": [
+        "R05",
+        "I06"
+      ],
+      "concepts": "ART04/ART07/C12/C13/C25",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "R07",
+      "prerequisites": [
+        "R06",
+        "I03"
+      ],
+      "concepts": "ART08/C17/C22/C26",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "R08",
+      "prerequisites": [
+        "R07"
+      ],
+      "concepts": "ART01/ART03/ART04/ART06/ART08",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "X01",
+      "prerequisites": [
+        "I02"
+      ],
+      "concepts": "C21/C26",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "X02",
+      "prerequisites": [
+        "X01",
+        "B11"
+      ],
+      "concepts": "ART09/C16/C18/C21",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "A01",
+      "prerequisites": [
+        "I12"
+      ],
+      "concepts": "C32/C19",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "A02",
+      "prerequisites": [
+        "I06"
+      ],
+      "concepts": "C27/C12/C13",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "A03",
+      "prerequisites": [
+        "I04",
+        "B01B"
+      ],
+      "concepts": "C28/C03",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "A04",
+      "prerequisites": [
+        "A01"
+      ],
+      "concepts": "C29/C30",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "A05",
+      "prerequisites": [
+        "I12"
+      ],
+      "concepts": "C31",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    },
+    {
+      "id": "A06",
+      "prerequisites": [
+        "I12"
+      ],
+      "concepts": "C20/C26/C32",
+      "status": "manuscript-reviewed; classroom-not-generated; learner-not-tested"
+    }
+  ],
+  "source_sha256": {
+    "curriculum/authoring/advanced.py": "44b7029abde7be58d10ad1a9bfe701153d53110b5288ee37afb48eb39d498c43",
+    "curriculum/authoring/art.py": "b4fdf76ebba713b2af70a23efc1358cd5218e58dc7ca5d03fbd0c1999364b197",
+    "curriculum/authoring/beginner_a.py": "d508a50a93ca8ca21ac595b27e7607049bfc75e3f89f7b9542c263e494ae38d3",
+    "curriculum/authoring/beginner_b.py": "617bcdb918d5f866da08a8003fb10620829af6c0491d9ab00c0f30ffc8f19b1e",
+    "curriculum/authoring/intermediate.py": "089fbbd4a203dd1ed66b96b4e30ebbe3ee03a629b368027328dc0fb548158b79",
+    "curriculum/authoring/motion.py": "29e168560722f2c8e560b0254045074a231bc23028a134048687baba59fe0731",
+    "curriculum/authoring/site_art.py": "2ccf3b744b48dd7adc38b9b4f0562e229df06921b203ad6f5a5b15cd474319c8",
+    "curriculum/authoring/site_content.py": "aeb191de94dba3eb9d9a2eca42b96e83c34f18fc3c183d297602eae1b81cd85c",
+    "curriculum/authoring/site_openmaic.py": "b7e63e1a84ccbf6da609892e365d7f27c1d051c52817cd8fbead84b9cfb5f400",
+    "curriculum/authoring/sources.py": "313b7ba29de86680d5cfe56eaddcffd1e32cc4cd5f0e400e20486086a09460b6"
+  },
+  "sha256": {
+    "openmaic/lessons/B01A.md": "53349f436de5ab9459c83aa09d8e51bcbfafd3a4539c0574f897709070110b87",
+    "curriculum/lessons/B01A.md": "0340ee4870a531d198295206e845b77ea66c3e01dd2d7a72f38d98be88b61283",
+    "openmaic/lessons/B01B.md": "b01c4b17020b0cfb8ee9155cf9e232aa6af553a4a276940f72d336382633e833",
+    "curriculum/lessons/B01B.md": "a4253b25ccf03fcd0dc5d0b6911eae6efc78923152217b8c5fa0d155b72badbb",
+    "openmaic/lessons/B02.md": "1f1c86f8642fb660a527b5d9f6b26876b30dc78a7746da67530188331051a92c",
+    "curriculum/lessons/B02.md": "74408d12867ab78a49854744cd0ebf23115b69f0e5b8ee4706e5d3d51f09f2d8",
+    "openmaic/lessons/B03.md": "b3f3ac1e4e987e691b8748f680247d4a3959a0dc5157d69b1d22f71fa7ae3995",
+    "curriculum/lessons/B03.md": "c41aebc51b384691eb4a3ad7e3fb0dc5eb9d3b09fe25f730e2083a6e772082b6",
+    "openmaic/lessons/B04.md": "191167df49b890a03c638483fd5af7498c21af180c1c3384eeaeffd7cdb71d8f",
+    "curriculum/lessons/B04.md": "291ac48a0677cd4080b39f7f7920554f4fbdd8a20e247bff12d14c36d4a4bad2",
+    "openmaic/lessons/B05.md": "f3de922daa15d65a304c3f54c6f897df8458fa6066126099ef69a46dea335843",
+    "curriculum/lessons/B05.md": "ea670c05f1e62cb709eb56bbb27e1c206b8c91feac3c5c1824f7dfdb2dbc1962",
+    "openmaic/lessons/B06.md": "1db4a80b15d4d651484a06ca000a38a208522f1ac77545fa22f9b20f40906d8f",
+    "curriculum/lessons/B06.md": "d0aea05037e9f98f90433b52f06757ecc982158bfd2d5a0e57765104909b705a",
+    "openmaic/lessons/B07.md": "8f61b3c4b40f194d9080cb9091f700a13df64f42178cdf47897f148a34fead45",
+    "curriculum/lessons/B07.md": "25d4aece094fa4c41a1db0ecb7092ececbddcb786d7b6b9f82b37afd2335ebaa",
+    "openmaic/lessons/B08.md": "dd9dbe1c03d2516e0b0daa1e3b941c7f9a65719f84e96ddbe7ef89e4fbbb857b",
+    "curriculum/lessons/B08.md": "b00b47cc5a9ac4c320790c505ecc324d3f8b895416dbf29edb88c33e82f1747c",
+    "openmaic/lessons/B09.md": "90bd2de72962a719d798b2a1511db215c53f51f6cd02f6a7fe40c9c9cceaae49",
+    "curriculum/lessons/B09.md": "f20b68f1a06a258c01e80ea955e8a0ccafcd586860ba958d949e304320638e23",
+    "openmaic/lessons/B10.md": "e7c556fc661d3dda839f8e2a67b4fc4ee478e2057a018a4460aad1565e8baa52",
+    "curriculum/lessons/B10.md": "fe3ccb5c36c5985730e03f503c53cc732a6c49eef3d4d3710c0c896deb6ae1e8",
+    "openmaic/lessons/B11.md": "4e226e281e947b93593d16d5c08dc39d8add21de4803f6e2eb2c9dc54247f8e9",
+    "curriculum/lessons/B11.md": "918746785da577a29908f25fc037432ab4bea7318ed1c217c99b8c1f067ab90a",
+    "openmaic/lessons/B12.md": "a126a83c0a107688817a2367d3ac5bb7d6938d49699da03cae431a1df5d8ae4b",
+    "curriculum/lessons/B12.md": "b15be903ce8342ddb389d1f6c5656b8681c3289e50a49542fe22736c1220a98f",
+    "openmaic/lessons/B13.md": "24a0f80c1bb884c2044de82b9b0e4cc14930afa38eef662d379f0db11fa99530",
+    "curriculum/lessons/B13.md": "ea1606882cf1e623fadd091c96a227a0ccfbd2e56fb6b90d11a1f18455b20189",
+    "openmaic/lessons/B14.md": "909f56d0a8f08580216d23cbd12647e144f6ac209f802a664c67bc9032f1a0cb",
+    "curriculum/lessons/B14.md": "d6f50d4807951604d90a6e0f6fdd1a869f0d36fc686910d9f893ae7adfea1435",
+    "openmaic/lessons/B15.md": "3dde706ee3139eb06718712749cf69652ecc4f30097df30c00fff42d313cf5f8",
+    "curriculum/lessons/B15.md": "e5ce962a6c286b6e3c818bc524bf698209fdb285cdd0c6d92fea70b28e11a63c",
+    "openmaic/lessons/B16.md": "ed99705649605a5d4997470dd48f22c67e23186da1489de98b600a2582a60d11",
+    "curriculum/lessons/B16.md": "28e31752afdd7d1c9c49d624bcb605c73010de4acd7c6d1a22e8a523d23f23e2",
+    "openmaic/lessons/I01.md": "b443b86a7aefe14dd8f44ee6d1b2558cc6d527ff29e2f982fdf6a47f67f45cff",
+    "curriculum/lessons/I01.md": "ebbb34fbeeeb617525876a81d154bce9de7a2c03ea5cd8fdb2bf2f95c1d0f515",
+    "openmaic/lessons/I02.md": "462ec6b6bdd199847b06d03860a9c06edafbc93add226ed124fe64f1c4cac12e",
+    "curriculum/lessons/I02.md": "a0b7cc21cab87c40cd9af1e1a025832226f770e64f3926ffef7d75ed4ec8f3ef",
+    "openmaic/lessons/I03.md": "488c04725fdff268920bcb4bdeec5a77654b1c42411a17543d9c78b902fe9b5d",
+    "curriculum/lessons/I03.md": "c945c35cb16ada89463ca62b701217c631c1e07558fea6468e4c20cfc71ec163",
+    "openmaic/lessons/I04.md": "6d111174bf0a7f5f005b47cadbb52e6442924f3e4d261275e2b26248ba7a3938",
+    "curriculum/lessons/I04.md": "9ae802ed84f8ef1f2ff9cc86eb858f3e7cd62342bb067f06424da7c66227c996",
+    "openmaic/lessons/I05.md": "8a69587565db92d3b617e5a2201ae7a95988722e86bef4b66d890cbebe7de4a1",
+    "curriculum/lessons/I05.md": "68f7b67f31a06f19324c9d425cc37e0857c8fec011e3a2b48ede481b58cda578",
+    "openmaic/lessons/I06.md": "01e27744f20c4fa63658c54abe1fe5940df1161098daa70346115e94eed0f285",
+    "curriculum/lessons/I06.md": "0d3e61f1da5db7db677798c13459999f2e7fb95326290f3cdaa3abd388937344",
+    "openmaic/lessons/I07.md": "ea306a92dd085d387e312bcb9961f409fd331ecca4e95aa612394347b465962f",
+    "curriculum/lessons/I07.md": "cccff6f21c99017793f967a61bdd9573db79910fe1fae4337b4dbfcf034319dc",
+    "openmaic/lessons/I08.md": "81593f146204b0cb9f8e57ba6f5ee64b6009c15292a8b81ec021d37abde36004",
+    "curriculum/lessons/I08.md": "0be480c9e0655cc017b3b84747ede2403cd88bd0a8d6fcdde044b2820e39be66",
+    "openmaic/lessons/I09.md": "5f4024dc1d8c96d7267b3f7704de65d41bcd0735bdcec017433ca05070568856",
+    "curriculum/lessons/I09.md": "d8a73852b8e0eb69eb91df1a055961921c57650b860f18785c728d7b09476c75",
+    "openmaic/lessons/I10.md": "cdae65b58992ad8e052900d99c848d8b725618a530b319dc717263b57aa5a3b1",
+    "curriculum/lessons/I10.md": "73fc6c55615fc6dc653ead213e443381c3d657c4881ee5b7770cfd70fa75e8f2",
+    "openmaic/lessons/I11.md": "291632c98b232cd60bb7d38403f639df447863132bd4880019b7db4d86c2cc8d",
+    "curriculum/lessons/I11.md": "27c8b8e0866097cd2e8f299b30626ad95d992de0a8233a02365ffcf44e32e009",
+    "openmaic/lessons/I12.md": "ad0fe6d701b5475ddcdf9bddb0dc4dead7d862f3f74f08664845b78333f83ac7",
+    "curriculum/lessons/I12.md": "324f711dcb0c2e8c2c051807a938c1ead0a718cec46e2e416cbc9efb25e8c0b4",
+    "openmaic/lessons/A01.md": "835e7b71e87bef8b7778733c9856a0f7a768060acf671c1c5fad5ac2eaaf472b",
+    "curriculum/lessons/A01.md": "52b90da0119dc5ae61d0e2b3fc1b3a79c3d019fd7d93d74469582d3e5bc34491",
+    "openmaic/lessons/A02.md": "611036482801d41a4e4a735a31ae07430727fe38a711a6022fdd57ea50997ab9",
+    "curriculum/lessons/A02.md": "02aeece05d2857d12f6861ae2c4c8972d3fd2cec7901de120328b8b80c74268a",
+    "openmaic/lessons/A03.md": "dc99d3e67d4dd990f59fa07c929b9b14d4fb7b478ab8926febe9d09d3fab05f4",
+    "curriculum/lessons/A03.md": "534fefffe42e7cac670b4b57d7b1b30b8e9a52bf05972de47a360557db5a3dea",
+    "openmaic/lessons/A04.md": "441e8bd06645eaf349bd006e24efd33b7aa33ebfc758da8461b38f24085c1476",
+    "curriculum/lessons/A04.md": "c9c7c62ede686a8d65db8dfc26f2c5489c27dedd606daccb53e6615463364fae",
+    "openmaic/lessons/A05.md": "1b2cb2f1283c1841d7c66fc3be6515714f674bfbbdaf06e983a319d0eed2f6a0",
+    "curriculum/lessons/A05.md": "2f00b5fa489c3a1d52377004cf25391f94909d585ce16c33bcda5d725fb5aef7",
+    "openmaic/lessons/A06.md": "40f3248b2cad72324315c683fc57a36f752b079a8f9d65fb771383533f497b23",
+    "curriculum/lessons/A06.md": "cbc724dc606a8909c0027f1f7a8f8d61c1b2494f62324cc5b1a4416309788b2e",
+    "openmaic/lessons/R01.md": "3c7ab4a6e600011b9d7732c4c029e3eede5038936462fbfe52f3ec13ff00aaee",
+    "curriculum/lessons/R01.md": "cc54caa51e7be154202719828df985cc4a6160633da50a8d935affac01ead4dc",
+    "openmaic/lessons/R02.md": "eb7429f1b2783ac4c27434a0ae473610112de77a1334764eb988d84ca1407cd5",
+    "curriculum/lessons/R02.md": "f341ddbb0b558c832c1b7005355f483e1a43ae462361a10decd0ee29178979a5",
+    "openmaic/lessons/R03.md": "a1d21cd68c4fe909fd014b3e5aa5d378f53613365061bbe6970b6065716d9ccb",
+    "curriculum/lessons/R03.md": "9fbc18ee3624373366b272b79f724580c5c09bb3e97098303d4fd33fb6bcbb47",
+    "openmaic/lessons/R04.md": "a56939914c096a0876d1a8b523b887b5860ca6ca24bc3e6446d4f6e670b99eb1",
+    "curriculum/lessons/R04.md": "600b4caa0522a608e04cdf3ecad00e82d8cdff36a43790ab21f15834df825b62",
+    "openmaic/lessons/R05.md": "baea2b59a75d564695085dd7ad0989e2b21cb3aa660e9dca6689418e915b163a",
+    "curriculum/lessons/R05.md": "a9aaca26f9fe0bfe2134ccfcdf1ba701fc7ae50100804555349aaa54a18cc61e",
+    "openmaic/lessons/R06.md": "707e8a889fb15cd78d979e9c9add2cd558e98507d2b9d18cc8b936c351d84ef8",
+    "curriculum/lessons/R06.md": "3f3bb52b850fe74c0ad40be019c4cb772af96eb2641282b3c67aa732256d4a99",
+    "openmaic/lessons/R07.md": "a802f347042f7de92cda950d23f9bee382531052cf08c568740268c890d9df83",
+    "curriculum/lessons/R07.md": "c7f7b5f55768064fc66a296491ca156ea6e47667a850a696f9d26a907a4b2122",
+    "openmaic/lessons/R08.md": "91dbc0aa921db8fb2095c1d5b86f81475d5caa04d4b642559c248c42698c33c6",
+    "curriculum/lessons/R08.md": "00deb9905679b2ca11d937426f7272dc8d7239f36fbb2f4efd499f9f984ba710",
+    "openmaic/lessons/X01.md": "68d82bfbada1436713abb3a30f52654fc11a80e6aeb088ea691b8a0c1cc425f1",
+    "curriculum/lessons/X01.md": "564400085dd4ac0ca1fb714621449e9ded1a9bf469b90f6842ef6059b15c957d",
+    "openmaic/lessons/X02.md": "b9004db08394771d4d194a8817a9ab0ab1fba9cb35bcfc184e00a0fe9cd89c36",
+    "curriculum/lessons/X02.md": "be3d322d136eb99e565076bb69414799bea1523680fffc21951f4521dc85fd5e",
+    "curriculum/lesson-index.md": "293cdf411ba646a6dfedd1420be5740d2646a170f06fd1f3f814ac416d9c98d9",
+    "curriculum/lesson-review.md": "82a5e548384fcef5f83cf172e902822af21dcfd578313549415fa1d20511d381",
+    "curriculum/sources-index.md": "ae3e94564f083d3c119a175970dc63c6dd1ff4eb789d5a322ae00b4f2750f3b2",
+    "README.md": "87534efd243549255693d4f396346bbdf24e5147e4af2291df8ed5b166bcde68",
+    "START-HERE.md": "3cda9fdab0a2878ef371055d64117340f897d8032f186830452d7114755fa135",
+    "curriculum/roadmap.md": "9e81db37405b9667fc3960ce5006605049399a7b2764d3c1c39bd3e62e3ad5b3",
+    "curriculum/outline-review.md": "b49e63214f5aaab57a8b10e94cb291be0fb65a6522375198177534196bf913e1",
+    "curriculum/delivery-status.md": "36613fbf21ed76bea56c01507395ce90ee770edcb1f8653994d1558db76846df",
+    "AGENTS.md": "7685387982d10d14525a730f1aba47a13f96403ecc3bce19f7d2bbca94193588",
+    "openmaic/lesson-template.md": "4e66933a9a20557ae1ee302c7d5f08e03f5d840a30b0fa61b6179d98b32f6c25",
+    "openmaic/generation-guide.md": "909c5354774244601a5f989c0b6c5a35006fd6a7e7795a1bbdb367f8cb2b4e2a",
+    "openmaic/upstream-reference.md": "d79bfafff83da26596f242575a838c0262e0960262d83e9e25683f60727c680c",
+    "openmaic/requirements/B01-3d-space.md": "83732a0f69c9b98735fe112f1a1638572fab8ef7c6df702386726d28dcf839ee",
+    "openmaic/requirements/B02-scene-node.md": "81b864c3a013bbfe94ae83df1e3844a5e71acd44d2f053f8d45ca2e2f4d4a04d",
+    "curriculum/interface-map.md": "0154fa10e3f2945dab0c811e22f24d6bf3a199b474d6c15cdbd4e664b790ccc7",
+    "docs/improvements.md": "128436a90b3efd554cb5ac35aef6885f8f76ab4b276e089668a3a33d8c143105",
+    "art/reference-gallery.md": "4c0e258b64f94c600f433ea10514da67b6be70aaa6ee7a4e0e9d6248fcacca6a",
+    "art/visual-vocabulary.md": "625da0deacef7aa5d3c1bd34d6b50f551a4d6a10995cac7c6c2abb0e8c759a99",
+    "art/style-and-library.md": "88cab8c632bf23846b90246fa127ca8e887aa91319e9c50f682908258eddcc55",
+    "print/art-must-remember.md": "ee7d15e538de8c7869b8795d5df5ac0cafc42d03c90c309f974c3536efd6d7c2",
+    "curriculum/beginner/01-3d-space/practice.md": "b071260f04a8aefeea03334e7bd0405ee488f5ed3d2b0627cb00dc0bc3e76c54",
+    "curriculum/beginner/02-scene-node/lesson.md": "48b8561d44e0a6592f692008d84afa37c1f4606a1c7e065ee76487d6b3613208",
+    "curriculum/concept-map.md": "0ea64689b78506bbb1292d9524c1f398ba28fc5c36c8154152f49f9c4ad700cf",
+    "assessments/exam-blueprint.md": "eaee4ebe6212fa0c8713a10596cde968adddf436b9aa27104f4f0fedee68ed39",
+    "docs/validation.md": "42f10f5fb275a3ddd56aada42659667e87a30bc5bc7a682a7b1d5cfd2c93fbc1",
+    "curriculum/beginner/01-3d-space/openmaic-spec.md": "c5e709730e128c8f272f0be20e4a1199be8407d4c8de4a8b7ba6ad5197424ec9",
+    "curriculum/workshop-recipes.md": "8df41dba9ef12ef09565fce03093afe1ddf6f3edfbc31e2f154ae4bc05fb39f0"
+  }
+}
