@@ -1,35 +1,41 @@
-# AI时代3D游戏学习 · Focus v3
+# AI 时代 3D 游戏学习
 
-用Godot与Blender做一个小型单机游戏。AI减少重复实现；学习者把精力放在目标、参数、因果判断、手感、美术取舍和验收。
+**从 [START-HERE.md](START-HERE.md) 开始。统一使用 main，不需要选择历史分支。**
 
-**路线齐全不等于课程全部完成。** 初级B01–B16、中级I01–I12、高级A01–A06已有路线和学习深度；目前完整样板是B01，B04/B08/B10有详细工作坊，其余尚待逐课交付和试教。下一份完整课包应做B02，不是直接进入中级。
+Godot + Blender 是真实实验室，OpenMAIC 是互动课堂生成器，AI负责重复实现；学员负责目标、判断、手感、审美、性能取舍和验收。
 
-## 先看这三个入口
+学习闭环：**先预测 → 亲手操作 → 解释结果 → 修复一个错误 → 换场景应用 → 隔次复测**。不以背API、题量、观看时长或生成代码量代表掌握。
 
-|问题|入口|
+## 学什么、学到哪里
+
+|路线|目标|当前状态|
+|---|---|---|
+|初级 B01–B16|小型星星收集游戏；建立空间、玩法、资产和验收能力|路线与深度齐全；B01样板、B02课包、B04/B08/B10工作坊；其余逐课包待补|
+|中级 I01–I12|角色动画、复用、模块化、简单交互、存档和交付|路线和考核设计已有，不是全部课件/游戏已经完成|
+|高级 A01–A06|按实际瓶颈选择专项|不作为做小游戏的全套必修要求|
+
+**M 必须掌握：** 能选方案、操作、解释、排错；关键能力需要迁移验证。**K 理解即可：** 知道用途和何时查询即可，不深入实现。每课都有停止线，考试不得超出当前阶段。[学习深度合同](curriculum/learning-contract.md)
+
+## 只看你当前需要的入口
+
+|用途|入口|
 |---|---|
-|现在做完了什么、下一步做什么？|[交付进度](curriculum/delivery-status.md)|
-|每课必须会什么、哪些只要理解？|[逐课路线](curriculum/roadmap.md)、[学习深度合同](curriculum/learning-contract.md)|
-|重点如何详考、理解项如何轻考？|[考核蓝图](assessments/exam-blueprint.md)、[评分规则](assessments/mastery.md)|
+|今天打开什么|[学习入口](START-HERE.md)|
+|整体安排|[路线](curriculum/roadmap.md) · [32组概念的分阶段深度](curriculum/concept-map.md)|
+|B02实际操作|[课包](curriculum/beginner/02-scene-node/lesson.md) · [本课题目](curriculum/beginner/02-scene-node/assessment.md)|
+|生成课堂|[使用规则](openmaic/generation-guide.md) · [B01输入](openmaic/requirements/B01-3d-space.md) · [B02输入](openmaic/requirements/B02-scene-node.md)|
+|后续工作坊|[B04碰撞 / B08材质 / B10事件](curriculum/workshop-recipes.md)|
+|题库与考核|[考核蓝图](assessments/exam-blueprint.md) · [题库](assessments/question-bank.md) · [评分](assessments/mastery.md)|
+|纸面复习|[必须牢记](print/必须牢记.md)，只复习已学阶段|
+|运行示例|[Godot工程](game/README.md) · [Blender素材](blender/README.md)|
+|做到哪了|[交付进度](curriculum/delivery-status.md) · [测试边界](docs/validation.md)|
 
-M＝必须掌握限定的判断/操作/验收能力；K＝理解用途即可。不考API记忆或底层算法。64道P/T为跨阶段题库，不是初级作业清单；K不做深题，未选高级专项不进入毕业条件。
+## 开发与内容统一规则
 
-## 学员路径
+概念编号以 `curriculum/concept-map.md` 为准，题库统一在 `assessments/`，不再并列两套C编号和0–2/0–3评分。源码来自整合后的单一工程，完整参考关卡默认10颗星，可用Inspector的star_count做0/1边界实验。
 
-B01A → B02 → B04 → B03 → B05 → B01B → B06，再到B07–B16。每课只先看一个产物、2–3项M目标、必要的K提示和停止线。
+只更新main；使用小提交便于回退。确实需要临时分支时只保留一条，验证合并后清理，不长期维护平行教材。[AI协作规则](AGENTS.md)
 
-使用[B01生成输入](openmaic/requirements/B01-3d-space.md)或离线网页 `web/space-lab.html`，再做[真机练习](curriculum/beginner/01-3d-space/practice.md)。按阶段抽[题目](assessments/question-bank.md)，最后查看[答案](assessments/answer-key.md)。不需要先读完所有源码和术语。
+大纲齐全不等于全部课堂生成、全部源码实测或学习效果已验证。技术测试和真人操作/延迟复测分别记录。
 
-## 资料导航
-
-[概念地图](curriculum/concept-map.md)限定32组能力的具体深度；[打印卡](print/必须牢记.md)只复习当前重点；[课程原则](curriculum/course-design-principles.md)规定AI与人的分工；[学习记录](assessments/learning-log.md)保留最少必要证据。
-
-[B04/B08/B10工作坊](curriculum/workshop-recipes.md)、[Godot参考工程](game/README.md)、[Blender素材说明](blender/README.md)、[术语检索](glossary/core-3d.md)、[OpenMAIC模板](openmaic/lesson-template.md)、[生成验收](openmaic/generation-guide.md)、[技术来源](docs/sources.md)、[运行验证边界](docs/validation.md)。
-
-## 工程与版本边界
-
-本轮继续使用 **PR #1 / course/foundation-v1** 的三级课程。PR #2是另一套并行实现，题号和目录不相同，不要混读；本轮没有合并或删除任何分支。
-
-本分支Godot源码含走跑跳、镜头、墙/平台、5颗星、计数/完成/重开和坠落复位，另有材质实验；不是每课独立起始/完成包，不含正式角色动画、自动爬楼梯或音效粒子成品。本分支引擎运行与Blender验证仍按验证记录待办，不能套用另一分支的测试通过。
-
-B01首版有用户正向反馈；新版课堂未重新生成，整套方法未完成延迟学习效果验证。内容和题量不代表教学效果。本轮仅校准重点、难度和进度，不生成收费课堂、不部署网站、不合并main。
+[本次整合说明](docs/consolidation.md) · [剩余优先事项](docs/improvements.md)

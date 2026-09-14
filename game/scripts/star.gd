@@ -1,19 +1,34 @@
 extends Area3D
-## C06/C07/C16: a trigger detects; it does not block. Exactly one event per star.
-signal collected(star: Area3D)
-@export_range(0.0, 180.0, 1.0) var spin_degrees_per_second: float = 65.0
-var taken: bool = false
+## C16: disappearance alone is not an exactly-once reward.
+
+signal collected(pickup_id: String)
+@export var pickup_id: String = ""
+@export var spin_speed: float = 1.5
+var consumed: bool = false
+var elapsed: float = 0.0
+@onready var visual: MeshInstance3D = $Visual
 
 func _ready() -> void:
-    body_entered.connect(try_collect)
+	if pickup_id.is_empty():
+		pickup_id = str(name)
+	body_entered.connect(_on_body_entered)
 
 func _process(delta: float) -> void:
-    $Visual.rotate_y(deg_to_rad(spin_degrees_per_second) * delta)
+	elapsed += delta
+	visual.rotation.y += spin_speed * delta
+	# Animate the visual, not the detection region.
+	visual.position.y = sin(elapsed * 2.0) * 0.12
 
-func try_collect(body: Node3D) -> void:
-    if taken or not body.is_in_group("player"):
-        return
-    taken = true
-    set_deferred("monitoring", false)
-    collected.emit(self)
-    queue_free()
+func _on_body_entered(body: Node3D) -> void:
+	try_collect(body)
+
+func try_collect(body: Node) -> bool:
+	if consumed or not is_instance_valid(body) or not body.is_in_group("player"):
+		return false
+	# Lock synchronously BEFORE notifying listeners.
+	consumed = true
+	set_deferred("monitoring", false)
+	$CollisionShape3D.set_deferred("disabled", true)
+	collected.emit(pickup_id)
+	queue_free()
+	return true

@@ -1,72 +1,97 @@
-"""Dependency-free content/geometry checks; NOT a Godot runtime test."""
-from pathlib import Path
-from collections import Counter
-from urllib.parse import unquote
+"""Dependency-free checks for the unified curriculum. Not a learner or engine test."""
+from __future__ import annotations
+import ast
 import base64
+from collections import Counter
 import json
-import math
+from pathlib import Path
 import re
-import struct
 import sys
+from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
-errors = []
-def check(ok, message):
+errors: list[str] = []
+checks = 0
+
+def check(ok: bool, message: str) -> None:
+    global checks
+    checks += 1
     if not ok:
         errors.append(message)
 
-for path in ROOT.rglob('*.md'):
-    text = path.read_text(encoding='utf-8')
-    for link in re.findall(r'\[[^\]]*\]\(([^\s)]+)\)', text):
-        if '://' in link or link.startswith(('#', 'mailto:')):
+def read(path: str) -> str:
+    return (ROOT / path).read_text(encoding="utf-8")
+
+def main() -> int:
+    for path in ROOT.rglob("*.md"):
+        if any(part in {".git", ".godot", "node_modules"} for part in path.parts):
             continue
-        target = unquote(link.split('#')[0])
-        check((path.parent/target).exists(), f'Broken link: {path.relative_to(ROOT)} -> {target}')
+        text = path.read_text(encoding="utf-8")
+        for link in re.findall(r'\[[^\]]*\]\(([^\s)]+)\)', text):
+            if "://" in link or link.startswith(("#", "mailto:")):
+                continue
+            target = unquote(link.split("#", 1)[0].split("?", 1)[0])
+            check((path.parent / target).exists(), f"Broken link: {path.relative_to(ROOT)} -> {target}")
+    concepts = set(re.findall(r"\bC\d{2}\b", read("curriculum/concept-map.md")))
+    expected = {f"C{i:02}" for i in range(1, 33)}
+    check(concepts == expected, "Expected the canonical C01-C32 concept map")
+    qids = re.findall(r'\*\*(C\d{2}-[PT])', read("assessments/question-bank.md"))
+    check(len(qids) == len(set(qids)) == 64, "Expected 64 distinct cross-stage P/T questions")
+    check(set(qids) == {f"{c}-{kind}" for c in expected for kind in ("P", "T")}, "Question/concept coverage mismatch")
+    answers = set(re.findall(r"\bC\d{2}\b", read("assessments/answer-key.md")))
+    check(expected <= answers, "Teacher answers must cover all canonical concepts")
+    check(not (ROOT / "assessment").exists(), "Do not restore the competing assessment directory")
+    for path in ("curriculum/learning-contract.md", "assessments/mastery.md", "assessments/exam-blueprint.md"):
+        text = read(path)
+        check("0–3" not in text and "0-3" not in text, f"Obsolete scoring rule in {path}")
+    for path in ("START-HERE.md", "print/必须牢记.md", "openmaic/requirements/B02-scene-node.md",
+                 "curriculum/beginner/02-scene-node/lesson.md", "curriculum/beginner/02-scene-node/assessment.md",
+                 "curriculum/beginner/02-scene-node/answer-key.md"):
+        check((ROOT / path).is_file(), f"Missing learning entry: {path}")
+    lesson = read("curriculum/beginner/02-scene-node/lesson.md")
+    check(all(word in lesson for word in ("M 必须掌握", "K 理解即可", "停止线", "starter.tscn", "broken.tscn", "reference.tscn")), "B02 needs depth, boundaries and real materials")
+    for path in (ROOT / "game").rglob("*"):
+        if ".godot" in path.parts or path.suffix not in {".gd", ".tscn", ".godot", ".gdshader"}:
+            continue
+        text = path.read_text(encoding="utf-8")
+        for resource in re.findall(r'res://([^"\s\x27)]+)', text):
+            if "%" not in resource:
+                check((ROOT / "game" / resource).exists(), f"Missing resource in {path.name}: {resource}")
+        if path.suffix == ".tscn":
+            for kind in ("ext", "sub"):
+                ids = re.findall(r'\[' + kind + r'_resource[^\n]* id="([^"]+)"', text)
+                check(len(ids) == len(set(ids)), f"Duplicate {kind} resource ids: {path}")
+    for path in ROOT.rglob("*.py"):
+        if any(part in {".git", ".godot", "node_modules"} for part in path.parts):
+            continue
+        try:
+            ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        except SyntaxError as exc:
+            check(False, str(exc))
+    mesh = json.loads(read("game/assets/star.gltf"))
+    raw = base64.b64decode(mesh["buffers"][0]["uri"].split(",", 1)[1], validate=True)
+    check(len(raw) == mesh["buffers"][0]["byteLength"], "glTF buffer length mismatch")
+    for view in mesh["bufferViews"]:
+        check(0 <= view.get("byteOffset", 0) <= view.get("byteOffset", 0) + view["byteLength"] <= len(raw), "glTF view out of buffer bounds")
+    vertices, faces = [], []
+    for line in read("game/assets/star.obj").splitlines():
+        parts = line.split()
+        if parts and parts[0] == "v":
+            vertices.append(tuple(map(float, parts[1:4])))
+        elif parts and parts[0] == "f":
+            faces.append([int(v.split("/")[0]) - 1 for v in parts[1:]])
+    check(len(vertices) == 22 and len(faces) == 40, "Unexpected reference OBJ topology")
+    edges: Counter[tuple[int, int]] = Counter()
+    for face in faces:
+        check(len(face) == 3 and all(0 <= v < len(vertices) for v in face), "Invalid OBJ face")
+        for a, b in zip(face, face[1:] + face[:1]):
+            edges[tuple(sorted((a, b)))] += 1
+    check(bool(edges) and all(n == 2 for n in edges.values()), "Reference OBJ must have closed edges")
+    if errors:
+        print("\n".join(errors), file=sys.stderr)
+        return 1
+    print(f"COURSE VALIDATION PASS: {checks} checks; 32 concepts, 64 P/T questions; B02 materials present")
+    return 0
 
-concepts = (ROOT/'curriculum/concept-map.md').read_text(encoding='utf-8')
-ids = set(re.findall(r'^### (C\d{2})', concepts, re.M))
-questions = (ROOT/'assessments/question-bank.md').read_text(encoding='utf-8')
-qids = re.findall(r'\*\*(C\d{2}-[PT])', questions)
-check(len(ids) == 32, 'Expected 32 concepts')
-check(len(qids) == len(set(qids)) == 64, 'Expected 64 unique questions')
-check(set(qids) == {f'{c}-{t}' for c in ids for t in ('P', 'T')}, 'Concept/question coverage mismatch')
-answers = (ROOT/'assessments/answer-key.md').read_text(encoding='utf-8')
-check(set(re.findall(r'^## (C\d{2})', answers, re.M)) == ids, 'Answer coverage mismatch')
-for c in ids:
-    check(c in (ROOT/'print/必须牢记.md').read_text(encoding='utf-8'), f'Missing print card {c}')
-
-for path in (ROOT/'game').rglob('*'):
-    if path.suffix not in ('.gd', '.tscn', '.godot'):
-        continue
-    text = path.read_text(encoding='utf-8')
-    for resource in re.findall(r'res://([^"\s]+)', text):
-        check((ROOT/'game'/resource).exists(), f'Missing resource {resource}')
-    if path.suffix == '.tscn':
-        # Resource identifiers must be unique within a scene, even before engine import.
-        declarations = re.findall(r'\[(?:ext|sub)_resource[^\n]* id="([^"]+)"', text)
-        check(len(declarations) == len(set(declarations)), f'Duplicate resource IDs: {path.name}')
-
-mesh = json.loads((ROOT/'game/assets/star.gltf').read_text(encoding='utf-8'))
-buf = base64.b64decode(mesh['buffers'][0]['uri'].split(',',1)[1], validate=True)
-check(len(buf) == mesh['buffers'][0]['byteLength'], 'glTF buffer length')
-v = mesh['bufferViews'][0]
-pos = list(struct.iter_unpack('<fff', buf[v['byteOffset']:v['byteOffset']+v['byteLength']]))
-v = mesh['bufferViews'][1]
-norm = list(struct.iter_unpack('<fff', buf[v['byteOffset']:v['byteOffset']+v['byteLength']]))
-check(len(pos) == len(norm) == 120, 'Expected 40 triangles, 120 flat-shaded vertices')
-edges = Counter()
-for i in range(0,len(pos),3):
-    a,b,c = pos[i:i+3]
-    u = [b[k]-a[k] for k in range(3)];w = [c[k]-a[k] for k in range(3)]
-    n = [u[1]*w[2]-u[2]*w[1],u[2]*w[0]-u[0]*w[2],u[0]*w[1]-u[1]*w[0]]
-    check(sum(n[k]*norm[i][k] for k in range(3)) > 1e-8, 'Winding/normal mismatch')
-    for x,y in ((a,b),(b,c),(c,a)):
-        edge = tuple(sorted((tuple(round(z,6) for z in x),tuple(round(z,6) for z in y))))
-        edges[edge] += 1
-check(all(n == 2 for n in edges.values()), 'Star mesh is not watertight after welding')
-check(all(abs(sum(x*x for x in n)-1) < 1e-5 for n in norm), 'Non-unit normals')
-
-if errors:
-    print('\n'.join(errors));sys.exit(1)
-print('PASS: links, 32 concepts / 64 questions, answer/print coverage, Godot resource paths, star geometry.')
-print('NOT TESTED: GDScript parser, Godot import/runtime/rendering, Blender, target hardware, OpenMAIC generation.')
+if __name__ == "__main__":
+    raise SystemExit(main())

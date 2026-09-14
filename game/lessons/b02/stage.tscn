@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3]
+
+[sub_resource type="BoxMesh" id="FloorMesh"]
+size = Vector3(12, 0.1, 12)
+
+[sub_resource type="StandardMaterial3D" id="FloorMaterial"]
+albedo_color = Color(0.36, 0.38, 0.4, 1)
+roughness = 1.0
+
+[node name="Stage" type="Node3D"]
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.05, 0)
+mesh = SubResource("FloorMesh")
+material_override = SubResource("FloorMaterial")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-45, -30, 0)
+light_energy = 1.4
+shadow_enabled = true
+
+[node name="Fill" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-30, 150, 0)
+light_energy = 0.5
+
+[node name="Camera3D" type="Camera3D" parent="."]
+position = Vector3(6, 5, 8)
+rotation_degrees = Vector3(-26.565, 36.87, 0)
+current = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Instructions" type="Label" parent="CanvasLayer"]
+offset_left = 18.0
+offset_top = 16.0
+offset_right = 660.0
+offset_bottom = 90.0
+text = "B02 | Scene / Node / Instance\nRun the CURRENT scene with F6. No player in this lesson.\nMove the module ROOT, then compare moving only Visual."

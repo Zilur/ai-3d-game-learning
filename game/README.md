@@ -1,54 +1,42 @@
-# Godot 星星实验工程（参考解，不是第一课必读源码）
+# Godot工程｜统一参考解与独立小实验
 
-目标API为Godot 4.5及以后的4.x标准版GDScript，默认Compatibility渲染器。尚未在本轮环境启动引擎；不能据此宣称跨版本/平台运行已通过。版本记录见[验证状态](../docs/validation.md)。
+导入 `project.godot`（从仓库根目录看是game/project.godot）。测试版本固定Godot4.7.2，Compatibility，标准GDScript版。不要只复制单个.tscn。其他版本/设备需重新验证。
 
-## 启动
+## 按课程打开
 
-下载含本分支内容的完整仓库，在Godot项目管理器Import选择 `game/project.godot`，等待glTF导入。F5运行游戏。无需插件、API Key、网络图片或第三方模型。
+|目的|场景|运行|
+|---|---|---|
+|B02起始练习|lessons/b02/starter.tscn|F6|
+|B02完成参考|lessons/b02/reference.tscn|F6|
+|B02故障|lessons/b02/broken.tscn|F6|
+|空间/门轴/单球参数实验|scenes/lab.tscn|F6|
+|B08双球固定参考对照|labs/material_lab.tscn|F6|
+|完整星星收集参考解|scenes/main.tscn|F5|
 
-WASD移动，Shift跑，Space跳；单击游戏捕获鼠标，Esc释放；R重新开始。鼠标初始不锁住。没有手柄/触屏输入，暂不宣称支持手机。
+F5运行项目主场景，F6运行当前场景。B02没有玩家，先学整体、外观和实例职责；不能把完整代码全部视为当前必修。[B02讲义](../curriculum/beginner/02-scene-node/lesson.md)
 
-运行材质实验：打开 `labs/material_lab.tscn`，F6。左球有Roughness/Metallic/Emission滑条，右球固定；独立开关OmniLight，不启用GI或Glow。
+## 参考关卡
 
-## 节点与职责
+默认10颗星；WASD移动，Shift跑，Space跳，鼠标转镜头，Esc释放鼠标，点击场景重新捕获，R重开。主场景根节点的star_count允许0–10，测试0/1边界不靠硬编码计数。
 
-`main.tscn`：地面、墙、低平台、5颗星、HUD、完成与重开。
+Player在layer2（脚本位值2）查询环境layer1（位值1）；星星Area的mask=2检查玩家。不要把层编号和位值的所有情况当成同一个数字。Visual只负责显示，CollisionShape3D负责形状，事件和状态在脚本中；C编号以主线概念地图为准。
 
-`player.tscn` + `player.gd`：CharacterBody3D、胶囊视觉/形状、CameraPivot→SpringArm3D→Camera3D。角色物理根节点保持Scale=(1,1,1)，修改Shape尺寸而非随意非均匀缩放。
+源码分工：player.gd管输入/运动/镜头；star.gd管有效对象和一次性拾取；main.gd持有进度，HUD只显示；lab.gd构造实验界面（非学员必读）。可调参数暴露到Inspector。
 
-`star.tscn` + `star.gd`：Area3D及SphereShape、glTF视觉。taken防止同一帧重复计分，先发事件再延迟释放。只旋转Visual，不把复杂星形当碰撞体。
+参考工程不是成熟游戏框架，不包含正式角色动画、完整反馈音效/粒子、通用自动爬楼梯、存档、导航或手机输入。
 
-输入动作在player的_ready中安装，便于独立复用；正式项目迁移到Project Settings > Input Map。变量暴露在Inspector；你不必从零手写脚本，但要理解状态和单位。
+## 材质实验说明
 
-## 可以亲自调的旋钮
+scenes/lab.tscn的Material页有可调球和邻近立方体，单独开灯来区分Emission与照明；labs/material_lab.tscn是双球A/B版本。两者目的不同，不要求一课都做。B08采用双球；共享材质的专门实验需要按讲义另做，不假称所有参考球默认共享。
 
-Player：walk_speed 4、run_speed 7、jump_speed 6、gravity 18；数值是示例起点，不是最佳手感。Camera FOV 65、SpringArm长度6、鼠标灵敏度0.12。
-
-先猜，再每次只改一项：C08速度；C09固定跳速改变重力；C10固定距离改变FOV；C12/C13材质实验。停止运行后Inspector修改会保存；Remote修改通常只影响当次运行。
-
-## 物理分类
-
-第1层World=位值1；第2层Player=位值2；第3层Collectible=位值4。
-
-玩家Layer2、Mask1；星星Layer4、Mask2；世界使用默认Layer1。注意“第3层”不等于位值3，Inspector勾选第3层对应4。
-
-## 自检与验收
-
-仓库根目录：
+## 自动验证
 
 ```sh
-python tools/validate_repo.py
-# 下两条需要先安装Godot，并把实际可执行文件名替换为godot。
+python3 tools/validate_repo.py
+# 下列从仓库根目录执行
 godot --headless --path game --editor --import
-godot --headless --path game --script res://tests/smoke.gd
+godot --headless --audio-driver Dummy --path game --fixed-fps 60 --script res://tests/smoke.gd
+godot --headless --audio-driver Dummy --path game --script res://tests/b02.gd
 ```
 
-先导入再测试，因为glTF需要导入结果。`smoke.gd`检验落地、Area实际重叠、单次计数、防重入和输入移动；没有替代手感、相机穿墙、视觉或性能验收。
-
-人工：撞墙、绕墙、跳平台、收齐、重开、跌出地面恢复、Esc、俯仰极限；再测错误对象不计分和30/60物理tick相同秒数位移。记录失败，不把存在测试文件当测试通过。
-
-## 已写入与未实现
-
-参考解写入走/跑/跳、镜头、阻挡、拾取、计数、完成/重开、坠落复位。暂不含音效/粒子、坡道或自动爬台阶、正式动画、存档、游戏手柄与生产级角色控制器。
-
-HUD的1000/FPS是平均FPS倒数估计，不是GPU耗时。真正性能证据来自Godot监视器/分析器和目标硬件。
+自动测试检查参考程序，不给学员打分，也不证明画面、手感或目标硬件性能。真实执行结果与人工待验收项见[验证记录](../docs/validation.md)。

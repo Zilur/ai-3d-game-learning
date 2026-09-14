@@ -1,0 +1,69 @@
+name: Unified course validation
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: course-validation-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Validate unified content and resources
+        run: python3 tools/validate_repo.py
+      - name: Install pinned official Godot
+        run: python3 tools/install_godot_ci.py
+      - name: Import project
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --version
+          timeout 120 godot --headless --path game --editor --import 2>&1 | tee /tmp/import.log
+          if grep -Eq 'SCRIPT ERROR|Parse Error|ERROR:' /tmp/import.log; then exit 1; fi
+      - name: Run game and concept behavior tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 90 godot --headless --audio-driver Dummy --path game --fixed-fps 60 --script res://tests/smoke.gd 2>&1 | tee /tmp/smoke.log
+          if grep -Eq 'SCRIPT ERROR|Parse Error|ERROR:' /tmp/smoke.log; then exit 1; fi
+          grep -q 'SMOKE PASS:' /tmp/smoke.log
+      - name: Run B02 reference and fault tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60 godot --headless --audio-driver Dummy --path game --script res://tests/b02.gd 2>&1 | tee /tmp/b02.log
+          if grep -Eq 'SCRIPT ERROR|Parse Error|ERROR:' /tmp/b02.log; then exit 1; fi
+          grep -q 'B02 PASS:' /tmp/b02.log
+      - name: Open retained two-sphere material lab
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60 godot --headless --audio-driver Dummy --path game res://labs/material_lab.tscn --quit-after 4 2>&1 | tee /tmp/material.log
+          if grep -Eq 'SCRIPT ERROR|Parse Error|ERROR:' /tmp/material.log; then exit 1; fi
+  cleanup-consolidated-branches:
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[consolidate-course]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout complete merged history
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Delete only the two fully merged course branches
+        run: python3 tools/cleanup_merged_branches.py
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COURSE_CLEANUP_APPROVED: '1'
