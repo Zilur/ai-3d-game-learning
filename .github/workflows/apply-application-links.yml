@@ -1,0 +1,93 @@
+name: Apply authored scenario links
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: authored-application-publication
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: contains(github.event.head_commit.message, '[apply-application-links]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout exact authorized source commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: true
+      - name: Connect the authored scenario renderer with strict source anchors
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('tools/build_course_materials.py')
+          text = path.read_text(encoding='utf-8')
+          changes = [
+              ('import sys\n\nROOT =', 'import sys\nfrom scenario_sections import validate_scenarios, decorate_lesson, enrich_output\n\nROOT ='),
+              ('    return by_id\n', '    validate_scenarios(by_id)\n    return by_id\n'),
+              ("    return '\\n'.join(lines)\n", "    return decorate_lesson(row, '\\n'.join(lines), teacher)\n"),
+              ("    manifest = {'version':'v4'", "    enrich_output(output, by_id, ORDER)\n    manifest = {'version':'v5-application'"),
+          ]
+          if 'from scenario_sections import' not in text:
+              for old, new in changes:
+                  if text.count(old) != 1:
+                      raise SystemExit('Unexpected builder anchor: ' + repr(old))
+                  text = text.replace(old, new, 1)
+              path.write_text(text, encoding='utf-8')
+          PY
+      - name: Generate, verify reproducibility and run structural checks
+        run: |
+          set -euo pipefail
+          python3 tools/build_course_materials.py
+          python3 tools/build_course_materials.py --check
+          python3 tools/validate_repo.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          manifest = json.loads(Path('curriculum/materials-manifest.json').read_text())
+          ids = [row['id'] for row in manifest['units']]
+          assert len(ids) == 45
+          for ident in ids:
+              for folder in ('curriculum/lessons', 'openmaic/lessons'):
+                  text = Path(folder, ident + '.md').read_text()
+                  for marker in ('## 2A.', '## 8. 实际应用验收', '工作指令：', '必须保持：', '本课风险检查：', '```mermaid'):
+                      assert marker in text, (ident, marker)
+              student = Path('curriculum/lessons', ident + '.md').read_text()
+              assert '教师反馈与评分依据' not in student
+          print('APPLICATION OUTPUT PASS: 45 scenarios; 90 synchronized lesson files; K-only boundary retained')
+          PY
+      - name: Commit only allowed documentation and the reviewed builder hook
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          manifest = json.loads(Path('curriculum/materials-manifest.json').read_text())
+          allowed = set(manifest['sha256']) | {'curriculum/materials-manifest.json','tools/build_course_materials.py'}
+          tracked = subprocess.check_output(['git','diff','--name-only','-z']).decode().split('\0')
+          untracked = subprocess.check_output(['git','ls-files','--others','--exclude-standard','-z']).decode().split('\0')
+          changed = {p for p in tracked + untracked if p}
+          unexpected = changed - allowed
+          if unexpected or any(p.startswith(('game/','blender/','web/')) for p in changed):
+              raise SystemExit('Unexpected write scope: ' + repr(sorted(unexpected or changed)))
+          if changed:
+              subprocess.run(['git','add','--',*sorted(changed)], check=True)
+          print('Allowed outputs:', len(changed))
+          PY
+          if git diff --cached --quiet; then exit 0; fi
+          ACTUAL_HEAD=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [ "$ACTUAL_HEAD" != "$EXPECTED_HEAD" ]; then
+            echo 'main changed concurrently; stop without overwriting'
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs: apply 45 real-scene AI collaboration and acceptance cards to existing lessons'
+          git push origin HEAD:main
+          git rev-parse HEAD
