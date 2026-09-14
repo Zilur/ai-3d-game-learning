@@ -1,435 +1,59 @@
-# 学习路线图
-
-## 项目目标
-
-这不是传统的“先学完 Blender，再学 Godot”课程。
-
-课程围绕一个持续成长的真实项目推进：
-
-> **3D 星星收集 Demo → 可玩的中型 3D 原型**
-
-学习顺序遵循：
-
-**需求 → 必要概念 → 互动理解 → 真机实战 → 验收 → 常见坑 → 性能意识 → Git 留档**
-
----
-
-# 初级阶段：做出一个完整可玩的 3D Demo
-
-初级阶段的目标不是“学完 Godot / Blender”，而是建立完整的 3D 游戏开发闭环。
-
-## B01｜3D 空间与 Transform
-
-**实战结果：** 能在 Godot / Blender 中移动、旋转、缩放物体，并理解 Local / Global、Origin / Pivot。
-
-核心词：
-
-- X / Y / Z
-- Position
-- Rotation
-- Scale
-- Transform
-- Local / Global
-- Origin / Pivot
-- Apply Transform
-
-AI 时代重点：知道 AI 所说的“位置、朝向、轴、原点、局部坐标”具体对应什么。
-
----
-
-## B02｜Scene、Node 与灰盒场景
-
-**实战结果：** 用 Cube / Plane 搭出一个可以测试移动的灰盒关卡。
-
-核心词：
-
-- Scene
-- Node
-- Node3D
-- MeshInstance3D
-- Instance
-- Parent / Child
-- Graybox / Blockout
-- Grid / Snap
-
-AI 时代重点：能看懂 Godot 场景树，并判断一个功能应该属于哪个节点。
-
----
-
-## B03｜玩家走路与跑步
-
-**实战结果：** 玩家可以 WASD 移动、Shift 跑步。
-
-核心词：
-
-- CharacterBody3D
-- InputMap
-- Velocity
-- Speed
-- Delta Time
-- move_and_slide
-
-只需理解用途，不要求背 API。
-
----
-
-## B04｜碰撞与地面
-
-**实战结果：** 玩家不会穿墙或掉穿地面。
-
-核心词：
-
-- Collision
-- CollisionShape3D
-- StaticBody3D
-- Capsule / Box / Convex
-- Layer / Mask
-- Visual Mesh ≠ Collision Mesh
-
-性能重点：碰撞体应尽量简单，不要默认拿高模网格直接做复杂碰撞。
-
----
-
-## B05｜重力、跳跃、斜坡与楼梯
-
-**实战结果：** 玩家能稳定跳跃、落地、走斜坡。
-
-核心词：
-
-- Gravity
-- Grounded
-- Floor Normal
-- Slope
-- Step
-- Jump Velocity
-
-重点不是公式，而是知道常见手感问题来自哪里。
-
----
-
-## B06｜第三人称 Camera
-
-**实战结果：** 鼠标旋转镜头，镜头围绕玩家工作。
-
-核心词：
-
-- Camera3D
-- Pivot
-- FOV
-- Pitch / Yaw
-- Mouse Sensitivity
-- Spring Arm / Raycast 思路
-
-视觉重点：亲自拖动 FOV、距离、灵敏度来建立手感。
-
----
-
-## B07｜Blender：制作第一个游戏资产
-
-**实战结果：** 在 Blender 中制作一个简单低多边形星星。
-
-核心词：
-
-- Mesh
-- Vertex / Edge / Face
-- Edit Mode
-- Extrude
-- Bevel
-- Shade Smooth
-- Normal
-- Origin
-- Apply Scale
-
-重点：不是学习复杂建模，而是完成一个“能进入游戏”的资产。
-
----
-
-## B08｜PBR 材质与视觉参数
-
-**实战结果：** 星星具备金属感、粗糙度和自发光效果。
-
-核心词：
-
-- Material
-- Principled BSDF
-- Base Color
-- Metallic
-- Roughness
-- Normal Map
-- Emission
-
-互动重点：大量拖参数，看结果，不做图形学公式推导。
-
----
-
-## B09｜Blender → Godot 资产导入
-
-**实战结果：** GLB / glTF 资产正确进入 Godot。
-
-核心词：
-
-- GLB / glTF
-- Import
-- Scale
-- Orientation
-- Normal
-- UV
-- Material
-- Reimport
-
-外行高频坑：尺寸、坐标轴、Origin、未 Apply Transform、材质差异。
-
----
-
-## B10｜拾取星星
-
-**实战结果：** 玩家碰到星星后触发拾取。
-
-核心词：
-
-- Area3D
-- Signal
-- body_entered
-- Group
-- Queue Free
-- Trigger
-
-重点：理解“物理碰撞”和“触发区域”不是同一个用途。
-
----
-
-## B11｜反馈：音效、粒子、旋转、发光
-
-**实战结果：** 拾取开始有游戏感。
-
-核心词：
-
-- AudioStreamPlayer3D
-- GPUParticles3D
-- Tween
-- AnimationPlayer
-- Emission
-- Feedback / Juice
-
-重点：学习“动作发生后，玩家如何感知到”。
-
----
-
-## B12｜UI 与游戏完成条件
-
-**实战结果：** 显示 `3 / 10`，全部收集后显示完成。
-
-核心词：
-
-- Control
-- Label
-- HUD
-- Counter
-- Game State
-- Signal
-
----
-
-## B13｜基础灯光与 Environment
-
-**实战结果：** 灰盒场景第一次变得“像游戏”。
-
-核心词：
-
-- DirectionalLight3D
-- WorldEnvironment
-- Shadow
-- Ambient
-- Exposure
-- Fog
-- Tone Mapping
-
-视觉重点：自己拖动亮度、曝光、雾和颜色。
-
----
-
-## B14｜第一次性能体检
-
-**实战结果：** 会看性能数据，而不是只凭感觉。
-
-核心词：
-
-- FPS
-- Frame Time
-- Draw Call
-- Triangle
-- VRAM
-- Profiler
-- LOD
-- Occlusion
-- Instancing
-
-初级验收：知道“哪里贵”，不要求立即掌握所有优化技术。
-
----
-
-## B15｜Debug：故意把项目搞坏
-
-**实战结果：** 能定位问题属于模型、材质、碰撞、脚本、灯光还是导入。
-
-练习：
-
-- Scale 异常
-- Origin 偏移
-- Collision Layer 错误
-- Signal 没连接
-- Normal 异常
-- 材质过亮
-- Camera 穿墙
-
----
-
-## B16｜综合挑战
-
-在不照抄教程的前提下，新增一种拾取物，例如：
-
-- 蓝色能量球
-- 钥匙
-- 金币
-- 临时加速道具
-
-需要自己决定：
-
-- 使用什么节点
-- 使用什么材质参数
-- 是否需要 Area3D
-- 如何给玩家反馈
-- 是否存在性能风险
-
-完成后，初级阶段结束。
-
----
-
-# 中级阶段：从 Demo 走向真正的小型 3D 游戏
-
-## I01｜角色模型、骨骼与蒙皮
-
-- Armature
-- Bone
-- Rig
-- Skin
-- Weight
-- Skeleton3D
-
-目标：能使用现成角色，并理解 AI / 资产库返回的角色是否可用。
-
-## I02｜动画状态系统
-
-- Idle / Walk / Run / Jump
-- AnimationPlayer
-- AnimationTree
-- Blend
-- State Machine
-- Root Motion（先理解用途）
-
-## I03｜可复用场景与组件化思维
-
-- PackedScene
-- Resource
-- Composition
-- Signal
-- Interface 思维
-
-目标：不把整个游戏写成一团脚本。
-
-## I04｜门、机关、移动平台、陷阱
-
-- Trigger
-- State
-- Tween
-- RayCast
-- Layer / Mask
-
-## I05｜模块化环境资产
-
-- Modular Asset
-- Grid
-- Snap
-- Texel Density
-- Decal
-- Trim Sheet（理解用途即可）
-
-## I06｜更完整的光照与画面
-
-- Key / Fill / Rim
-- GI
-- Lightmap
-- AO
-- Reflection
-- Tone Mapping
-
-## I07｜大场景与性能
-
-- LOD / HLOD
-- Occlusion Culling
-- Instancing
-- MultiMesh
-- Shadow Cost
-- Transparency Cost
-- Streaming 思维
-
-## I08｜导航与简单敌人
-
-- NavigationMesh
-- NavigationAgent3D
-- Detection
-- State Machine
-- Chase / Patrol
-
-## I09｜基础交互系统
-
-- Interaction Raycast
-- Prompt
-- Item Data
-- Inventory 基础
-
-## I10｜存档、设置、输入映射
-
-- Save Data
-- Config
-- Input Remap
-- Audio Bus
-- Graphics Settings
-
-## I11｜工程质量与发布
-
-- Git 分支
-- Debug Build
-- Release Build
-- Export
-- Profiling
-- Asset License
-- Target Hardware
-
-## I12｜中级综合项目
-
-将星星收集 Demo 扩展成一个 10–20 分钟可完成的小型 3D 游戏原型。
-
-至少包含：
-
-- 正式角色
-- 动画
-- 一个简单敌人或机关系统
-- 一个完整目标
-- UI / 音效 / 视觉反馈
-- 一轮性能检查
-- 可导出的可玩版本
-
----
-
-# 学习完成的判断标准
-
-不是“看完多少课程”，而是是否具备以下能力：
-
-1. 能把玩法拆成节点、资产、数据、状态和反馈。
-2. 能使用专业关键词向 AI 描述需求。
-3. 能在 Inspector / Blender 面板里亲自调整关键参数。
-4. 能看出 AI 结果明显哪里不对。
-5. 遇到问题时，能先判断问题属于哪一类。
-6. 在添加视觉效果前，会想到性能成本。
-7. 知道什么时候应该继续让 AI 做，什么时候必须自己做审美或工程判断。
+# 学习路线：先做会，再解释，再迁移
+
+初级目标：一个能走跑跳、拾取和重开的星星 Demo。中级目标：选择一条扩展线，做成可验收的小型原型。不要把中级所有功能都塞进初级项目。
+
+每课的详细任务见 [初级实验手册](beginner/lesson-playbook.md) 和 [中级设计手册](intermediate/lesson-playbook.md)。所有 C/K 编号见 [概念地图](concept-map.md)。
+
+## 初级 B01–B16
+
+| 课 | 实际产物 | 本课新增必须掌握 | 旧概念复现 | 过关证据 |
+|---|---|---|---|---|
+| B01 空间 | 可调对象和门轴实验 | C01/C02/C03，分微单元 | 无 | 独立预测方向，门轴对照，换尺寸重做 |
+| B02 场景 | 灰盒场景树 | C04/C20 | C01/C02 | 解释节点职责，保存/恢复一次基线 |
+| B03 移动 | 走与跑 | C07 | C01/C02 | 同时间位移、对角线、参数 A/B |
+| B04 碰撞 | 地面和墙可阻挡 | C05/C06 | C04 | 隐藏外观仍阻挡；错误 mask 可定位 |
+| B05 跳跃 | 跳、落地、坡面 | C08 | C05/C07 | 不能空中无限跳；斜坡与台阶边界 |
+| B06 相机 | 第三人称观察 | C09 | C02/C08 | 改 FOV 不冒充移动相机；近墙测试 |
+| B07 星星资产 | 简单模型源文件 | C10/C11 初识 | C01/C03 | 尺度/原点/法线/轮廓检查 |
+| B08 材质 | 参数实验与三种表面 | C12/C13/C14 初识 | C10 | 控制变量，区分金属/粗糙/发光 |
+| B09 导入 | 可重导入游戏资产 | C11/C14 实操 | C01/C03/C20 | 导入—修改—重导，逻辑仍在 |
+| B10 拾取 | 一次性 Area 拾取 | C15 | C05/C06/C04 | 重复回调不重复计数 |
+| B11 反馈 | 不依赖单一感官的反馈 | C17 | C13/C15 | 删除拾取物后反馈仍完整 |
+| B12 状态与 UI | 计数、完成、重新开始 | C16 | C15/C17 | 0、最后一个、重开三种状态正确 |
+| B13 画面 | 可读的小场景 | C18 | C09/C12/C13 | 同机 A/B，能指出目标与路径 |
+| B14 性能 | 基线与一次优化报告 | C19 | C07/C18 | 同条件帧时间，不拿单帧当结论 |
+| B15 排错 | 可复現 bug 报告 | C20 综合 | C01/C05/C06/C11/C15 | 两个假设、一个最小实验、回归 |
+| B16 迁移 | 新拾取物与小关卡 | C01–C20 综合 | 延迟复测薄弱项 | 不照抄答案，做完并说明取舍 |
+
+B03 练习使用已经提供地面/碰撞的示例，不要求学会走路之前先学完整物理。B04 才解释这些预置内容。脚手架的存在必须明说。
+
+## 中级 I01–I12
+
+| 课 | 实际产物 | 必须掌握/复现 | 应该了解 | 验收重点 |
+|---|---|---|---|---|
+| I01 角色 | 现成角色替换胶囊外观 | C21、C11 | K08 | 碰撞不随外观绑错，比例正确 |
+| I02 动画 | Idle/Walk/Run/Jump 过渡 | C21、C08 | K08 | 状态与速度一致，不双重驱动位移 |
+| I03 复用 | 拾取物配置与场景复用 | C22、C04/C15 | K04 | 实例与共享资源的边界 |
+| I04 机关 | 一个有状态的门或平台 | C23、C03/C06 | K03 | 重入、重开、阻挡与角色搭乘 |
+| I05 模块资产 | 小型拼装关卡 | C23、C11/C14 | K07 | 尺度、接缝、碰撞和清晰度一致 |
+| I06 光照 | 一种可解释的光照方案 | C18/C13/C19 | K05/K10 | 功能支持和成本先于效果堆叠 |
+| I07 性能 | 重复资产的优化对照 | C26、C19 | K06/K09 | 测到收益，同时验证裁剪/视觉副作用 |
+| I08 导航 | 简单巡逻或跟随 | C24、C05 | K03 | 无路可走、障碍变化、失败处理 |
+| I09 交互 | 看向目标再交互 | C22/C23/C24 | K11 | 焦点、提示、距离和重复输入 |
+| I10 设置存档 | 可保存设置与进度 | C25、C16 | K12 | 损坏/旧版/缺失存档与输入重映射 |
+| I11 发布 | 可复现的发布包 | C25/C20/C19 | K12 | 非开发机、无密钥、素材授权、性能记录 |
+| I12 综合 | 一条完整小型体验 | C21–C26 按选题 | 不扩新术语 | 目标—游玩—失败—重来—结束闭环 |
+
+I12 可选“动画角色 + 机关”或“导航 + 交互”。没有进入选题的中级 M，记为“未考核”，不要拿一个总分冒充全部掌握。
+
+## 四个关卡，而不是看课进度条
+
+G1（B01–B06）：能操控和观察空间，证明碰撞与跳跃正常。
+
+G2（B07–B10）：资产可重复导入，材质可解释，拾取只发生一次。
+
+G3（B11–B16）：反馈与状态正确，测过性能，能迁移和回退。
+
+G4（I12）：按选题提交可玩构建、证据和限制说明。
+
+所有关卡必须补做延迟题；具体判定见 [掌握规则](../assessment/mastery-policy.md)。完成日期因人而异，不以固定小时数或连续打卡量判定。

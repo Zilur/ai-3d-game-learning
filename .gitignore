@@ -1,23 +1,31 @@
-# Godot
+# Godot caches and exported builds; keep source assets and .uid files
 .godot/
 .export/
 export.cfg
+builds/
 
-# Blender backup / temp files
+# Blender backups
 *.blend1
 *.blend2
 *.blend@
 *.blend~
 
-# OS
+# Secrets and local-only learner evidence
+.env
+.env.*
+!.env.example
+server-providers.yml
+local-evidence/
+private/
+
+# Python, OS, editor temporary files
+__pycache__/
+*.pyc
+.venv/
 .DS_Store
 Thumbs.db
-
-# Editors
 .vscode/
 .idea/
-
-# Logs / temp
 *.log
 *.tmp
 *.temp

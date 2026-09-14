@@ -1,0 +1,48 @@
+name: Course and Godot validation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate links, coverage, source syntax, scene references and mesh
+        run: python3 tools/validate_course.py
+      - name: Install pinned official Godot with SHA-256 verification
+        run: python3 tools/install_godot_ci.py
+      - name: Import Godot project
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --version
+          timeout 120 godot --headless --path game --editor --import 2>&1 | tee /tmp/godot-import.log
+          if grep -Eq 'SCRIPT ERROR|Parse Error|ERROR:' /tmp/godot-import.log; then
+            echo 'Godot import reported errors'
+            exit 1
+          fi
+      - name: Run headless behavior tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 90 godot --headless --audio-driver Dummy --path game --fixed-fps 60 --script res://tests/smoke.gd 2>&1 | tee /tmp/godot-smoke.log
+          if grep -Eq 'SCRIPT ERROR|Parse Error|ERROR:' /tmp/godot-smoke.log; then
+            echo 'Godot behavior tests reported errors'
+            exit 1
+          fi
+          grep -q 'SMOKE PASS:' /tmp/godot-smoke.log
