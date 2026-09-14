@@ -1,0 +1,27 @@
+# Engine caches / generated local exports
+.godot/
+.export/
+build/
+exports/
+export_credentials.cfg
+# Keep project.godot, .tscn, .tres, .gd and .uid files.
+# Secrets: never commit provider config with keys.
+.env
+.env.*
+!.env.example
+server-providers.yml
+# Local evidence / personal notes
+local-notes/
+*.log
+*.tmp
+__pycache__/
+*.pyc
+# Blender backups, not source .blend assets
+*.blend1
+*.blend2
+*.blend@
+*.blend~
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
