@@ -2,19 +2,41 @@
 
 版本：Interactive Mastery v2。记录日期：2026-09-14。
 
+## 已执行的自动验证
+
+[GitHub Actions 成功运行 #3](https://github.com/Zilur/ai-3d-game-learning/actions/runs/34806032078)，对应代码提交 `a8e2c166949d7d1dd021303dc2476f5acd1d2136`。环境：Ubuntu 24.04，官方 Godot `4.7.2.stable.official.ed1daf0bf`；下载包依据官方发行元数据做SHA-256校验。
+
+日志结果：
+
+```text
+OBJ: 22 vertices, 40 triangles, signed volume 0.054076249
+COURSE VALIDATION PASS: 138 checks, 90 unique questions
+SMOKE PASS: 50 assertions
+```
+
+这50条是无图形界面的程序断言，不是50位学习者通过，也不是所有画面/手感已经验收。后续改动应重新看对应提交的CI，不把这次成功自动套用到未来版本。
+
 ## 必须分别报告的状态
 
 | 检查层 | 本版提供的检查 | 当前证据状态 |
 |---|---|---|
-| 课程与文件 | 90题唯一ID、26组P/R/T、12道K、课程覆盖、Markdown本地链接 | 已提供自动检查；以本PR的CI结果为准，不把脚本存在当已通过 |
-| 资源 | 场景资源路径、load_steps、Python语法、星星闭合网格 | 星星几何已单独计算：22顶点/40三角形，正有向体积约0.054076；全仓库检查见CI |
-| Godot运行 | 真实导入、移动/跳跃/墙碰撞、Area层检测、重复拾取、0/1边界、三次重开、实验变换 | 已提供固定4.7.2的headless测试；执行结果以CI运行日志为准 |
+| 课程与文件 | 90题唯一ID、26组P/R/T、12道K、课程覆盖、Markdown本地链接 | 通过上述CI；全仓库内容/资源合计138项检查 |
+| 资源 | 场景资源路径、load_steps、Python语法、星星闭合网格 | 通过；22顶点/40三角形、边的闭合性与正有向体积已检查 |
+| Godot运行 | 真实导入、移动/跳跃/墙碰撞、Area层检测、重复拾取、0/1边界、三次重开、实验变换 | 官方4.7.2导入通过；50条headless行为断言通过 |
 | 视觉与手感 | 三种实验显示、控件位置、近墙镜头、可读性与参数A/B | 待真实图形界面人工验收 |
 | Blender | 脚本执行、保存.blend、选中对象导出GLB、修改后重导 | 待本机执行；Python语法检查不等于Blender验证 |
 | OpenMAIC | 新四份输入生成并逐项测试 | v1 B01收到正面体验反馈；本版未调用服务生成新课 |
 | 学习效果 | 首次独立作答、实操、迁移与延迟复测 | 待试学；不能从喜欢课堂推断掌握率 |
 
-编辑环境没有预装Godot/Blender，不能在该环境声称已经实测视觉或导出。GitHub Actions若可运行，会按工作流下载固定官方Godot并校验摘要；状态必须读取真实结果再更新。
+编写环境没有预装Godot/Blender；引擎测试实际通过GitHub Actions运行。没有声称在编写环境完成视觉、鼠标手感或Blender导出测试。
+
+## 一次真实的“AI输出→测试→修复”
+
+[第一轮运行](https://github.com/Zilur/ai-3d-game-learning/actions/runs/34805893260)的课程检查通过，但Godot导入报错：`Input.release_pressed_events()`不存在，行为测试因此没有运行。修复为对本项目输入Action调用官方支持的 `Input.action_release()` 后重新执行，导入和行为测试通过。
+
+查证：[Godot Input 文档](https://docs.godotengine.org/en/stable/classes/class_input.html)。不要因为函数名看起来合理就信任AI；也不要只改测试让错误消失。
+
+另修正了实验按钮移动后位置滑块未同步的问题。程序测试覆盖实际空间变换；界面显示位置和使用体验仍需下面的人工验收。
 
 ## 本地重现自动测试
 
