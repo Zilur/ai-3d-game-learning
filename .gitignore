@@ -1,0 +1,23 @@
+# Godot
+.godot/
+.export/
+export.cfg
+
+# Blender backup / temp files
+*.blend1
+*.blend2
+*.blend@
+*.blend~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+
+# Logs / temp
+*.log
+*.tmp
+*.temp
