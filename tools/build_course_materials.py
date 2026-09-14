@@ -72,7 +72,7 @@ def make_lesson(row, sources, teacher):
         '状态：课件正文与互动规格已编写；尚未逐课生成OpenMAIC课堂或试教。', '',
         '## 1. 本课任务卡', '', f"**产出：** {row['goal']}",
         f"**前置：** {', '.join(row['prereq']) or '无'}；**对应概念：** {row['concepts']}。",
-        '**预计课堂：** 20–30分钟，可在实验前后暂停；不含后续真实软件制作时间。',
+        '**预计课堂：** ' + ('5–10分钟的认识讨论，可选。' if ident == 'A05' else '20–30分钟，可在实验前后暂停；不含后续真实软件制作时间。'),
         '**M 必须掌握：**', bullets(row['m']) if row['m'] else '无。本课全为K认识选修，不进入单机毕业细考。',
         '**K 理解即可：**', bullets(row['k']), f"**停止线：** {row['stop']}", '',
         '## 2. 必要讲解：先看现象，再给术语', '', '\n\n'.join(row['body']), '',
@@ -83,7 +83,7 @@ def make_lesson(row, sources, teacher):
         '**实验步骤：**', '\n'.join(f'{i+1}. {s}' for i,s in enumerate(row['steps'])),
         f"**预期反馈：** {row['feedback']}", f"**故障或反例：** {row['failure']}", f"**复位：** {row['reset']}",
         '**无图/无3D替代：** 用原创简单形状、状态卡或给定时间序列表达同一因果关系；标明“示意”，不得把预设结果说成Godot/Blender实测。不能以假按钮或不响应的截图代替交互。',
-        '**完成判据：** 学员至少进行一次参数或条件改变、指出结果、恢复状态；M课再完成一个故障或变式。A05只做用途识别，不强制实操。', '',
+        '**完成判据：** ' + ('只做用途识别，不强制实操、诊断或迁移。' if ident == 'A05' else '对本课两项M提供操作或判断及解释；一个实验可覆盖多项。只有关键M或发现薄弱处才追加故障/变式，不为每个术语加作业。'), '',
         '## 5. 小结与必须牢记', '', bullets(row['remember']), '',
         '## 6. 训练：先作答，再看反馈', '',
         'P=预测，D=诊断，T=迁移，K=用途认识。下面是候选训练，不是每个词都做四次作业。课堂先用预测和一个操作，重点未达标再选D或T；延迟复测换对象，不重复抄答案。', '']
@@ -169,7 +169,7 @@ def generated(lessons, sources, by_id):
     output['curriculum/beginner/01-3d-space/openmaic-spec.md'] = '# B01统一入口\n\n新版使用 [B01A完整生成规格](../../../openmaic/lessons/B01A.md) 和 [B01B完整生成规格](../../../openmaic/lessons/B01B.md)。每次复制一份全文，不再使用旧版一次讲完的长规格。历史文本保留在Git历史，避免并列不同要求。\n'
     output['curriculum/workshop-recipes.md'] = '# 工作坊规格已并入统一单课\n\n[B04碰撞](../openmaic/lessons/B04.md) · [B08材质](../openmaic/lessons/B08.md) · [B10事件](../openmaic/lessons/B10.md)。三份均含完整讲解、控件、故障、题目和教师反馈。\n\n既有game工程保留，新的逐课素材和起始/完成工程依照用户安排在课件之后完善。不能把生成输入称为已运行课堂。\n'
     # Other old requirement links remain valid but cannot compete with the canonical input.
-    for path in (ROOT / 'openmaic/requirements').glob('*.md'):
+    for path in sorted((ROOT / 'openmaic/requirements').glob('*.md')):
         ident = path.stem.split('-')[0]
         key = path.relative_to(ROOT).as_posix()
         if key not in output and ident in by_id:
