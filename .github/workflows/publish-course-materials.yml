@@ -1,0 +1,69 @@
+name: Publish authored course Markdown
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: authored-course-publication
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: contains(github.event.head_commit.message, '[publish-course-md]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout authorized authored content
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: true
+      - name: Copy pinned official Skill reference without executing it
+        run: python3 tools/vendor_openmaic.py
+      - name: Expand authored lessons and verify reproducibility
+        run: |
+          set -euo pipefail
+          python3 tools/build_course_materials.py
+          python3 tools/build_course_materials.py --check
+          python3 tools/validate_repo.py
+      - name: Commit only the approved Markdown and reference outputs
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          import subprocess
+          manifest = json.loads(Path('curriculum/materials-manifest.json').read_text())
+          allowed = set(manifest['sha256']) | {'curriculum/materials-manifest.json'}
+          vendor = Path('openmaic/vendor/THU-MAIC-OpenMAIC')
+          allowed |= {p.as_posix() for p in vendor.rglob('*') if p.is_file()}
+          tracked = subprocess.check_output(['git','diff','--name-only','-z']).decode().split('\0')
+          untracked = subprocess.check_output(['git','ls-files','--others','--exclude-standard','-z']).decode().split('\0')
+          changed = {p for p in tracked + untracked if p}
+          unexpected = changed - allowed
+          if unexpected:
+              raise SystemExit('Refusing unexpected writes: ' + ', '.join(sorted(unexpected)))
+          if any(p.startswith(('game/','blender/','web/')) for p in changed):
+              raise SystemExit('Runtime files must not change in the manuscript stage')
+          if changed:
+              subprocess.run(['git','add','--',*sorted(changed)],check=True)
+          print(f'Approved {len(changed)} documentation/reference outputs; runtime unchanged')
+          PY
+          if git diff --cached --quiet; then
+            echo 'No generated content changed'
+            exit 0
+          fi
+          ACTUAL_HEAD=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [ "$ACTUAL_HEAD" != "$EXPECTED_HEAD" ]; then
+            echo 'main changed concurrently; refusing to overwrite it'
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs: publish 45 authored lesson manuscripts, art learning path and pinned OpenMAIC references'
+          git push origin HEAD:main
+          git rev-parse HEAD
