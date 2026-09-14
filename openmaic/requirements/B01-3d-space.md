@@ -1,177 +1,21 @@
-# OpenMAIC Generation Requirement — B01 3D 空间与 Transform
+# OpenMAIC输入 · B01 v2
 
-请生成一节中文沉浸式互动课堂，主题为：
+请为中文3D初学者生成一堂“先预测、再操作、最后迁移”的互动课。学习者会借助AI编程，没有3D美术基础。目标是能判断与调参数，不是背API。
 
-> **3D 空间与 Transform：第一次真正看懂 Position、Rotation、Scale、Local/Global 与 Pivot**
+先只生成B01A：坐标轴与Position/Rotation/Scale。B01B（父子空间与门轴）做独立后续段落，允许跳过稍后再学。每段新增概念不超过约4个。不讲软件历史、矩阵乘法或四元数推导。
 
-## 学习者
+必须掌握C01/C02：Godot以Y向上；Blender以Z向上。屏幕方向不是世界方向；Scale是倍数，Scale=1不代表1米。Object变换不同于Edit Mode改网格。应该了解：Gizmo和Transform术语用途。
 
-学习者没有 3D 美术背景，但会使用 AI 辅助编程，目标是使用 Godot 4 + Blender + AI 开发 3D 游戏。
+B01A互动：一个带方向箭头的盒子，XYZ同时用文字标记，Position -5…5、Rotation -180…180度、Scale 0.2…3的滑块和数值输入、Reset。用户先写预测，再动一个参数，显示数值和画面对应；不可只做播放动画。每次只改一个变量，相机固定以免混淆。
 
-本课不是数学课，也不是软件功能百科。
+C02-P题：模型宽2，Scale X=3且无父级缩放，多宽？先等待作答，再给结论6与条件；追问Scale=1是不是1米。
 
-核心目标是让学习者：
+B01B必须掌握C03/C04。一个旋转父节点和一个可旋转子物体，同时显示position（相对父节点）与global_position。分别提供“沿父X+1”“沿自身X+1”“沿世界X+1”。不能把所有Local语义合并。父只平移(5,0,0)、子(2,0,0)时世界是(7,0,0)；父旋转后需要先变换偏移。Local Gizmo不自动改变Inspector字段语义。
 
-- 能看懂常见 3D 空间术语
-- 能亲自拖动关键参数观察效果
-- 能判断简单的空间 / Transform 问题
-- 能使用正确专业词向 AI 描述问题
-- 学完后立刻去 Godot / Blender 完成真机练习
+门轴互动：门关闭覆盖x=0…2，高2；中心轴x=1/铰链轴x=0，初始几何保持相同，角度0…120°。先预测不动的点，再验证。工具Pivot和对象Origin不同；改变3D光标Pivot不等于改好导出门轴。迁移题：为什么风车适合中心轴，门却不是？
 
-## 必须覆盖的核心词
+AI老师首次作答前不透露答案；AI同学最多提两个针对误解的问题。评分必须看结论、理由和验证，不按关键词打分。答错先给定位提示，再给局部例子，不立刻贴满屏答案。
 
-只重点教授以下概念：
+课程结束交付Godot练习：一个盒子的TRS三组对照、父子坐标对照、Hinge父节点加偏移门Mesh。用户必须提交参数与解释，不能看完就宣称掌握。
 
-- X / Y / Z Axis
-- Position
-- Rotation
-- Scale
-- Transform
-- Local Space
-- Global / World Space
-- Origin / Pivot
-
-补充认识：
-
-- Gizmo
-- Translation
-- Apply Transform
-
-不要深入：
-
-- Transform Matrix
-- Quaternion
-- 欧拉角数学推导
-- 三角函数
-- Godot Transform3D API 完整接口
-
-## 教学风格
-
-请遵循：
-
-**先看到效果 → 再给名字 → 亲自操作 → 看错误案例 → 判断问题 → 去真实软件实战**
-
-不要用大量幻灯片讲定义。
-
-减少文字，优先使用互动 3D 可视化、滑块、开关、对比状态和场景题。
-
-## 必须包含的互动场景
-
-### 1. Transform 三连演示
-
-显示 Cube：
-
-- 从左移动到右
-- 旋转约 45°
-- 沿 Y 轴拉高
-
-先让学习者判断三次变化分别属于 Position、Rotation 还是 Scale，再解释术语。
-
-### 2. X / Y / Z 可视化
-
-提供可旋转视角的 3D 场景和清晰坐标轴。
-
-点击或操作 X / Y / Z 时让 Cube 沿对应轴移动，并同步显示 Position 数值。
-
-### 3. Position / Rotation / Scale 参数实验
-
-给 Cube 提供即时滑块：
-
-- Position X/Y/Z
-- Rotation X/Y/Z
-- Scale X/Y/Z
-
-提供 Reset。
-
-让学习者完成：
-
-- 把 Cube 移到右上方
-- 绕竖直方向旋转约 45°
-- 把 Cube 拉成长方体
-
-### 4. Local vs Global
-
-不要使用对称球体，使用有明显朝向的箭头、汽车或机器人。
-
-先将对象旋转约 45°，然后允许切换 Local / Global Gizmo。
-
-让学习者观察：
-
-- Global 轴保持世界方向
-- Local 轴随对象旋转
-
-提出判断题：
-
-“一辆已经转弯的汽车继续沿自己的车头方向前进，更接近 Local 还是 Global？”
-
-### 5. Origin / Pivot 门轴实验
-
-使用一扇简单门。
-
-两个状态：
-
-- Pivot 在门中心
-- Pivot 在门侧边铰链
-
-播放同样的 90° Rotation，让学习者直接比较。
-
-必须总结：
-
-“很多看起来像动画或代码问题的 Bug，其实只是 Pivot / Origin 放错了。”
-
-### 6. 错误诊断小游戏
-
-至少包含：
-
-- 模型大 100 倍 → 优先想到 Scale / 单位 / 导入
-- 门绕中心旋转 → Pivot / Origin
-- 已转向角色却沿世界固定方向移动 → Local / Global
-- 只是想移动物体却去改 Mesh 顶点 → Object Transform 与 Mesh 编辑混淆
-
-## Quiz
-
-6–8 题即可。
-
-不要主要考定义，要考场景判断。
-
-至少两题为开放题，可由 AI 老师评分：
-
-1. Blender 中模型看起来正常，但进入游戏后尺寸异常，你首先会检查哪些事情？
-2. AI 建议“把 Scale 设成 100 就能解决模型太小”，你会直接接受吗？请说明你还应该检查什么。
-
-## AI 同学
-
-AI 同学最多主动插话两次，且必须提出真正有价值的新手问题：
-
-1. “Position 和在 Blender Edit Mode 里移动顶点，不都是移动吗？”
-2. “Pivot 让 AI 帮我改不就行了吗，我为什么还要懂？”
-
-老师回答时强调“识别问题类别与验收 AI 结果”的能力。
-
-## 本课结束页
-
-不要继续扩展理论。
-
-明确布置两个真实软件任务：
-
-### Godot 4
-
-创建 Node3D + MeshInstance3D(Cube)，在 Inspector 修改 Position / Rotation / Scale，并观察 3D Gizmo。
-
-### Blender
-
-使用默认 Cube，在 Transform 面板重复 Position / Rotation / Scale 操作；观察 Object Origin 与旋转中心的关系。
-
-最后提醒：
-
-> OpenMAIC 负责理解和互动，真正的游戏开发能力必须在 Godot 与 Blender 中完成。
-
-## 最终验收
-
-学习者应能自然说出类似：
-
-- “这个 Mesh 可能没问题，更像是 Transform 或导入 Scale 有问题。”
-- “门的 Rotation 没问题，但 Pivot 在中心，所以转法不对。”
-- “角色转向后如果沿自己的前方移动，我需要确认使用 Local 方向，而不是固定 Global 方向。”
-
-课程整体控制在 30–45 分钟的学习量，不要为了完整而加入高级数学内容。
+生成验收：滑块可操作、有Reset、有数值、有坐标约定、首次答案隐藏、至少一个迁移题。若互动能力不足，要明确标注并提供真机练习，不用静态PPT冒充。网页内容是教学演示，不是假装运行Godot。

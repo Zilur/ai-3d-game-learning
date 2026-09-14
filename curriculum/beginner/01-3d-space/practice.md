@@ -1,179 +1,45 @@
-# B01 真机练习｜3D 空间与 Transform
+# B01 · 真机练习与证据
 
-> 目标：把 OpenMAIC 里看到的概念，在真实 Godot / Blender 中亲手做一遍。
+先完成A；初学时可把B/C留到B06之前。不开复杂游戏系统，不要求手写完整脚本。
 
-本练习不要求写复杂代码。
+## A：一个可看见的盒子
 
----
+新建Node3D，子节点MeshInstance3D使用BoxMesh，默认边长1；加DirectionalLight3D。Camera3D位置(4,3,6)，可在视口对准模型后使用“将相机对齐到视图”的菜单。运行前确认Camera current已启用。不要把编辑器看得见当成运行相机一定看得见。
 
-# Part A｜Godot 4
+保存 `transform_practice.tscn`，F6运行。停下后选盒子：Position X从0到2；恢复；Rotation Y从0°到45°；恢复；Scale Y从1到2。每次写“预计改变什么/什么不会变”。
 
-## 任务 1：创建最小 3D 场景
+**验收：** 能自己重置并完成三种不同目标；指出屏幕方向与世界方向的区别。这里只改视觉盒子，不通过缩放角色物理体示范。
 
-创建：
+## B：父子关系的数值证据
 
-```text
-Node3D
-├── MeshInstance3D   # BoxMesh
-├── Camera3D
-└── DirectionalLight3D
-```
+创建Parent(Node3D)及其子Cube(MeshInstance3D)。Parent位置(5,0,0)，Cube位置(2,0,0)。运行时用Remote Inspector或临时打印查看 `global_position`，应为(7,0,0)。
 
-要求：运行后能看见 Cube。
+将Parent绕Y旋转90°再测。现在子节点position仍可为(2,0,0)，世界结果却改变。请先预测再查看，不要求背旋转矩阵。
 
-## 任务 2：只改 Transform
+选择子物体，比较世界/局部Gizmo；注意position仍表示相对父节点。额外给子物体Y旋转45°，分别沿父轴、世界轴、自身轴移动，参考网页实验的三种按钮。
 
-选中 Cube，在 Inspector 中依次修改：
+**验收：** 新父节点位置/旋转下仍能解释差异，不能只背“Local跟着转”。
 
-- Position X
-- Position Y
-- Position Z
-- Rotation Y
-- Scale X
-- Scale Y
-- Scale Z
+## C：门与风车
 
-每次只改一个参数，观察结果。
+Node3D命名Hinge，门Mesh为其子节点。BoxMesh尺寸(2,2,0.2)，门相对Hinge位置(1,1,0)。旋转Hinge的Y角度0→90°，观察左边缘不动。
 
-不要一次乱改所有值。
+中心轴版本：轴节点位置(1,0,0)，门相对位置(0,1,0)，保持关闭时几何和前一个版本重合。比较轨迹。不要用同时平移整扇门制造“支点效果”。
 
-## 任务 3：建立三个明显状态
+**迁移：** 设计风车，说明为什么中心轴反而合理。
 
-让 Cube 依次变成：
+## D：Blender对照（本课选做，B07前完成）
 
-1. 位于原点附近的正常 Cube
-2. 向右移动、旋转 45° 的 Cube
-3. 一个很高、很窄的长方体
+保存新文件后，在Object Mode移动默认Cube；重置。再在Edit Mode全选顶点移动，返回Object Mode观察Location与Origin。两种操作看似都移动了几何，但相对对象基准的关系不同。
 
-重点不是记数值，而是能判断该改哪个属性。
+临时把工具Pivot设为3D Cursor，和真正调整Object Origin对照。不要对有绑定/动画的角色实验Apply All；静态小资产也只应用确认需要的变换。
 
-## 任务 4：观察 Local / Global Gizmo
+## 出错先查
 
-将 Cube 旋转约 45°。
+看不见：运行相机/位置/朝向/裁剪/可见性；世界位置不对：父节点、top_level和坐标空间；门轴不对：轴节点与几何相对偏移。不要先要求AI重做整个场景。
 
-切换局部 / 全局坐标操作方式，观察 Gizmo 方向是否跟随物体。
+## 提交证据
 
-用自己的话回答：
+课号、概念ID、Godot版本、预测、三组参数、一个错误及恢复过程、一条新情境解释。用[学习日志](../../../assessments/learning-log.md)。示例提交信息：`practice: verify transform and hinge invariants`。
 
-> 为什么一个已经转弯的角色如果继续沿“自己的前方”走，Local 思维会更自然？
-
----
-
-# Part B｜Blender
-
-## 任务 1：使用默认 Cube
-
-不要删除默认 Cube。
-
-打开 Transform 面板，分别修改：
-
-- Location
-- Rotation
-- Scale
-
-观察 Blender 中的术语和 Godot 的对应关系：
-
-| Blender | Godot | 人话 |
-|---|---|---|
-| Location | Position | 在哪里 |
-| Rotation | Rotation | 朝向 / 旋转 |
-| Scale | Scale | 相对大小 |
-
-## 任务 2：Object Transform vs Edit Mode
-
-做两次实验：
-
-### A
-
-Object Mode 中移动整个 Cube。
-
-### B
-
-恢复后进入 Edit Mode，全选顶点，再移动 Mesh。
-
-观察两种情况下：
-
-- 可见模型位置
-- Object Origin
-- Transform 数值
-
-然后回答：
-
-> “移动对象”和“移动对象内部的 Mesh 顶点”为什么不是一回事？
-
-## 任务 3：Pivot / Origin
-
-创建一个长方体，想象它是一扇门。
-
-先让 Origin 保持在中心并旋转。
-
-然后尝试把 Origin / 几何关系调整到更像“门铰链”的位置，再旋转。
-
-只需要看到明显区别，不要求掌握所有 Origin 工具。
-
----
-
-# Part C｜故意搞坏
-
-## 实验 1：夸张 Scale
-
-把 Cube 的某个轴 Scale 改成 10 或 100。
-
-观察：
-
-- 视觉上发生什么
-- 相机是否还舒服
-- 如果以后有碰撞，可能出现什么连锁问题
-
-恢复正常。
-
-## 实验 2：错误 Pivot
-
-让“门”围绕错误位置旋转。
-
-看到症状后，不要第一反应怀疑动画代码。
-
-先说出：
-
-> “我应该检查 Origin / Pivot。”
-
----
-
-# Part D｜和 AI 沟通
-
-尝试用下面这种方式描述问题，而不是只说“它不对”：
-
-```text
-我在 Godot 4 中有一个 MeshInstance3D。
-Mesh 外观看起来正常，但物体尺寸明显异常。
-请优先帮我检查 Transform / Scale / 导入尺寸相关原因，
-不要先建议我重新建模。
-```
-
-再尝试描述门的问题：
-
-```text
-这扇门的 Rotation 数值看起来正常，
-但旋转时绕模型中心转，而不是绕侧边铰链。
-请帮我从 Pivot / Origin 的角度分析，
-并告诉我应该在 Blender 还是 Godot 修正更合理。
-```
-
----
-
-# 验收
-
-完成后确认：
-
-- [ ] 我能在 Godot 中主动修改 Position / Rotation / Scale。
-- [ ] 我知道 Blender 的 Location 对应“位置”。
-- [ ] 我看过一次 Local / Global 的实际差异。
-- [ ] 我看过一次错误 Pivot 的实际效果。
-- [ ] 我知道 Object Transform 和 Edit Mode 改 Mesh 不是同一件事。
-- [ ] 我能用 Transform / Scale / Pivot / Local / Global 等词向 AI 描述问题。
-
-建议 Commit：
-
-```text
-lesson-01: practice 3d transform basics
-```
+技术校核见[来源表](../../../docs/sources.md)。

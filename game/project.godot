@@ -1,0 +1,17 @@
+; Import this file in Godot 4.x. No plugins, accounts or external assets.
+config_version=5
+[application]
+config/name="AI 3D Learning — Star Lab"
+run/main_scene="res://scenes/main.tscn"
+[display]
+window/size/viewport_width=1152
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.09, 0.12, 0.18, 1)
+[layer_names]
+3d_physics/layer_1="World"
+3d_physics/layer_2="Player"
+3d_physics/layer_3="Collectible"

@@ -1,435 +1,229 @@
-# 学习路线图
+# 三阶段学习路线 v2
 
-## 项目目标
+目标：初级完成星星收集闭环；中级做可复用的小型原型；高级解决真实工程约束。
 
-这不是传统的“先学完 Blender，再学 Godot”课程。
+保留原B/I编号方便旧链接继续使用。建议顺序：B01A → B02 → B04 → B03 → B05 → B01B → B06，其余按编号。B01B不是首次接触3D当天的硬门槛。
 
-课程围绕一个持续成长的真实项目推进：
+课程状态：路线和考核设计已编写；四节详细规格见B01与[工作坊](workshop-recipes.md)。其余课是设计稿，不宣称已生成互动课或配齐每课独立工程。
 
-> **3D 星星收集 Demo → 可玩的中型 3D 原型**
+“必修/了解”最终以[概念地图](concept-map.md)为准。表里的额外API名是检索词，不是额外背诵清单。
 
-学习顺序遵循：
+## 初级 B01–B16
 
-**需求 → 必要概念 → 互动理解 → 真机实战 → 验收 → 常见坑 → 性能意识 → Git 留档**
+### B01 · 空间实验，分A/B两段
 
----
+概念：C01–C04。范围：A只学轴和TRS；B学父子/自身/世界与门轴。
 
-# 初级阶段：做出一个完整可玩的 3D Demo
+可观察验收：换一扇门或汽车，解释为什么同数值不同结果。
 
-初级阶段的目标不是“学完 Godot / Blender”，而是建立完整的 3D 游戏开发闭环。
+### B02 · 灰盒关卡和场景树
 
-## B01｜3D 空间与 Transform
+概念：C05。范围：复用实例、1单位约定、地面墙平台；了解Grid/Snap。
 
-**实战结果：** 能在 Godot / Blender 中移动、旋转、缩放物体，并理解 Local / Global、Origin / Pivot。
+可观察验收：换外形不破坏控制和碰撞。
 
-核心词：
+### B03 · 走路与跑步
 
-- X / Y / Z
-- Position
-- Rotation
-- Scale
-- Transform
-- Local / Global
-- Origin / Pivot
-- Apply Transform
+概念：C08。范围：复用已带地面的起始场景；速度单位和输入。
 
-AI 时代重点：知道 AI 所说的“位置、朝向、轴、原点、局部坐标”具体对应什么。
+可观察验收：比较30/60物理tick下同一秒位移，不复制delta错误。
 
----
+### B04 · 阻挡与触发
 
-## B02｜Scene、Node 与灰盒场景
+概念：C06–C07。范围：推荐在B03前先完成碰撞辨识；简单Shape和Layer/Mask。
 
-**实战结果：** 用 Cube / Plane 搭出一个可以测试移动的灰盒关卡。
+可观察验收：隐藏Mesh仍挡住；禁用Shape能通过；恢复。
 
-核心词：
+### B05 · 跳跃、落地、斜坡
 
-- Scene
-- Node
-- Node3D
-- MeshInstance3D
-- Instance
-- Parent / Child
-- Graybox / Blockout
-- Grid / Snap
+概念：C09。范围：先跳平地和低平台；台阶自动攀爬后置。
 
-AI 时代重点：能看懂 Godot 场景树，并判断一个功能应该属于哪个节点。
+可观察验收：固定跳速改重力，先预测再量最高点。
 
----
+### B06 · 第三人称镜头
 
-## B03｜玩家走路与跑步
+概念：C03/C04/C10。范围：FOV、Yaw/Pitch、SpringArm；复习门轴。
 
-**实战结果：** 玩家可以 WASD 移动、Shift 跑步。
+可观察验收：靠墙、绕身和俯仰极限都测试，写舒适参数理由。
 
-核心词：
+### B07 · 第一个静态星星资产
 
-- CharacterBody3D
-- InputMap
-- Velocity
-- Speed
-- Delta Time
-- move_and_slide
+概念：C02/C11/C26。范围：Mesh/Normal/Bevel、来源；不学角色绑定。
 
-只需理解用途，不要求背 API。
+可观察验收：检查外形、实际尺寸、原点、面朝向和来源。
 
----
+### B08 · 真实PBR参数实验
 
-## B04｜碰撞与地面
+概念：C12–C13。范围：粗糙度、金属、Emission/灯光；不推BRDF。
 
-**实战结果：** 玩家不会穿墙或掉穿地面。
+可观察验收：固定环境做塑料/金属对照，区分发亮与照地面。
 
-核心词：
+### B09 · Blender到Godot
 
-- Collision
-- CollisionShape3D
-- StaticBody3D
-- Capsule / Box / Convex
-- Layer / Mask
-- Visual Mesh ≠ Collision Mesh
+概念：C15；C14了解。范围：用提供的glTF星星起步；UV只认识用途。
 
-性能重点：碰撞体应尽量简单，不要默认拿高模网格直接做复杂碰撞。
+可观察验收：重导入颜色改动，包装场景的碰撞不丢。
 
----
+### B10 · 拾取与事件
 
-## B05｜重力、跳跃、斜坡与楼梯
+概念：C16；复习C06/C07。范围：Area、body_entered、一次性状态。
 
-**实战结果：** 玩家能稳定跳跃、落地、走斜坡。
+可观察验收：同一帧重入只加一次，错误对象不计分。
 
-核心词：
+### B11 · 成功反馈
 
-- Gravity
-- Grounded
-- Floor Normal
-- Slope
-- Step
-- Jump Velocity
+概念：C18。范围：新增一个声音或短动效；非必修所有粒子节点。
 
-重点不是公式，而是知道常见手感问题来自哪里。
+可观察验收：静音也能读懂结果；不靠颜色或闪烁单一路径。
 
----
+### B12 · UI、完成与重开
 
-## B06｜第三人称 Camera
+概念：C16/C18。范围：数据与显示分离；R重开。
 
-**实战结果：** 鼠标旋转镜头，镜头围绕玩家工作。
+可观察验收：收齐、重复拾取、重开和离开地面都回归。
 
-核心词：
+### B13 · 灯光与视觉可读性
 
-- Camera3D
-- Pivot
-- FOV
-- Pitch / Yaw
-- Mouse Sensitivity
-- Spring Arm / Raycast 思路
+概念：C12/C13；C25了解。范围：固定渲染器、基础太阳/环境；GI后置。
 
-视觉重点：亲自拖动 FOV、距离、灵敏度来建立手感。
+可观察验收：截图说明主物体可辨、阴影合适，不只说漂亮。
 
----
+### B14 · 第一次性能体检
 
-## B07｜Blender：制作第一个游戏资产
+概念：C19/C26。范围：帧间隔、实际硬件和对照；LOD等仅了解。
 
-**实战结果：** 在 Blender 中制作一个简单低多边形星星。
+可观察验收：同一条路线开关一个效果，不编造GPU耗时。
 
-核心词：
+### B15 · 故障诊断与版本回退
 
-- Mesh
-- Vertex / Edge / Face
-- Edit Mode
-- Extrude
-- Bevel
-- Shade Smooth
-- Normal
-- Origin
-- Apply Scale
+概念：C20。范围：定位症状→最小假设→回归；秘密不入库。
 
-重点：不是学习复杂建模，而是完成一个“能进入游戏”的资产。
+可观察验收：修一个未知Mask/资源/缩放问题并解释证据。
 
----
+### B16 · 初级迁移挑战
 
-## B08｜PBR 材质与视觉参数
+概念：初级全部必修。范围：新增蓝色能量球，不新增背包/战斗系统。
 
-**实战结果：** 星星具备金属感、粗糙度和自发光效果。
+可观察验收：完成独立验收后隔次抽题，不只展示能运行。
 
-核心词：
+## 中级 I01–I12
 
-- Material
-- Principled BSDF
-- Base Color
-- Metallic
-- Roughness
-- Normal Map
-- Emission
+### I01 · 换正式角色
 
-互动重点：大量拖参数，看结果，不做图形学公式推导。
+概念：C21。范围：骨架、蒙皮、资产兼容。
 
----
+可观察验收：先完成静态替换，再看形变；不让模型破坏碰撞。
 
-## B09｜Blender → Godot 资产导入
+### I02 · 动画状态与混合
 
-**实战结果：** GLB / glTF 资产正确进入 Godot。
+概念：C21/C16。范围：Idle/Walk/Run/Jump；Root Motion先了解。
 
-核心词：
+可观察验收：连续跳、落地、停止、转向，定位脚滑或双重位移。
 
-- GLB / glTF
-- Import
-- Scale
-- Orientation
-- Normal
-- UV
-- Material
-- Reimport
+### I03 · 可复用场景与资源
 
-外行高频坑：尺寸、坐标轴、Origin、未 Apply Transform、材质差异。
+概念：C17/C05。范围：共享/独立材质，数据与表现分工。
 
----
+可观察验收：两个实例联动变色→Make Unique；解释何时不该复制。
 
-## B10｜拾取星星
+### I04 · 门与移动平台
 
-**实战结果：** 玩家碰到星星后触发拾取。
+概念：C04/C07/C16。范围：开关状态、AnimatableBody3D用途。
 
-核心词：
+可观察验收：玩家站在平台/离开平台/机关重触发的边界测试。
 
-- Area3D
-- Signal
-- body_entered
-- Group
-- Queue Free
-- Trigger
+### I05 · 模块化与UV
 
-重点：理解“物理碰撞”和“触发区域”不是同一个用途。
+概念：C14/C22。范围：棋盘格、纹理密度、吸附。
 
----
+可观察验收：拼走廊无缝，密度一致；解UV而非只升4K。
 
-## B11｜反馈：音效、粒子、旋转、发光
+### I06 · 光照方案选择
 
-**实战结果：** 拾取开始有游戏感。
+概念：C25。范围：实时/烘焙、目标渲染器；了解GI类别。
 
-核心词：
+可观察验收：固定场景A/B并说明动态物体和设备限制。
 
-- AudioStreamPlayer3D
-- GPUParticles3D
-- Tween
-- AnimationPlayer
-- Emission
-- Feedback / Juice
+### I07 · 重复资产与性能入口
 
-重点：学习“动作发生后，玩家如何感知到”。
+概念：C19；C29了解。范围：识别瓶颈；LOD/剔除/MultiMesh只做小对照。
 
----
+可观察验收：先证明瓶颈，再决定是否进入高级优化。
 
-## B12｜UI 与游戏完成条件
+### I08 · 导航与简单敌人
 
-**实战结果：** 显示 `3 / 10`，全部收集后显示完成。
+概念：C23。范围：巡逻/追踪，路径与碰撞。
 
-核心词：
+可观察验收：改变门状态，看路径和真实可达性是否一致。
 
-- Control
-- Label
-- HUD
-- Counter
-- Game State
-- Signal
+### I09 · 可交互物体
 
----
+概念：C16/C17/C23。范围：射线提示、Item数据；背包仅最小必要。
 
-## B13｜基础灯光与 Environment
+可观察验收：不同物体共享交互接口，而不是互相改UI。
 
-**实战结果：** 灰盒场景第一次变得“像游戏”。
+### I10 · 设置和存档
 
-核心词：
+概念：C24。范围：音量、输入重映射、数据版本。
 
-- DirectionalLight3D
-- WorldEnvironment
-- Shadow
-- Ambient
-- Exposure
-- Fog
-- Tone Mapping
+可观察验收：缺文件、旧版本、损坏文件均有可解释结果。
 
-视觉重点：自己拖动亮度、曝光、雾和颜色。
+### I11 · 导出与可交付性
 
----
+概念：C20/C24/C26。范围：来源审查、目标设备、导出清单。
 
-## B14｜第一次性能体检
+可观察验收：另一台机器首次启动、清空用户数据后可完成。
 
-**实战结果：** 会看性能数据，而不是只凭感觉。
+### I12 · 小型完整原型
 
-核心词：
+概念：中级全部必修。范围：正式角色、一个机关或敌人、完整目标。
 
-- FPS
-- Frame Time
-- Draw Call
-- Triangle
-- VRAM
-- Profiler
-- LOD
-- Occlusion
-- Instancing
+可观察验收：玩法/可读性/性能/恢复四类验收；不比内容数量。
 
-初级验收：知道“哪里贵”，不要求立即掌握所有优化技术。
+## 高级 A01–A06
 
----
+### A01 · 定位和修复真实性能尖峰
 
-## B15｜Debug：故意把项目搞坏
+概念：C32。范围：CPU/GPU、分布、基线、回归。
 
-**实战结果：** 能定位问题属于模型、材质、碰撞、脚本、灯光还是导入。
+可观察验收：给可重复路线和优化前后证据，不能只交FPS截图。
 
-练习：
+### A02 · 一个可控Shader效果
 
-- Scale 异常
-- Origin 偏移
-- Collision Layer 错误
-- Signal 没连接
-- Normal 异常
-- 材质过亮
-- Camera 穿墙
+概念：C27。范围：参数化、几何/物理边界、overdraw。
 
----
+可观察验收：透明/不透明对照；视觉变化不误称物理变化。
 
-## B16｜综合挑战
+### A03 · 复杂旋转与空间变换
 
-在不照抄教程的前提下，新增一种拾取物，例如：
+概念：C28/C03。范围：Basis/Quaternion/插值用途；推导选学。
 
-- 蓝色能量球
-- 钥匙
-- 金币
-- 临时加速道具
+可观察验收：跨±180°、父节点旋转等边界姿态回归。
 
-需要自己决定：
+### A04 · 大场景和资源驻留
 
-- 使用什么节点
-- 使用什么材质参数
-- 是否需要 Area3D
-- 如何给玩家反馈
-- 是否存在性能风险
+概念：C29/C30。范围：分区MultiMesh、LOD、剔除、流送。
 
-完成后，初级阶段结束。
+可观察验收：记录视角变化、边界加载尖峰、内存和视觉跳变。
 
----
+### A05 · 多人同步：可选分支
 
-# 中级阶段：从 Demo 走向真正的小型 3D 游戏
+概念：C31应该了解。范围：权威、延迟、重入、重连；不阻塞单机。
 
-## I01｜角色模型、骨骼与蒙皮
+可观察验收：先纸面模拟同时拾取，选择网络项目再单独实现。
 
-- Armature
-- Bone
-- Rig
-- Skin
-- Weight
-- Skeleton3D
+### A06 · 独立技术方案与发布回归
 
-目标：能使用现成角色，并理解 AI / 资产库返回的角色是否可用。
+概念：高级主线必修。范围：从目标设备/玩法反推方案，不堆名词。
 
-## I02｜动画状态系统
+可观察验收：提交取舍、可重现实验、失败边界与回退方案。
 
-- Idle / Walk / Run / Jump
-- AnimationPlayer
-- AnimationTree
-- Blend
-- State Machine
-- Root Motion（先理解用途）
+## 三次结业门槛
 
-## I03｜可复用场景与组件化思维
+初级：能独立解释并改造走/跑/跳/碰撞/拾取闭环，能诊断至少一个未提前演示的错误。
 
-- PackedScene
-- Resource
-- Composition
-- Signal
-- Interface 思维
+中级：能替换资产、复用行为、处理存档边界，在目标设备交付一个可完成的原型。
 
-目标：不把整个游戏写成一团脚本。
+高级：能提出技术取舍，用可重复实验验证，而不是用术语堆成架构图。多人、复杂角色绑定、流体与毛发不作为所有人的必修。
 
-## I04｜门、机关、移动平台、陷阱
-
-- Trigger
-- State
-- Tween
-- RayCast
-- Layer / Mask
-
-## I05｜模块化环境资产
-
-- Modular Asset
-- Grid
-- Snap
-- Texel Density
-- Decal
-- Trim Sheet（理解用途即可）
-
-## I06｜更完整的光照与画面
-
-- Key / Fill / Rim
-- GI
-- Lightmap
-- AO
-- Reflection
-- Tone Mapping
-
-## I07｜大场景与性能
-
-- LOD / HLOD
-- Occlusion Culling
-- Instancing
-- MultiMesh
-- Shadow Cost
-- Transparency Cost
-- Streaming 思维
-
-## I08｜导航与简单敌人
-
-- NavigationMesh
-- NavigationAgent3D
-- Detection
-- State Machine
-- Chase / Patrol
-
-## I09｜基础交互系统
-
-- Interaction Raycast
-- Prompt
-- Item Data
-- Inventory 基础
-
-## I10｜存档、设置、输入映射
-
-- Save Data
-- Config
-- Input Remap
-- Audio Bus
-- Graphics Settings
-
-## I11｜工程质量与发布
-
-- Git 分支
-- Debug Build
-- Release Build
-- Export
-- Profiling
-- Asset License
-- Target Hardware
-
-## I12｜中级综合项目
-
-将星星收集 Demo 扩展成一个 10–20 分钟可完成的小型 3D 游戏原型。
-
-至少包含：
-
-- 正式角色
-- 动画
-- 一个简单敌人或机关系统
-- 一个完整目标
-- UI / 音效 / 视觉反馈
-- 一轮性能检查
-- 可导出的可玩版本
-
----
-
-# 学习完成的判断标准
-
-不是“看完多少课程”，而是是否具备以下能力：
-
-1. 能把玩法拆成节点、资产、数据、状态和反馈。
-2. 能使用专业关键词向 AI 描述需求。
-3. 能在 Inspector / Blender 面板里亲自调整关键参数。
-4. 能看出 AI 结果明显哪里不对。
-5. 遇到问题时，能先判断问题属于哪一类。
-6. 在添加视觉效果前，会想到性能成本。
-7. 知道什么时候应该继续让 AI 做，什么时候必须自己做审美或工程判断。
+每次结业都抽取旧概念变式，并检查[评分与复习协议](../assessments/mastery.md)。

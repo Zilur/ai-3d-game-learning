@@ -1,172 +1,42 @@
-# AI 时代 3D 游戏学习
+# AI 时代 3D 游戏学习 · Foundation v2
 
-这是一个以 **Godot 4 + Blender + AI + OpenMAIC** 为核心的实战学习项目。
+用 Godot + Blender 做星星收集游戏；用 AI 减少机械劳动；用预测、实验、诊断和迁移证明自己真的懂。
 
-目标不是把学习者训练成传统意义上的“纯程序员”或“纯 3D 美术”，而是建立 AI 时代真正重要的能力：
+**这是一套待持续验证的课程设计，不宣称“全球首创”或已被证明优于所有教程。** 学习者对 B01 首版反馈良好；新版学习效果仍需通过延迟测验和真机任务验证。
 
-- 能把游戏目标拆成清晰任务
-- 能使用正确的 3D / 游戏开发术语与 AI 沟通
-- 能判断 AI 生成的代码、模型、材质、灯光和交互是否合理
-- 能识别性能、资产导入、碰撞、尺度、动画等外行常忽略的问题
-- 能在 Godot 与 Blender 中亲自调节关键参数并做最终审美与工程判断
+## 从哪里开始
 
----
+1. 看 [三阶段路线图](curriculum/roadmap.md)，先只读初级。
+2. 用 [B01 生成要求](openmaic/requirements/B01-3d-space.md) 生成互动课；或离线打开 `web/space-lab.html` 先实验。
+3. 按 [真机练习单](curriculum/beginner/01-3d-space/practice.md) 操作，不要一开始阅读全部源码。
+4. 做 [题目](assessments/question-bank.md)，再查 [答案与补练](assessments/answer-key.md)，记录 [学习证据](assessments/learning-log.md)。
 
-## 第一个实战目标
+## 导航
 
-完成一个小型 **3D 星星收集 Demo**：
+| 要找什么 | 入口 |
+|---|---|
+| 初级 / 中级 / 高级、每课交付物 | [roadmap.md](curriculum/roadmap.md) |
+| 每个概念必须掌握还是应该了解 | [concept-map.md](curriculum/concept-map.md) |
+| 学习方法与AI使用边界 | [课程原则](curriculum/course-design-principles.md) |
+| 必记要点，可打印 | [必须牢记.md](print/必须牢记.md) |
+| 64题与能力验收 | [assessments](assessments/mastery.md) |
+| 完整互动课范例 | [B01](curriculum/beginner/01-3d-space/openmaic-spec.md)、[B04/B08/B10](curriculum/workshop-recipes.md) |
+| Godot 游戏与材质实验 | [game/README.md](game/README.md) |
+| 原创星星素材、Blender练习 | [blender/README.md](blender/README.md) |
+| OpenMAIC生成与人工验收 | [generation-guide.md](openmaic/generation-guide.md) |
+| 技术事实与版本边界 | [sources.md](docs/sources.md) |
+| 已测 / 未测、改版记录 | [validation.md](docs/validation.md) |
 
-**走路 → 跑步 → 跳跃 → 第三人称镜头 → 碰撞 → 拾取星星 → UI → 音效 / 特效 → 基础场景美化 → 第一次性能检查**
+## 直接体验
 
-复杂战斗、背包、任务、多人等系统暂时不进入初级阶段。
+下载本分支 ZIP 后，双击 `web/space-lab.html`：离线空间实验，无账号、无CDN、无API。GitHub文件页只展示源码，不会直接运行HTML。
 
----
+Godot 项目：在 Godot 4 标准版导入 `game/project.godot`，F6运行单个实验，F5运行收集游戏。游戏示例包含走、跑、跳、镜头、墙、平台、5颗星、计数、完成与重开；**不含角色动画、楼梯自动攀爬、音效或粒子成品**。这些是后续任务，不伪装成已实现。
 
-# 学习方式
+## 当前交付与边界
 
-本项目不是“看完一套课再开始做游戏”。
+已编写：三阶段课程设计、32概念分级、64训练题、独立答案、复习与实操评分、打印卡、4节详细教学规格、网页空间实验、Godot源码和原创glTF素材。
 
-每课遵循：
+完整路线不等于每课已生成/试教。除用户体验过的B01首版外，新版OpenMAIC课堂尚未生成。Godot/Blender真机与目标硬件验证状态见验证记录。`main` 不自动合并；课程继续在PR中审查。
 
-```text
-明确今天要做成什么
-        ↓
-学习最少必要概念
-        ↓
-OpenMAIC 互动课堂
-        ↓
-Godot / Blender 真机操作
-        ↓
-自己拖参数、看效果
-        ↓
-故意制造一个错误
-        ↓
-Debug + 验收
-        ↓
-Git Commit
-```
-
-OpenMAIC 负责帮助理解；Godot / Blender 才是真正的实验室。
-
----
-
-# 从这里开始
-
-## 1｜先看完整路线
-
-[`curriculum/roadmap.md`](curriculum/roadmap.md)
-
-包含：
-
-- 初级 B01–B16
-- 中级 I01–I12
-- 每阶段实战目标
-- 真正需要掌握的关键词
-- 性能与工程意识
-
-## 2｜理解这套课程为什么这样设计
-
-[`curriculum/course-design-principles.md`](curriculum/course-design-principles.md)
-
-核心原则：
-
-> 不追求“没有 AI 能不能背着写出来”，而追求“AI 做出来以后能不能判断它对不对”。
-
-## 3｜第一课：3D 空间与 Transform
-
-完整教学设计：
-
-[`curriculum/beginner/01-3d-space/openmaic-spec.md`](curriculum/beginner/01-3d-space/openmaic-spec.md)
-
-可直接交给 OpenMAIC 的生成要求：
-
-[`openmaic/requirements/B01-3d-space.md`](openmaic/requirements/B01-3d-space.md)
-
-上完课后的 Godot / Blender 真机练习：
-
-[`curriculum/beginner/01-3d-space/practice.md`](curriculum/beginner/01-3d-space/practice.md)
-
-## 4｜不知道专业词时
-
-[`glossary/core-3d.md`](glossary/core-3d.md)
-
-不要背词汇表。遇到词 → 知道用途 → 调一次参数 → 用它向 AI 描述一次问题。
-
----
-
-# OpenMAIC 在这里负责什么？
-
-我们把课程内容分成两层。
-
-## 课程源代码
-
-本仓库维护：
-
-- 学习目标
-- 知识边界
-- 必学 / 认识 / 暂不学习内容
-- 互动场景设计
-- Quiz
-- 常见错误
-- 性能意识
-- Godot / Blender 真机任务
-- 验收标准
-
-统一模板：
-
-[`openmaic/lesson-template.md`](openmaic/lesson-template.md)
-
-## 课堂生成器
-
-OpenMAIC 负责将这些规格生成：
-
-- AI 老师讲解
-- Slides
-- Quiz
-- 3D / Simulation / Game 等互动内容
-- AI 同学讨论
-- 白板
-
-使用方法：
-
-[`openmaic/generation-guide.md`](openmaic/generation-guide.md)
-
----
-
-# 项目目录
-
-```text
-ai-3d-game-learning/
-│
-├── curriculum/              # 课程路线、教学设计、真机练习
-│   ├── roadmap.md
-│   ├── course-design-principles.md
-│   └── beginner/
-│
-├── openmaic/                # OpenMAIC 模板与生成输入
-│   ├── lesson-template.md
-│   ├── generation-guide.md
-│   └── requirements/
-│
-├── glossary/                # 3D / Godot / Blender / 性能专业词
-│
-├── game/                    # 真正的 Godot 4 游戏项目
-│
-└── blender/                 # Blender 原始资产与实验
-```
-
----
-
-# 当前状态
-
-**课程阶段：Foundation v1**
-
-当前优先级不是批量生成全部课程，而是：
-
-1. 验证 B01 的 OpenMAIC 生成效果
-2. 实际完成 B01 Godot / Blender 练习
-3. 找出过度讲解、互动不足、术语过多等问题
-4. 修改课程模板
-5. 模板稳定后继续 B02 / B03
-
-这是一个持续迭代的学习工程，而不是一次写完的教材。
+没有把OpenMAIC平台源码复制进学习仓库，没有上传API Key，也没有启用收费生成或自动部署。

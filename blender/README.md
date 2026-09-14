@@ -1,49 +1,33 @@
-# Blender 资产目录
+# Blender静态资产工作坊
 
-这里保存 Blender 源文件和游戏资产制作说明。
+初级只处理静态星星，不从角色雕刻和复杂绑定开始。先导入提供的资产看清形状，再用自己的操作替换。
 
-## 初级阶段只学习必要工作流
+## 已附素材
 
-重点：
+`game/assets/star.gltf`：原创程序化五角星棱柱，40个三角形，平面着色，一种基础PBR材质，所有网格数据内嵌，无外部贴图。没有UV，因为当前材质不采样纹理；这不是“所有游戏资产都不需要UV”。
 
-- Move / Rotate / Scale
-- Origin / Pivot
-- Apply Transform
-- Mesh / Vertex / Edge / Face
-- Extrude / Bevel
-- Shade Smooth / Normal
-- UV 基础
-- Principled BSDF
-- Base Color / Metallic / Roughness / Emission
-- GLB / glTF 导出
+近似包围尺寸：0.9511 × 0.9045 × 0.20模型单位，原点为放射形状中心。不是宣称恰好1米宽。Godot课程按1单位约1米约定，导入Blender后检查其轴转换和实际Dimensions。
 
-暂时不深入：
+重新生成：仓库根目录执行 `python tools/make_star.py`。来源与使用边界见[素材记录](../docs/assets-manifest.md)。
 
-- 高级雕刻
-- Geometry Nodes 复杂系统
-- 高级程序化材质
-- 流体 / 布料 / 毛发
-- 复杂绑定与角色制作
+## B07：不改完一切，先改一处
 
-## 资产进入 Godot 前的基础检查
+在新Blender文件中导入glTF，先观察Object Origin、Dimensions、Scale、面朝向。另存自己的 `.blend`，不要覆盖唯一参考素材。
 
-- 尺寸是否合理
-- Origin 是否合理
-- Rotation / Scale 是否需要 Apply
-- Normal 是否正常
-- 材质数量是否必要
-- UV 是否存在且合理
-- 文件命名是否清楚
-- 导出 GLB / glTF 后在 Godot 中是否与预期一致
+实验1：Object Mode移动对象，再撤销；Edit Mode移动所有顶点，再观察Origin是否随同移动。解释C02。
 
-## 目录建议
+实验2：Shade Smooth与实际Bevel对照，看轮廓是否改变。星星尖角处倒角过大可能破坏轮廓，不照抄任意固定参数。
 
-```text
-blender/
-├── props/
-├── environment/
-├── characters/
-└── experiments/
-```
+实验3：保持尺寸和原点不变，只修改一种材质参数，导出一个新GLB，再在Godot创建包装场景添加简单触发形状。修改源文件重导一次，检查包装内容仍存在。
 
-课程第一个正式资产将是一个简单的低多边形星星拾取物。
+## I05：再处理UV
+
+为带纹理版本加UV和棋盘格，观察拉伸；提高分辨率前先核对映射。此时才要求掌握C14，初级仅知道其用途。
+
+## 交付核对
+
+模型用途、实际尺寸、朝向、Origin、是否需要Apply Scale、法线、材质数量、纹理/UV需求、导出结果、来源。
+
+Apply不是每次都全部应用。绑定、动画、约束和父级可能依赖当前变换。静态小资产与已绑定角色必须采用不同验证流程。
+
+本轮没有在Blender启动/渲染或导入此素材；文件结构与几何有自动检查，实际导入结果仍按验证清单确认。

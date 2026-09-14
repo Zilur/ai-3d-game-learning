@@ -1,91 +1,27 @@
-# 3D 游戏核心术语表
+# 术语索引：遇到再查，不逐页背诵
 
-> 目标：不是背定义，而是在 AI、文档、Godot、Blender 中看到这些词时知道它大概在说什么。
+完整分级、易混区别、题目与实验见[32概念地图](../curriculum/concept-map.md)。以下只是检索入口。
 
-## 空间与对象
-
-| 术语 | 人话 | 初级需要掌握到什么程度 |
+|看到这个词|先去看|现在先问什么|
 |---|---|---|
-| Axis | 坐标轴 | 能识别 X/Y/Z |
-| Position / Location | 物体在哪里 | 会调参数 |
-| Rotation | 物体朝向 / 转了多少 | 会调参数 |
-| Scale | 相对缩放 | 会调并知道异常 Scale 是常见坑 |
-| Transform | 空间变换信息总称 | 知道通常包含位置、旋转、缩放 |
-| Local Space | 以物体自己的方向为参考 | 能看懂并用于移动判断 |
-| Global / World Space | 以世界固定方向为参考 | 能与 Local 区分 |
-| Origin / Pivot | 旋转和缩放参考点 | 能识别 Pivot 错误症状 |
-| Gizmo | 视口里的移动/旋转/缩放操作器 | 会看方向 |
+|Axis / Gizmo / Transform / Scale|C01–C02|是改对象还是网格？相对谁？单位是什么？|
+|Local / Global / position / Basis|C03、C28|父空间、自身空间还是世界空间？|
+|Origin / Pivot / Hinge|C04|哪个点应保持不动？工具Pivot是否真的改变了对象Origin？|
+|Scene / Node / Instance / Resource|C05、C17|节点职责是什么？实例内部资源是否共享？|
+|Mesh / Collision / Area / Mask|C06–C07|只负责显示、阻挡还是检测？谁扫描谁？|
+|Velocity / Delta / Gravity|C08–C09|这是每秒速度、每帧位移，还是加速度？|
+|Camera / FOV / SpringArm|C10|改变观察还是改变世界？镜头会碰到什么？|
+|Normal / Bevel / Shade Smooth|C11|改了几何、轮廓还是着色？|
+|PBR / Roughness / Metallic|C12|固定光照了吗？是不是拿Metallic当亮度？|
+|Emission / Glow / GI / Light|C13、C25|表面亮、光晕还是照亮邻居？|
+|UV / Texture / Texel Density|C14、C22|是映射错误还是分辨率不足？|
+|glTF / GLB / Import|C15|源资产与导入生成文件，哪里才是编辑源？|
+|Signal / State / queue_free|C16|事件和状态属于谁？能否重复触发？|
+|Feedback / HUD / Particles|C18|静音、低对比度下还能理解结果吗？|
+|FPS / Frame Time / Draw Call / VRAM|C19、C32|实测是什么？条件一致吗？慢帧在哪里？|
+|Armature / Skin / AnimationTree|C21|形变、状态还是位移归属出了问题？|
+|Navigation / Save / Version|C23–C24|路径是否真的可达？旧数据还能读取吗？|
+|Shader / Quaternion / MultiMesh / LOD|C27–C30|当前项目真的遇到这个问题了吗？|
+|Authority / Latency|C31|谁决定状态？是否真的需要多人？|
 
-## 模型
-
-| 术语 | 人话 | 初级重点 |
-|---|---|---|
-| Mesh | 可见几何形状 | 知道 Mesh 不等于 Collision |
-| Vertex | 顶点 | 认识 |
-| Edge | 边 | 认识 |
-| Face | 面 | 认识 |
-| Normal | 表面朝向信息，影响光照 | 能识别“法线异常”这个问题类别 |
-| UV | 把 2D 贴图映射到 3D 表面的坐标 | 知道用途 |
-| Bevel | 给硬边增加小倒角 | 会用于简单游戏资产 |
-
-## 材质与渲染
-
-| 术语 | 人话 | 初级重点 |
-|---|---|---|
-| Material | 物体表面的视觉规则 | 会找到并修改 |
-| Base Color | 基础颜色 | 会调 |
-| Metallic | 金属程度 | 通过拖参数建立直觉 |
-| Roughness | 表面粗糙程度 | 通过拖参数建立直觉 |
-| Normal Map | 用贴图表现细小凹凸 | 知道用途 |
-| Emission | 自发光 | 会调并知道过高会影响视觉 |
-| PBR | 一套常见物理基础材质工作流 | 不要求推导理论 |
-
-## 游戏物理与交互
-
-| 术语 | 人话 | 初级重点 |
-|---|---|---|
-| Collision | 游戏认为哪里能撞 | 知道可见模型不自动等于碰撞 |
-| Collision Shape | 用于物理计算的形状 | 优先简单形状 |
-| CharacterBody3D | Godot 常用角色运动节点 | 会使用，不背 API |
-| StaticBody3D | 静态物理物体 | 地面、墙等常见用途 |
-| Area3D | 用于检测进入/离开的区域 | 拾取物、触发器 |
-| Layer / Mask | 决定谁和谁发生检测 | 能排查“为什么撞不到” |
-| RayCast | 沿一个方向做检测 | 认识用途 |
-| Signal | Godot 中事件通知机制 | 会连接常用事件 |
-
-## 摄像机与画面
-
-| 术语 | 人话 | 初级重点 |
-|---|---|---|
-| Camera3D | 玩家看到世界的观察点 | 会摆放 |
-| FOV | 视野宽窄 | 自己拖动建立手感 |
-| Directional Light | 类似太阳的方向光 | 会调基础参数 |
-| Environment | 全局画面环境设置 | 认识 |
-| Exposure | 整体曝光 | 会通过视觉判断 |
-| Fog | 雾效 | 会调并意识到风格/性能 |
-| Shadow | 阴影 | 知道有视觉和性能成本 |
-
-## 性能
-
-| 术语 | 人话 | 初级重点 |
-|---|---|---|
-| FPS | 每秒多少帧 | 会看，但不要只看它 |
-| Frame Time | 一帧花多少毫秒 | 知道 60 FPS 约等于 16.7ms/帧 |
-| Draw Call | CPU 向 GPU 提交绘制的一次工作 | 认识其成本 |
-| Triangle | 三角形数量 | 不迷信单一指标 |
-| VRAM | 显卡内存 | 大贴图/资源会消耗 |
-| Profiler | 性能分析工具 | 会打开并观察 |
-| LOD | 距离远时使用更低细节版本 | 认识用途 |
-| Occlusion Culling | 不渲染被遮挡的东西 | 认识用途 |
-| Instancing | 高效绘制大量重复对象 | 认识用途 |
-
----
-
-# 术语学习规则
-
-1. 第一次遇到：知道“它解决什么问题”。
-2. 第二次遇到：自己调一次相关参数。
-3. 第三次遇到：能用它向 AI 描述问题。
-4. 真正项目踩坑后：再深入原理。
-
-不要因为词汇多就提前背诵。
+视频搜索方式：`Godot 4 + 精确类名 + 实验目标`，例如“Godot 4 SpringArm3D 相机碰撞”“Blender Object Origin 3D Cursor 区别”。先核对教程版本，避免把Godot 3的Spatial/KinematicBody写法套进4.x。
