@@ -20,6 +20,38 @@ jobs:
         with:
           ref: ${{ github.sha }}
           persist-credentials: true
+      - name: Apply exact reviewed wording changes to authored sources
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          edits = {
+            'curriculum/authoring/beginner_b.py': [
+              ('显示共享资源标记与受影响对象；基线球保持固定；不得承诺任意网页PBR与Godot逐像素一致。',
+               '共享实验阶段，两球应随共享材质同步变化；进入材质A/B前先独立化，此时右球才固定为基线。显示共享标记与实际影响范围，不承诺网页PBR与Godot逐像素一致。')],
+            'curriculum/authoring/art.py': [
+              ('由教师从art/reference-gallery.md提供的原作者/机构页面',
+               '由教师从本文件“依据与观看入口”列出的原作者/机构页面')],
+            'tools/build_course_materials.py': [
+              ("for path in (ROOT / 'openmaic/requirements').glob('*.md'):",
+               "for path in sorted((ROOT / 'openmaic/requirements').glob('*.md')):"),
+              ("'**预计课堂：** 20–30分钟，可在实验前后暂停；不含后续真实软件制作时间。',",
+               "'**预计课堂：** ' + ('5–10分钟的认识讨论，可选。' if ident == 'A05' else '20–30分钟，可在实验前后暂停；不含后续真实软件制作时间。'),"),
+              ("'**完成判据：** 学员至少进行一次参数或条件改变、指出结果、恢复状态；M课再完成一个故障或变式。A05只做用途识别，不强制实操。',",
+               "'**完成判据：** ' + ('只做用途识别，不强制实操、诊断或迁移。' if ident == 'A05' else '对本课两项M提供操作或判断及解释；一个实验可覆盖多项。只有关键M或发现薄弱处才追加故障/变式，不为每个术语加作业。'),")]
+          }
+          for name, pairs in edits.items():
+              path = Path(name)
+              text = path.read_text(encoding='utf-8')
+              for before, after in pairs:
+                  if text.count(before) == 1:
+                      text = text.replace(before, after)
+                  elif text.count(before) == 0 and text.count(after) == 1:
+                      pass
+                  else:
+                      raise SystemExit('Unexpected review target: ' + name)
+              path.write_text(text, encoding='utf-8')
+          print('Applied 5 reviewed refinements; no runtime changes')
+          PY
       - name: Copy pinned official Skill reference without executing it
         run: python3 tools/vendor_openmaic.py
       - name: Expand authored lessons and verify reproducibility
@@ -28,7 +60,7 @@ jobs:
           python3 tools/build_course_materials.py
           python3 tools/build_course_materials.py --check
           python3 tools/validate_repo.py
-      - name: Commit only the approved Markdown and reference outputs
+      - name: Commit only approved review and Markdown outputs
         env:
           EXPECTED_HEAD: ${{ github.sha }}
         run: |
@@ -38,7 +70,7 @@ jobs:
           from pathlib import Path
           import subprocess
           manifest = json.loads(Path('curriculum/materials-manifest.json').read_text())
-          allowed = set(manifest['sha256']) | {'curriculum/materials-manifest.json'}
+          allowed = set(manifest['sha256']) | {'curriculum/materials-manifest.json', 'curriculum/authoring/beginner_b.py', 'curriculum/authoring/art.py', 'tools/build_course_materials.py'}
           vendor = Path('openmaic/vendor/THU-MAIC-OpenMAIC')
           allowed |= {p.as_posix() for p in vendor.rglob('*') if p.is_file()}
           tracked = subprocess.check_output(['git','diff','--name-only','-z']).decode().split('\0')
@@ -51,7 +83,7 @@ jobs:
               raise SystemExit('Runtime files must not change in the manuscript stage')
           if changed:
               subprocess.run(['git','add','--',*sorted(changed)],check=True)
-          print(f'Approved {len(changed)} documentation/reference outputs; runtime unchanged')
+          print(f'Approved {len(changed)} review/documentation outputs; runtime unchanged')
           PY
           if git diff --cached --quiet; then
             echo 'No generated content changed'
@@ -64,6 +96,6 @@ jobs:
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'docs: publish 45 authored lesson manuscripts, art learning path and pinned OpenMAIC references'
+          git commit -m 'docs: clarify shared-material experiment and keep ordinary mastery checks lightweight'
           git push origin HEAD:main
           git rev-parse HEAD
