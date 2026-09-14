@@ -15,6 +15,7 @@ var _door_board: MeshInstance3D
 var _material: StandardMaterial3D
 var _neighbor_light: OmniLight3D
 var _door_angle: float = 0.0
+var _position_sliders: Array[HSlider] = []
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -99,6 +100,7 @@ func _text_label(parent: Node, text: String) -> Label:
 
 func _switch_mode(index: int) -> void:
 	_mode = index
+	_position_sliders.clear()
 	for parent in [_experiment, _controls]:
 		for child in parent.get_children():
 			parent.remove_child(child)
@@ -131,7 +133,8 @@ func _build_transform() -> void:
 	_axes(_subject, 1.2, "O")
 	for axis in range(3):
 		var axis_name: String = ["X", "Y", "Z"][axis]
-		_slider("Position " + axis_name, -3.0, 3.0, _subject.position[axis], 0.1, _set_component.bind("position", axis))
+		var control := _slider("Position " + axis_name, -3.0, 3.0, _subject.position[axis], 0.0, _set_component.bind("position", axis))
+		_position_sliders.append(control)
 	_slider("Object Yaw", -180, 180, 0, 5, _set_component.bind("rotation_degrees", 1))
 	for axis in range(3):
 		var axis_name: String = ["X", "Y", "Z"][axis]
@@ -151,13 +154,27 @@ func _set_parent_yaw(value: float) -> void:
 
 func _move_world_x() -> void:
 	_subject.global_position += Vector3.RIGHT
+	_sync_position_controls()
 
 func _move_parent_x() -> void:
 	_subject.position += Vector3.RIGHT
+	_sync_position_controls()
 
 func _move_object_x() -> void:
 	# Normalize so each click travels one WORLD unit despite visual scale.
 	_subject.global_position += _subject.global_basis.x.normalized()
+	_sync_position_controls()
+
+func _sync_position_controls() -> void:
+	for axis in range(_position_sliders.size()):
+		var control := _position_sliders[axis]
+		var value: float = _subject.position[axis]
+		# Expand the range if a button moved outside the original slider range.
+		control.min_value = minf(-3.0, value)
+		control.max_value = maxf(3.0, value)
+		control.set_value_no_signal(value)
+		var label: Label = control.get_meta("value_label")
+		label.text = "Position %s: %.2f" % [["X", "Y", "Z"][axis], value]
 
 func _build_door() -> void:
 	_instruction.text = "Predict which edge stays fixed. Compare center and side pivots at the SAME angle. Reset before comparing."
@@ -220,7 +237,7 @@ func _process(_delta: float) -> void:
 	if not is_instance_valid(_subject):
 		return
 	if _mode == 0:
-		_status.text = "Parent position: %s\nWorld position: %s\nButtons change actual position; sliders show their last chosen value." % [_subject.position, _subject.global_position]
+		_status.text = "Parent position: %s\nWorld position: %s\nPosition sliders follow actual parent-relative coordinates." % [_subject.position, _subject.global_position]
 	elif _mode == 1:
 		_status.text = "Angle: %.0f degrees\nHinge world position: %s" % [_door_angle, _subject.global_position]
 	else:
@@ -238,7 +255,7 @@ func _toggle(title: String, callback: Callable) -> void:
 	button.toggled.connect(callback)
 	_controls.add_child(button)
 
-func _slider(title: String, minimum: float, maximum: float, initial: float, step: float, callback: Callable) -> void:
+func _slider(title: String, minimum: float, maximum: float, initial: float, step: float, callback: Callable) -> HSlider:
 	var label := Label.new()
 	label.text = "%s: %.2f" % [title, initial]
 	_controls.add_child(label)
@@ -247,8 +264,10 @@ func _slider(title: String, minimum: float, maximum: float, initial: float, step
 	slider.max_value = maximum
 	slider.step = step
 	slider.value = initial
+	slider.set_meta("value_label", label)
 	slider.value_changed.connect(_slider_changed.bind(label, title, callback))
 	_controls.add_child(slider)
+	return slider
 
 func _slider_changed(value: float, label: Label, title: String, callback: Callable) -> void:
 	label.text = "%s: %.2f" % [title, value]
