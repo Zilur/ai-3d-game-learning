@@ -1,0 +1,71 @@
+name: Finalize copyable lesson dialogue
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  finalize:
+    if: contains(github.event.head_commit.message, '[finalize-dialogue-copy]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout reviewed source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: true
+      - name: Put actual tuning entries inside each copyable prompt
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('tools/demo_coach.py')
+          text = p.read_text(encoding='utf-8')
+          old = " + gate + '\\n若满足，指导我先亲调下面表格的一项；"
+          new = " + gate + '\\n本课可用的微调项：\\n' + '\\n'.join('入口：' + entry + '；操作：' + action + '；观察：' + observe for entry, action, observe in data['tweaks']) + '\\n若满足，先指导我选择其中一项亲调；"
+          if text.count(old) != 1:
+              raise SystemExit('Unexpected tuning prompt source')
+          text = text.replace(old, new, 1)
+          text = text.replace("'；'.join(row['m'])", "'；'.join(s.rstrip('。；') for s in row['m'])")
+          text = text.replace("'；'.join(row['k'])", "'；'.join(s.rstrip('。；') for s in row['k'])")
+          p.write_text(text, encoding='utf-8')
+          p = Path('tools/check_lesson_delivery.py')
+          text = p.read_text(encoding='utf-8')
+          text = text.replace('import sys\n', 'import sys\nfrom scenario_sections import ROWS\n', 1)
+          old = "            if ident != 'A05':\n                for step in range(3, 7):"
+          new = "            if ident != 'A05':\n                panel = text.split('### 对话4', 1)[1].split('### 对话5', 1)[0]\n                copied = panel.split('```text', 1)[1].split('```', 1)[0]\n                for entry, action, observation in ROWS[ident]['tweaks']:\n                    assert entry in copied and action in copied and observation in copied, (ident, folder, 'tuning prompt depends on an unseen table')\n                for step in range(3, 7):"
+          if text.count(old) != 1:
+              raise SystemExit('Unexpected delivery checker source')
+          p.write_text(text.replace(old, new, 1), encoding='utf-8')
+          p = Path('docs/guided-demo-review.md')
+          p.write_text(p.read_text(encoding='utf-8') + '\n## 单独复制体验复核\n\n回读发现对话4原来引用了“下面表格”，单独复制时外部AI拿不到该表。已把实际对象/参数入口、操作与观察点写入每个提示框；增加逐课自动检查，确保复制框本身包含对应信息。并整理连续标点，不改变M/K或验收条件。\n', encoding='utf-8')
+          PY
+      - name: Regenerate and verify all formats
+        run: |
+          set -euo pipefail
+          python3 tools/build_course_materials.py
+          python3 tools/build_course_materials.py --check
+          python3 tools/check_lesson_delivery.py
+          python3 tools/validate_repo.py
+      - name: Commit only reviewed text outputs
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          m = json.loads(Path('curriculum/materials-manifest.json').read_text())
+          allowed = set(m['sha256']) | {'curriculum/materials-manifest.json','tools/demo_coach.py','tools/check_lesson_delivery.py','docs/guided-demo-review.md'}
+          changed = {p for p in subprocess.check_output(['git','diff','--name-only','-z']).decode().split('\0') if p}
+          if changed - allowed or any(p.startswith(('game/','blender/','web/')) for p in changed):
+              raise SystemExit('Unexpected write scope')
+          subprocess.run(['git','add','--',*sorted(changed)], check=True)
+          PY
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$EXPECTED_HEAD"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs: inline per-lesson tuning details in copyable AI prompts and verify them'
+          git push origin HEAD:main
