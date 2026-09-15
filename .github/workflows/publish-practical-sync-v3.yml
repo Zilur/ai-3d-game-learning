@@ -1,0 +1,73 @@
+name: Publish practical-stage outputs v3
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  publish:
+    if: contains(github.event.head_commit.message, '[publish-practical-sync-v3]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: true
+      - name: Put practical pages at final canonical layer
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('tools/build_course_materials.py')
+          s = p.read_text(encoding='utf-8')
+          old = "    practical_pages = runpy.run_path(str(AUTHOR / 'site_practical.py'))['PAGES']\n    output.update(practical_pages)\n    # Existing practical files remain; point readers to the canonical classroom text."
+          new = "    # Existing practical files remain; point readers to the canonical classroom text."
+          if old in s:
+              s = s.replace(old, new, 1)
+          anchor = "    finalize_navigation(output, by_id, ORDER, ROWS)\n    enrich_fixed_view(output, by_id, ORDER, ROWS)"
+          replacement = "    finalize_navigation(output, by_id, ORDER, ROWS)\n    practical_pages = runpy.run_path(str(AUTHOR / 'site_practical.py'))['PAGES']\n    output.update(practical_pages)\n    enrich_fixed_view(output, by_id, ORDER, ROWS)"
+          if replacement not in s:
+              if s.count(anchor) != 1:
+                  raise SystemExit('builder final-layer anchor missing')
+              s = s.replace(anchor, replacement, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+          python3 tools/build_course_materials.py
+          python3 tools/build_course_materials.py --check
+          python3 tools/check_course_numbering.py
+          python3 tools/check_lesson_delivery.py
+          python3 tools/check_quality_review.py
+          python3 tools/check_session_readiness.py
+          python3 tools/validate_repo.py
+          grep -q '用户已明确切换到实战工程阶段' AGENTS.md
+          grep -q 'Uncanyon《未境峡谷》' art/style-and-library.md
+          grep -q '干净是硬约束' AGENTS.md
+      - name: Commit regenerated outputs
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          manifest = json.loads(Path('curriculum/materials-manifest.json').read_text())
+          allowed = set(manifest['sha256']) | {'curriculum/materials-manifest.json','tools/build_course_materials.py'}
+          tracked = subprocess.check_output(['git','diff','--name-only','-z']).decode().split('\0')
+          changed = {x for x in tracked if x}
+          bad = changed - allowed
+          if bad or any(p.startswith(('game/','blender/','web/')) for p in changed):
+              raise SystemExit('Unexpected scope: ' + repr(sorted(bad or changed)))
+          if changed:
+              subprocess.run(['git','add','--',*sorted(changed)], check=True)
+          PY
+          if git diff --cached --quiet; then exit 0; fi
+          ACTUAL=$(git ls-remote origin refs/heads/main | cut -f1)
+          test "$ACTUAL" = "$EXPECTED_HEAD" || { echo concurrent main change; exit 1; }
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs: finalize practical stage as generated source of truth'
+          git push origin HEAD:main
