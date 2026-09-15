@@ -65,6 +65,12 @@ def main():
     assert 'Quaternion' not in by_id['B01B']['questions'][3][1]
     assert '还没制作拾取计数' in by_id['B09']['questions'][2][1]
     assert '到B10/B12再补' in builder.ROWS['B09']['regress']
+    for folder in ('curriculum/lessons', 'curriculum/dialogues', 'openmaic/lessons'):
+        b09 = (ROOT / folder / 'B09.md').read_text(encoding='utf-8')
+        assert '核对已有包装、形状和标记仍保留' in b09
+        assert '验证包装的碰撞与拾取仍存在' not in b09
+        assert '更新静态外观并保留当前包装职责' in b09
+    assert '形状、比例、色彩、光照、表面五栏' in (ROOT / 'curriculum/dialogues/R01.md').read_text(encoding='utf-8')
     assert '窗口' in review.REVIEWS['B12']['proof'][1]
     assert review.REVIEWS['B12']['target'] == 1
     assert '同步重入' in by_id['B10']['failure']
