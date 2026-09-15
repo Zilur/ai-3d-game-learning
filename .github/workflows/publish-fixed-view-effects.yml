@@ -1,0 +1,113 @@
+name: Publish fixed-view effects curriculum
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: fixed-view-effects-publication
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: contains(github.event.head_commit.message, '[publish-fixed-effects]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout exact authorized source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: true
+      - name: Wire effects overlay and validate
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              s = p.read_text(encoding='utf-8')
+              if new in s:
+                  return
+              if s.count(old) != 1:
+                  raise SystemExit(f'{path}: expected one patch anchor, got {s.count(old)} for {old!r}')
+              p.write_text(s.replace(old, new, 1), encoding='utf-8')
+
+          replace_once('tools/build_course_materials.py',
+              "FIXED_VIEW = runpy.run_path(str(AUTHOR / 'fixed_view_strategy.py'))\napply_fixed_view_strategy = FIXED_VIEW['apply_fixed_view_strategy']\nenrich_fixed_view = FIXED_VIEW['enrich_fixed_view']\nFILES =",
+              "FIXED_VIEW = runpy.run_path(str(AUTHOR / 'fixed_view_strategy.py'))\napply_fixed_view_strategy = FIXED_VIEW['apply_fixed_view_strategy']\nenrich_fixed_view = FIXED_VIEW['enrich_fixed_view']\nFIXED_EFFECTS = runpy.run_path(str(AUTHOR / 'fixed_view_effects.py'))\napply_fixed_view_effects = FIXED_EFFECTS['apply_fixed_view_effects']\nenrich_fixed_view_effects = FIXED_EFFECTS['enrich_fixed_view_effects']\nFILES =")
+          replace_once('tools/build_course_materials.py',
+              '    lessons = apply_fixed_view_strategy(lessons, ROWS, PLANS, DIAGRAMS, REVIEWS, STARTS, sources)\n    by_id = validate(lessons, sources)',
+              '    lessons = apply_fixed_view_strategy(lessons, ROWS, PLANS, DIAGRAMS, REVIEWS, STARTS, sources)\n    lessons = apply_fixed_view_effects(lessons, ROWS, PLANS, DIAGRAMS, REVIEWS, STARTS, sources)\n    by_id = validate(lessons, sources)')
+          replace_once('tools/build_course_materials.py',
+              '    enrich_fixed_view(output, by_id, ORDER, ROWS)\n    manifest =',
+              '    enrich_fixed_view(output, by_id, ORDER, ROWS)\n    enrich_fixed_view_effects(output, by_id, ORDER, ROWS)\n    manifest =')
+          replace_once('tools/build_course_materials.py',
+              "'version':'fixed-view-kitbash-2026-09-15'",
+              "'version':'fixed-view-effects-2026-09-15'")
+
+          for path, old in (
+              ('tools/check_quality_review.py', '    lessons = builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    by_id = builder.validate(lessons, sources)'),
+              ('tools/check_session_readiness.py', '    lessons = builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    by_id = builder.validate(lessons, sources)'),
+              ('tools/check_course_numbering.py', '    lessons = builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    rows = builder.validate(lessons, sources)'),
+          ):
+              tail = '    by_id = builder.validate(lessons, sources)' if 'by_id' in old else '    rows = builder.validate(lessons, sources)'
+              new = old.replace(tail, '    lessons = builder.apply_fixed_view_effects(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n' + tail)
+              replace_once(path, old, new)
+
+          replace_once('tools/check_lesson_delivery.py',
+              '    builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    manifest =',
+              '    builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    builder.apply_fixed_view_effects(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    manifest =')
+          PY
+
+          python3 tools/build_course_materials.py
+          python3 tools/build_course_materials.py --check
+          python3 tools/check_course_numbering.py
+          python3 tools/check_lesson_delivery.py
+          python3 tools/check_quality_review.py
+          python3 tools/check_session_readiness.py
+          python3 tools/validate_repo.py
+          grep -q 'FOV = Field of View' curriculum/fixed-view-effects.md
+          grep -q 'Parallax' openmaic/lessons/C02.md
+          grep -q 'Camera impulse' openmaic/lessons/D06.md
+          grep -q 'Tonemapping/Exposure' openmaic/lessons/C08.md
+      - name: Commit reviewed course outputs only
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          manifest = json.loads(Path('curriculum/materials-manifest.json').read_text())
+          allowed = set(manifest['sha256']) | {
+              'curriculum/materials-manifest.json',
+              'tools/build_course_materials.py',
+              'tools/check_quality_review.py',
+              'tools/check_session_readiness.py',
+              'tools/check_course_numbering.py',
+              'tools/check_lesson_delivery.py',
+              'curriculum/authoring/fixed_view_effects.py',
+          }
+          tracked = subprocess.check_output(['git','diff','--name-only','-z']).decode().split('\0')
+          untracked = subprocess.check_output(['git','ls-files','--others','--exclude-standard','-z']).decode().split('\0')
+          changed = {p for p in tracked + untracked if p}
+          bad = changed - allowed
+          if bad or any(p.startswith(('game/','blender/','web/')) for p in changed):
+              raise SystemExit('Unexpected publication scope: ' + repr(sorted(bad or changed)))
+          if changed:
+              subprocess.run(['git','add','--',*sorted(changed)], check=True)
+          print('Approved fixed-view effects outputs:', len(changed))
+          PY
+          if git diff --cached --quiet; then exit 0; fi
+          ACTUAL_HEAD=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [ "$ACTUAL_HEAD" != "$EXPECTED_HEAD" ]; then
+            echo 'Concurrent main change; refusing overwrite'
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs: teach fixed-view FOV parallax rendering and impact feedback'
+          git push origin HEAD:main
