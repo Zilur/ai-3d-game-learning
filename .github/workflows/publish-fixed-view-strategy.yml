@@ -66,6 +66,9 @@ jobs:
           replace_once('tools/check_course_numbering.py',
               '    lessons = builder.apply_review(lessons, builder.ROWS, sources)\n    rows = builder.validate(lessons, sources)',
               '    lessons = builder.apply_review(lessons, builder.ROWS, sources)\n    lessons = builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    rows = builder.validate(lessons, sources)')
+          replace_once('tools/check_lesson_delivery.py',
+              "def main():\n    manifest = json.loads((ROOT / 'curriculum/materials-manifest.json').read_text(encoding='utf-8'))",
+              "def main():\n    import runpy\n    import build_course_materials as builder\n    lessons = []\n    for name in builder.FILES:\n        lessons.extend(runpy.run_path(str(builder.AUTHOR / name))['LESSONS'])\n    sources = runpy.run_path(str(builder.AUTHOR / 'sources.py'))['SOURCES']\n    lessons = builder.prepare_lessons(lessons, sources)\n    lessons = builder.apply_review(lessons, builder.ROWS, sources)\n    builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    manifest = json.loads((ROOT / 'curriculum/materials-manifest.json').read_text(encoding='utf-8'))")
 
           replace_once('tools/course_order.py',
               "'A': '能看懂对象与空间，借助AI完成走、跑、跳和第三人称观察。',",
@@ -105,6 +108,7 @@ jobs:
               'tools/check_quality_review.py',
               'tools/check_session_readiness.py',
               'tools/check_course_numbering.py',
+              'tools/check_lesson_delivery.py',
               'tools/course_order.py',
               'curriculum/authoring/fixed_view_strategy.py',
               'curriculum/fixed-view-direction.md',
