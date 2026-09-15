@@ -70,6 +70,9 @@ jobs:
           replace_once('tools/course_order.py',
               "'A': '能看懂对象与空间，借助AI完成走、跑、跳和第三人称观察。',",
               "'A': '能看懂对象与空间，借助AI完成走、跑、跳和固定/有限镜头观察。',")
+          replace_once('curriculum/authoring/fixed_view_strategy.py',
+              "if 'Orbit' not in a08['stop'] or '套装' not in d01['title'] or '配色' not in d02['title']:",
+              "if '自由环绕' not in a08['stop'] or '套装' not in d01['title'] or '配色' not in d02['title']:")
           PY
 
           python3 tools/build_course_materials.py
@@ -103,6 +106,7 @@ jobs:
               'tools/check_session_readiness.py',
               'tools/check_course_numbering.py',
               'tools/course_order.py',
+              'curriculum/authoring/fixed_view_strategy.py',
               'curriculum/fixed-view-direction.md',
           }
           tracked = subprocess.check_output(['git','diff','--name-only','-z']).decode().split('\0')
