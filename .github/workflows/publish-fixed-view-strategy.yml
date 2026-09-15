@@ -76,6 +76,15 @@ jobs:
           replace_once('curriculum/authoring/fixed_view_strategy.py',
               "if 'Orbit' not in a08['stop'] or '套装' not in d01['title'] or '配色' not in d02['title']:",
               "if '自由环绕' not in a08['stop'] or '套装' not in d01['title'] or '配色' not in d02['title']:")
+          replace_once('tools/numbered_navigation.py',
+              "'**基本路线：** A01–A08 → B01–B13 → C01–C12 → D07。D01–D04为美术强化，D05–D06为动作增强，可在D07前按需完成。E组全为专项选修，核对各课前置后选择。',",
+              "'**基本路线：** A01–A08 → B01–B13 → C01–C12 → D01–D04 → D07。D01–D04是本项目的美术生产主线；D05–D06动作增强、E组专项按需选修。',")
+          replace_once('tools/numbered_navigation.py',
+              "'A、B、C按学习路径推进；D组的选修标记与D07结业分开；E组各专题按需要和前置选择。不能因为跳过选修就阻止主线完成。',",
+              "'A、B、C按学习路径推进；D01–D04继续主线的套装二开与风格统一，D05–D06动作增强按需，D07收束；E组各专题按需要和前置选择。',")
+          replace_once('tools/numbered_navigation.py',
+              '**主线路线：** A → B → C → D07。D01–D04为美术强化，D05–D06为动作增强；E组按需选择。完成当前任务与相关证据比看完47课更重要。',
+              '**主线路线：** A → B → C → D01–D04 → D07。D01–D04是套装二开与风格统一主线；D05–D06动作增强、E组专项按需选择。完成当前任务与相关证据比看完47课更重要。')
           PY
 
           python3 tools/build_course_materials.py
@@ -93,6 +102,7 @@ jobs:
           grep -q '^# D05｜动作资源复用' openmaic/lessons/D05.md
           grep -q 'Facade/Shell' openmaic/lessons/C02.md
           grep -q '固定视角 + 套装二开工作流' curriculum/lesson-index.md
+          grep -q 'C01–C12 → D01–D04 → D07' curriculum/lesson-index.md
       - name: Commit reviewed course outputs only
         env:
           EXPECTED_HEAD: ${{ github.sha }}
@@ -110,6 +120,7 @@ jobs:
               'tools/check_course_numbering.py',
               'tools/check_lesson_delivery.py',
               'tools/course_order.py',
+              'tools/numbered_navigation.py',
               'curriculum/authoring/fixed_view_strategy.py',
               'curriculum/fixed-view-direction.md',
           }
