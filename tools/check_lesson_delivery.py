@@ -3,6 +3,7 @@ from pathlib import Path
 import json
 import re
 import sys
+from scenario_sections import ROWS
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -22,6 +23,10 @@ def main():
             assert text.count('```') % 2 == 0, (ident, folder, 'unbalanced fences')
             assert '```mermaid' in text, (ident, folder, 'missing concept structure')
             if ident != 'A05':
+                panel = text.split('### 对话4', 1)[1].split('### 对话5', 1)[0]
+                copied = panel.split('```text', 1)[1].split('```', 1)[0]
+                for entry, action, observation in ROWS[ident]['tweaks']:
+                    assert entry in copied and action in copied and observation in copied, (ident, folder, 'tuning prompt depends on an unseen table')
                 for step in range(3, 7):
                     assert f'### 对话{step}' in text, (ident, folder, step)
                 for word in ('预计看到','必须保持','暂停','恢复','证据'):
