@@ -166,8 +166,6 @@ def generated(lessons, sources, by_id):
         if overlap:
             raise ValueError(f'Duplicate authored pages: {overlap}')
         output.update(pages)
-    practical_pages = runpy.run_path(str(AUTHOR / 'site_practical.py'))['PAGES']
-    output.update(practical_pages)
     # Existing practical files remain; point readers to the canonical classroom text.
     markers = {
         'curriculum/beginner/01-3d-space/practice.md': '> v4学生讲义：[A02](../../lessons/A02.md)、[A07](../../lessons/A07.md)。本操作单保留作后续真机补充，课程生成先用统一规格。',
@@ -194,6 +192,8 @@ def generated(lessons, sources, by_id):
     enrich_review(output, by_id, ORDER, ROWS, DISPLAY)
     enrich_sessions(output, by_id, ORDER, ROWS, DISPLAY)
     finalize_navigation(output, by_id, ORDER, ROWS)
+    practical_pages = runpy.run_path(str(AUTHOR / 'site_practical.py'))['PAGES']
+    output.update(practical_pages)
     enrich_fixed_view(output, by_id, ORDER, ROWS)
     enrich_fixed_view_effects(output, by_id, ORDER, ROWS)
     manifest = {'version':'fixed-view-effects-2026-09-15','date':'2026-09-15','lesson_count':47,
