@@ -92,7 +92,7 @@ jobs:
           grep -q '^# D02｜风格统一' openmaic/lessons/D02.md
           grep -q '^# D05｜动作资源复用' openmaic/lessons/D05.md
           grep -q 'Facade/Shell' openmaic/lessons/C02.md
-          grep -q '固定视角套装二开工作流' curriculum/lesson-index.md
+          grep -q '固定视角 + 套装二开工作流' curriculum/lesson-index.md
       - name: Commit reviewed course outputs only
         env:
           EXPECTED_HEAD: ${{ github.sha }}
