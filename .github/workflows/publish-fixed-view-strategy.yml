@@ -60,10 +60,12 @@ jobs:
           replace_once('tools/check_quality_review.py',
               '    lessons = review.apply_review(lessons, builder.ROWS, sources)\n    by_id = builder.validate(lessons, sources)',
               '    lessons = review.apply_review(lessons, builder.ROWS, sources)\n    lessons = builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    by_id = builder.validate(lessons, sources)')
-          for path in ('tools/check_session_readiness.py','tools/check_course_numbering.py'):
-              replace_once(path,
-                  '    lessons = builder.apply_review(lessons, builder.ROWS, sources)\n    by_id = builder.validate(lessons, sources)',
-                  '    lessons = builder.apply_review(lessons, builder.ROWS, sources)\n    lessons = builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    by_id = builder.validate(lessons, sources)')
+          replace_once('tools/check_session_readiness.py',
+              '    lessons = builder.apply_review(lessons, builder.ROWS, sources)\n    by_id = builder.validate(lessons, sources)',
+              '    lessons = builder.apply_review(lessons, builder.ROWS, sources)\n    lessons = builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    by_id = builder.validate(lessons, sources)')
+          replace_once('tools/check_course_numbering.py',
+              '    lessons = builder.apply_review(lessons, builder.ROWS, sources)\n    rows = builder.validate(lessons, sources)',
+              '    lessons = builder.apply_review(lessons, builder.ROWS, sources)\n    lessons = builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    rows = builder.validate(lessons, sources)')
 
           replace_once('tools/course_order.py',
               "'A': '能看懂对象与空间，借助AI完成走、跑、跳和第三人称观察。',",
@@ -78,8 +80,11 @@ jobs:
           python3 tools/check_session_readiness.py
           python3 tools/validate_repo.py
           grep -q '^# A08｜固定/有限镜头' openmaic/lessons/A08.md
+          grep -q '^# C01｜小地图扩展：用固定镜头' openmaic/lessons/C01.md
+          grep -q '^# C02｜世界美化：镜头决定世界' openmaic/lessons/C02.md
           grep -q '^# D01｜资产套装二开' openmaic/lessons/D01.md
           grep -q '^# D02｜风格统一' openmaic/lessons/D02.md
+          grep -q '^# D05｜动作资源复用' openmaic/lessons/D05.md
           grep -q 'Facade/Shell' openmaic/lessons/C02.md
           grep -q '固定视角套装二开工作流' curriculum/lesson-index.md
       - name: Commit reviewed course outputs only
