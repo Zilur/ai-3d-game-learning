@@ -60,3 +60,7 @@ I08导航、X动作和A高级按需选择；未选不计入基础版验收。制
 [精致Demo验收](demo-quality.md) · [界面参数深度](interface-map.md) · [全部应用情境](application-map.md)
 
 [逐课质量审查](quality-review.md) · [AI协作考察](../assessments/ai-collaboration.md) · [必记卡](../print/ai-control-card.md)
+
+## 开始之前与复测
+
+[第一次学习怎么开始](first-session.md) · [预览、亲调与保存](preview-and-save.md) · [不含答案的迁移任务](../assessments/transfer-stations.md)。每课对话1已含准备条件、首步和结束证据；不必重复粘贴六个提示框。

@@ -25,3 +25,7 @@ demo_extension.py是扩图、美化、X02和I12的作者修订源；conversation
 ## v7质量审查源
 
 review_*.py保存逐课职责、诊断题、证据与审查说明；tools/quality_review.py在v6课程装配后应用。不得只改生成MD。更新运行build_course_materials.py --check、check_quality_review.py、validate_repo.py。结构检查只证明一致性，不证明教学效果。B09不能提前验B10/B12功能；A05全K不增实操门槛。
+
+## 学习接续维护
+
+session_readiness.py与session_pages.py维护入场材料/缺失分支和使用说明；tools/session_coach.py在原课件装配后补同一份输出，不增加第四套课号。对话1必须自带首步、继续条件与证据；公开迁移题只是自测，不是防作弊系统。执行check_session_readiness.py与现有验证，不把静态检查称为课堂试教。

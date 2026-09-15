@@ -1,3 +1,5 @@
+> 学习接续修订：[第一次怎么开始](curriculum/first-session.md) · [预览与保存](curriculum/preview-and-save.md)。47课启动框可独立带出本课路线；缺配套不冒充完成。
+
 > v7审查：[逐课检查](curriculum/quality-review.md) · [AI协作能力](assessments/ai-collaboration.md) · [评分校准](assessments/grading-calibration.md)。每课已有具体人/AI分工和M—实操—题目对应；新课实际效果仍待试学。
 
 # AI时代：做一个精致的小型3D游戏

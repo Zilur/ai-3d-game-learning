@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import runpy
 import sys
+from session_coach import enrich_sessions
 from scenario_sections import validate_scenarios, decorate_lesson, enrich_output, ROWS, DISPLAY
 from demo_coach import prepare_lessons, enrich_demo, validate_coaching
 from quality_review import apply_review, enrich_review
@@ -181,6 +182,7 @@ def generated(lessons, sources, by_id):
     enrich_output(output, by_id, ORDER)
     enrich_demo(output, by_id, ORDER, ROWS, DISPLAY)
     enrich_review(output, by_id, ORDER, ROWS, DISPLAY)
+    enrich_sessions(output, by_id, ORDER, ROWS, DISPLAY)
     manifest = {'version':'v7-audited-collaboration','date':'2026-09-15','lesson_count':47,
         'units':[{'id':ident,'display':DISPLAY[ident],'dialogue':'curriculum/dialogues/'+ident+'.md','prerequisites':by_id[ident]['prereq'],'concepts':by_id[ident]['concepts'],
                   'status':'manuscript-reviewed; classroom-not-generated; learner-not-tested'} for ident in ORDER],

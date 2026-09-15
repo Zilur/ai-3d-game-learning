@@ -1,0 +1,428 @@
+{
+  "kind": "author-designed-readiness; not-runtime-or-learner-validation",
+  "date": "2026-09-15",
+  "count": 47,
+  "units": [
+    {
+      "id": "R01",
+      "display": "A-01",
+      "mode": "observe",
+      "minimum": "一张你确实能查看的参考图，或一段自己的偏好描述；没有图也可先练表达，但不能凭空评价画面。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "B01A",
+      "display": "A-02",
+      "mode": "engine",
+      "minimum": "一个可选中的方块、带文字的世界轴、可观察的视口；还不需要玩家、物理或完整关卡。",
+      "reference": [
+        "game/scenes/lab.tscn",
+        "已有综合实验参考；需核对本课参数，不能等同于整堂课的起点已验收。"
+      ],
+      "support_fade": false
+    },
+    {
+      "id": "B02",
+      "display": "A-03",
+      "mode": "engine",
+      "minimum": "一个模块根节点、一个外观子节点和功能位置标记；不需要先有移动脚本。",
+      "reference": [
+        "game/lessons/b02/starter.tscn",
+        "已有起始场景；本课无玩家，打开当前场景，不把主游戏误当练习。"
+      ],
+      "support_fade": false
+    },
+    {
+      "id": "B04",
+      "display": "B-01",
+      "mode": "engine",
+      "minimum": "一堵外观与碰撞分开的墙、可用于测试的物理角色、一个检测区；移动能力可由提供的测试器承担，本课不考编写控制器。",
+      "reference": [
+        "game/scenes/main.tscn",
+        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+      ],
+      "support_fade": false
+    },
+    {
+      "id": "B03",
+      "display": "B-02",
+      "mode": "engine",
+      "minimum": "已经能碰撞的地面与测试角色、可编辑控制脚本或明确的局部操作入口；计时/距离记录可由AI准备。",
+      "reference": [
+        "game/scenes/main.tscn",
+        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+      ],
+      "support_fade": false
+    },
+    {
+      "id": "B05",
+      "display": "B-03",
+      "mode": "engine",
+      "minimum": "已有走跑、地面和一块已知高度低平台；能观察起跳与落地，不要求正式角色动画。",
+      "reference": [
+        "game/scenes/main.tscn",
+        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+      ],
+      "support_fade": false
+    },
+    {
+      "id": "B01B",
+      "display": "A-04",
+      "mode": "engine",
+      "minimum": "可选中的父子物体、门板与支点；比较时有同一关闭位置和不变的尺度。",
+      "reference": [
+        "game/scenes/lab.tscn",
+        "已有空间/门轴参考；真实导出原点仍另验。"
+      ],
+      "support_fade": false
+    },
+    {
+      "id": "B06",
+      "display": "B-04",
+      "mode": "engine",
+      "minimum": "已能走跳的角色和简单墙角；能够运行、停止并释放鼠标，不要求新美术素材。",
+      "reference": [
+        "game/scenes/main.tscn",
+        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+      ],
+      "support_fade": false
+    },
+    {
+      "id": "R02",
+      "display": "C-01",
+      "mode": "observe",
+      "minimum": "确实可查看的同一道具轮廓或形体变式，以及统一的观察大小；没有图先用标明的简化形状。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "B07",
+      "display": "C-02",
+      "mode": "asset",
+      "minimum": "一件来源明确、允许本次使用的可编辑静态道具副本；没有角色也能学，不在唯一源文件上修改。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "R03",
+      "display": "C-03",
+      "mode": "observe",
+      "minimum": "同一布局的主体、背景及可控颜色样本；固定轮廓与观察机位。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "B08",
+      "display": "C-04",
+      "mode": "engine",
+      "minimum": "两个可独立调材质的球、固定相机灯光和邻近灰箱；共享实验单独切换，不能假设已有参考场景全部实现。",
+      "reference": [
+        "game/labs/material_lab.tscn",
+        "已有双球参考；共享/独立切换并非该场景默认配齐，缺少部分先标未实现。"
+      ],
+      "support_fade": false
+    },
+    {
+      "id": "B09",
+      "display": "C-05",
+      "mode": "asset",
+      "minimum": "可编辑静态源文件、交换文件和当前已有的Godot包装；只验现有尺寸、材质与功能标记，不提前要求拾取和重开。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "B10",
+      "display": "B-05",
+      "mode": "engine",
+      "minimum": "已能移动的玩家、一颗有检测形状的星星及计数观察入口；防重和通知是本课逐步接入的部分，不必课前全部实现。",
+      "reference": [
+        "game/scenes/main.tscn",
+        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+      ],
+      "support_fade": false
+    },
+    {
+      "id": "B11",
+      "display": "B-06",
+      "mode": "engine",
+      "minimum": "已经有证据确认的拾取成功事件和计数；不需要预先具备声音、粒子或整套特效。",
+      "reference": [
+        "game/scenes/main.tscn",
+        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+      ],
+      "support_fade": false
+    },
+    {
+      "id": "B12",
+      "display": "B-07",
+      "mode": "engine",
+      "minimum": "已有有效拾取和明确进度来源；能改变运行窗口大小，本课再接完成、重开和布局。",
+      "reference": [
+        "game/scenes/main.tscn",
+        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+      ],
+      "support_fade": false
+    },
+    {
+      "id": "B13",
+      "display": "B-08",
+      "mode": "engine",
+      "minimum": "可运行的小场地、角色/目标、主光与环境；已有相机、材质及曝光基线可以记录。",
+      "reference": [
+        "game/scenes/main.tscn",
+        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+      ],
+      "support_fade": false
+    },
+    {
+      "id": "R04",
+      "display": "C-06",
+      "mode": "observe",
+      "minimum": "一件实际可查看且来源可追溯的作品，以及一个能够画简图或摆体块的练习位置；不自动下载原图。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "B14",
+      "display": "B-09",
+      "mode": "data",
+      "minimum": "约定的目标设备/画质/路线与一小段帧时间记录；没有真实数据时使用标明的合成样本，只评分析而非性能结果。",
+      "reference": [
+        "game/scenes/main.tscn",
+        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+      ],
+      "support_fade": false
+    },
+    {
+      "id": "B15",
+      "display": "D-01",
+      "mode": "data",
+      "minimum": "一处明确的预期/实际差异、最近修改和可回退版本；无真实故障时用教学修改卡，不假装读过个人项目。",
+      "reference": [
+        "game/scenes/main.tscn",
+        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+      ],
+      "support_fade": true
+    },
+    {
+      "id": "B16",
+      "display": "B-10",
+      "mode": "engine",
+      "minimum": "已有可完成并重开的收集小循环，以及一种新拾取物的需求；不以完整美术包作为前置。",
+      "reference": [
+        "game/scenes/main.tscn",
+        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+      ],
+      "support_fade": true
+    },
+    {
+      "id": "I13",
+      "display": "B-11",
+      "mode": "engine",
+      "minimum": "已经验证的初级小庭院与走跑跳/镜头参数基线；新增两段路用灰盒，不要求地形插件。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "I14",
+      "display": "B-12",
+      "mode": "engine",
+      "minimum": "已能跑通的庭院、林路、观景台，以及风格卡和三个观察点；先有一个入口转角可作样板。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "I01",
+      "display": "E-01",
+      "mode": "asset",
+      "minimum": "现有控制器和占位外观，以及实际提供的候选角色与来源说明；没有可用角色时只做资源卡选择。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "I02",
+      "display": "E-02",
+      "mode": "engine",
+      "minimum": "一个已验过基本兼容的角色与确实存在的动作片段；没有跑/跳片段不编造名称，先做可支持的最小状态。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "I03",
+      "display": "D-02",
+      "mode": "engine",
+      "minimum": "至少两个同类实例、可检查的资源引用和独立状态；不用一上来复制整个资源库。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "I04",
+      "display": "E-03",
+      "mode": "engine",
+      "minimum": "已有支点、碰撞、触发或交互测试入口；主任务只选一种门/机关，平台是可选变式。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "I05",
+      "display": "E-04",
+      "mode": "asset",
+      "minimum": "两三件简单模块、统一尺寸参照及棋盘格诊断材质；不要求人物UV或高分辨率素材包。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "I06",
+      "display": "E-05",
+      "mode": "engine",
+      "minimum": "真实目标设备/渲染器、一个静态样本及会移动的对象；不强制两个候选方案都已实现。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "I07",
+      "display": "E-06",
+      "mode": "data",
+      "minimum": "一个明确运行症状、条件记录和对照；无实测就分析合成案例，不给优化收益保证。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "I08",
+      "display": "E-07",
+      "mode": "optional",
+      "minimum": "已选择导航路线、可移除的测试场景、一个通道与巡逻对象；纯机关路线跳过。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "I09",
+      "display": "E-08",
+      "mode": "engine",
+      "minimum": "一个已有机关或可交互对象、输入意图、距离/目标可观察入口；不需要背包。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "I10",
+      "display": "D-03",
+      "mode": "data",
+      "minimum": "最小需要保存的进度/设置，以及正常、缺失、损坏的测试数据副本；不用真实玩家唯一存档。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "R05",
+      "display": "C-07",
+      "mode": "asset",
+      "minimum": "一件许可适用的可编辑基底、风格卡、游戏距离机位和只读原件；坏基底允许换，不强迫从零建模。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "R06",
+      "display": "C-08",
+      "mode": "asset",
+      "minimum": "两三件道具及中性对照环境；只有Blender预览时先记录引擎验证未做。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "R07",
+      "display": "C-09",
+      "mode": "data",
+      "minimum": "少量真实或明确标为示意的资产卡、源/变体关系和来源信息；不以资产数量作为成绩。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "R08",
+      "display": "C-10",
+      "mode": "observe",
+      "minimum": "一个实际可查看的场景样本或转角、自己的风格卡和资产信息；没有完整地图不声称整图已完成。",
+      "reference": null,
+      "support_fade": true
+    },
+    {
+      "id": "X01",
+      "display": "E-10",
+      "mode": "optional",
+      "minimum": "已选动作复用路线、一个角色及真实动作文件或说明卡；无许可清楚的片段时只做选型判断。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "X02",
+      "display": "E-11",
+      "mode": "optional",
+      "minimum": "已试过兼容的一段原地攻击、可恢复的控制器和木桩测试副本；没有真实动作只做时间线模拟。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "I11",
+      "display": "D-04",
+      "mode": "engine",
+      "minimum": "选定目标平台的可运行项目、资源来源清单和测试数据；没有实际导出包时只能准备交付检查，不能宣称发布通过。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "I12",
+      "display": "E-09",
+      "mode": "engine",
+      "minimum": "已完成的基础版可探索小关卡、来源与实际测试记录；仅选择增强版者再准备训练角证据。",
+      "reference": null,
+      "support_fade": true
+    },
+    {
+      "id": "A01",
+      "display": "E-12",
+      "mode": "optional",
+      "minimum": "一个实际需要进一步测量的问题、对应构建和基线；没有问题可不选本课。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "A02",
+      "display": "E-13",
+      "mode": "optional",
+      "minimum": "一个明确视觉目标、效果对照样本及渲染器约束；先选一种效果，不要求全套着色器。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "A03",
+      "display": "E-14",
+      "mode": "optional",
+      "minimum": "发生旋转问题的对象/父子关系，或带标签的170至-170度示意；先给路径目标。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "A04",
+      "display": "E-15",
+      "mode": "optional",
+      "minimum": "一个已有证据的重复物体或加载问题及固定观察路线；小世界不为完成本课强行扩建。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "A05",
+      "display": "E-16",
+      "mode": "decision",
+      "minimum": "两人同时请求一件物品的教学时间线即可；不需要网络项目、服务器或软件操作。",
+      "reference": null,
+      "support_fade": false
+    },
+    {
+      "id": "A06",
+      "display": "E-17",
+      "mode": "optional",
+      "minimum": "一个已选专项的目标、基线和实际证据；未完成专项时先选择范围，不把实验计划当实验成功。",
+      "reference": null,
+      "support_fade": true
+    }
+  ]
+}
