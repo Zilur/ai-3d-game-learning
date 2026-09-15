@@ -42,10 +42,10 @@
 |C10|可交互对象：提示、条件和结果|C06|主线|[阅读](lessons/C10.md)|[复制全文](../openmaic/lessons/C10.md)|[开始](dialogues/C10.md)|
 |C11|存档与设置：能恢复比能写入更重要|C10|主线|[阅读](lessons/C11.md)|[复制全文](../openmaic/lessons/C11.md)|[开始](dialogues/C11.md)|
 |C12|交付：别人电脑上第一次运行|C11、C09|主线|[阅读](lessons/C12.md)|[复制全文](../openmaic/lessons/C12.md)|[开始](dialogues/C12.md)|
-|D01|资产套装二开：从基底拼装成自己的道具|C07、B10|美术强化选修|[阅读](lessons/D01.md)|[复制全文](../openmaic/lessons/D01.md)|[开始](dialogues/D01.md)|
-|D02|风格统一：配色、材质、边缘与细节密度|D01、C08|美术强化选修|[阅读](lessons/D02.md)|[复制全文](../openmaic/lessons/D02.md)|[开始](dialogues/D02.md)|
-|D03|长期资产库：主套装、基底、变体与组合规则|D02、C05|美术强化选修|[阅读](lessons/D03.md)|[复制全文](../openmaic/lessons/D03.md)|[开始](dialogues/D03.md)|
-|D04|美术结业：用套装二开拼出自己的童话场景|D03|美术强化选修|[阅读](lessons/D04.md)|[复制全文](../openmaic/lessons/D04.md)|[开始](dialogues/D04.md)|
+|D01|资产套装二开：从基底拼装成自己的道具|C07、B10|美术主线｜套装二开与统一|[阅读](lessons/D01.md)|[复制全文](../openmaic/lessons/D01.md)|[开始](dialogues/D01.md)|
+|D02|风格统一：配色、材质、边缘与细节密度|D01、C08|美术主线｜套装二开与统一|[阅读](lessons/D02.md)|[复制全文](../openmaic/lessons/D02.md)|[开始](dialogues/D02.md)|
+|D03|长期资产库：主套装、基底、变体与组合规则|D02、C05|美术主线｜套装二开与统一|[阅读](lessons/D03.md)|[复制全文](../openmaic/lessons/D03.md)|[开始](dialogues/D03.md)|
+|D04|美术结业：用套装二开拼出自己的童话场景|D03|美术主线｜套装二开与统一|[阅读](lessons/D04.md)|[复制全文](../openmaic/lessons/D04.md)|[开始](dialogues/D04.md)|
 |D05|动作资源复用：动作包兼容、重定向与融合|C04|动作增强选修|[阅读](lessons/D05.md)|[复制全文](../openmaic/lessons/D05.md)|[开始](dialogues/D05.md)|
 |D06|轻战斗融入：现成攻击动作与可重复训练木桩|D05、B06、B07、C06|动作增强选修|[阅读](lessons/D06.md)|[复制全文](../openmaic/lessons/D06.md)|[开始](dialogues/D06.md)|
 |D07|精致Demo结业：完整探索关卡与可选训练角|C12、C04、C06、C02|主线收束｜只验已选范围|[阅读](lessons/D07.md)|[复制全文](../openmaic/lessons/D07.md)|[开始](dialogues/D07.md)|
