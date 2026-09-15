@@ -6,11 +6,11 @@
 
 |阶段/任务|经常亲手调|能找到入口|用时查询、不强制记忆|
 |---|---|---|---|
-|空间与结构 B01/B02|选中正确父/子节点、Position/Rotation/Scale|Scene/FileSystem/Inspector、运行场景|所有节点类型、Transform3D数学API|
-|移动 B03/B05|walk/run/jump/gravity等暴露参数|Input Map与输出日志|事件类、计时测试脚本、台阶处理|
-|碰撞 B04/B10|Shape/Disabled、Layer/Mask|运行时碰撞可视化、Area Monitoring|凸凹网格生成选项、物理底层|
-|镜头 B06|FOV、距离、灵敏度、俯仰限制|SpringArm、鼠标捕获/退出|投影数学、相机框架|
-|材质与灯光 B08/B13|基础色、粗糙度、金属度、自发光、主光和环境|资源共享/独立、渲染器名称|复杂GI、反射/阴影算法|
+|空间与结构 A02/A03|选中正确父/子节点、Position/Rotation/Scale|Scene/FileSystem/Inspector、运行场景|所有节点类型、Transform3D数学API|
+|移动 A05/A06|walk/run/jump/gravity等暴露参数|Input Map与输出日志|事件类、计时测试脚本、台阶处理|
+|碰撞 A04/B06|Shape/Disabled、Layer/Mask|运行时碰撞可视化、Area Monitoring|凸凹网格生成选项、物理底层|
+|镜头 A08|FOV、距离、灵敏度、俯仰限制|SpringArm、鼠标捕获/退出|投影数学、相机框架|
+|材质与灯光 B04/B09|基础色、粗糙度、金属度、自发光、主光和环境|资源共享/独立、渲染器名称|复杂GI、反射/阴影算法|
 |中级动画与交互|状态条件、过渡时间、检测距离|AnimationPlayer/Tree、当前目标|重定向、IK、Root Motion完整实现|
 |性能/发布|同条件采样、选定平台设置|Profiler/Monitors、Export|外部GPU分析器、平台签名|
 
@@ -20,13 +20,13 @@
 
 |任务|经常亲手调|能找到入口|用时查询、不强制记忆|
 |---|---|---|---|
-|看与选 B07|视口观察、选对象、Object/Edit区别、Transform/Dimensions|Outliner、局部显示、正交/相机视角|完整快捷键表|
-|基底改造 R05|局部移动/缩放、少量Extrude/Bevel、修改器启停|Mirror、法线检查、Set Origin|复杂拓扑、雕刻笔刷、重拓扑|
-|材质 B08/R06|基础颜色、Roughness/Metallic/Emission|材质槽、资源副本、预览/渲染差异|节点全集、BRDF、复杂烘焙|
-|静态导出 B09|导出选中对象并核对尺寸/朝向|源文件、副本、GLB选项|高级动画导出扩展|
-|简单UV I05|棋盘格检查、简单UV岛比例|UV Editor与图像贴图|复杂人物展开、Trim Sheet制作|
-|动作复用 X01/X02|预览、裁剪范围、速度与小幅过渡|Action/Dope Sheet/NLA|动捕清理、手工绑定、权重修复|
-|资源库 R07|命名、预览、元数据、版本与变体|Asset Browser/Catalog、Append/Link|复杂库链接覆盖和批量迁移|
+|看与选 B02|视口观察、选对象、Object/Edit区别、Transform/Dimensions|Outliner、局部显示、正交/相机视角|完整快捷键表|
+|基底改造 D01|局部移动/缩放、少量Extrude/Bevel、修改器启停|Mirror、法线检查、Set Origin|复杂拓扑、雕刻笔刷、重拓扑|
+|材质 B04/D02|基础颜色、Roughness/Metallic/Emission|材质槽、资源副本、预览/渲染差异|节点全集、BRDF、复杂烘焙|
+|静态导出 B05|导出选中对象并核对尺寸/朝向|源文件、副本、GLB选项|高级动画导出扩展|
+|简单UV C07|棋盘格检查、简单UV岛比例|UV Editor与图像贴图|复杂人物展开、Trim Sheet制作|
+|动作复用 D05/D06|预览、裁剪范围、速度与小幅过渡|Action/Dope Sheet/NLA|动捕清理、手工绑定、权重修复|
+|资源库 D03|命名、预览、元数据、版本与变体|Asset Browser/Catalog、Append/Link|复杂库链接覆盖和批量迁移|
 
 Apply Transform不是一键万能修复：先确认静态资产、层级与动画影响并留副本。不要把绑定角色照静态箱子同样处理。
 

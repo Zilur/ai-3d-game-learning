@@ -4,18 +4,18 @@
 
 |编号|概念|官方来源|核对用途|
 |---|---|---|---|
-|S01|C03/C04|[Godot Node3D](https://docs.godotengine.org/en/stable/classes/class_node3d.html)|父空间、自身方向、世界位置不同；不把学习目标扩大为矩阵推导|
-|S02|C08/C09|[CharacterBody3D](https://docs.godotengine.org/en/stable/classes/class_characterbody3d.html)|velocity是速度；不要重复乘delta；落地来自物理移动结果|
-|S03|C06/C07/C16|[Area3D](https://docs.godotengine.org/en/stable/classes/class_area3d.html)|monitoring、Mask、body_entered与检测更新|
-|S04|C10|[SpringArm教程](https://docs.godotengine.org/en/stable/tutorials/3d/spring_arm.html)|第三人称镜头障碍检测，不需自己实现完整算法|
-|S05|C12/C13/C14|[StandardMaterial3D](https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html)|常用参数、Emission与表面细节的实际含义|
-|S06|C15|[Blender glTF](https://docs.blender.org/manual/en/latest/addons/scene_gltf2.html)|格式支持不等于Blender任意节点树原样导出|
-|S07|C02/C15|[Blender Apply](https://docs.blender.org/manual/en/latest/scene_layout/object/editing/apply.html)|变换应用与对象关系，静态小资产不能代表所有角色流程|
-|S08|C04|[Object Origin](https://docs.blender.org/manual/en/latest/scene_layout/object/origin.html)|对象原点与操作支点的区别|
-|S09|C19/C32|[优化与测量](https://docs.godotengine.org/en/stable/tutorials/performance/general_optimization.html)|识别瓶颈、对照和再测，不盲目优化所有内容|
+|S01|KN03/KN04|[Godot Node3D](https://docs.godotengine.org/en/stable/classes/class_node3d.html)|父空间、自身方向、世界位置不同；不把学习目标扩大为矩阵推导|
+|S02|KN08/KN09|[CharacterBody3D](https://docs.godotengine.org/en/stable/classes/class_characterbody3d.html)|velocity是速度；不要重复乘delta；落地来自物理移动结果|
+|S03|KN06/KN07/KN16|[Area3D](https://docs.godotengine.org/en/stable/classes/class_area3d.html)|monitoring、Mask、body_entered与检测更新|
+|S04|KN10|[SpringArm教程](https://docs.godotengine.org/en/stable/tutorials/3d/spring_arm.html)|第三人称镜头障碍检测，不需自己实现完整算法|
+|S05|KN12/KN13/KN14|[StandardMaterial3D](https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html)|常用参数、Emission与表面细节的实际含义|
+|S06|KN15|[Blender glTF](https://docs.blender.org/manual/en/latest/addons/scene_gltf2.html)|格式支持不等于Blender任意节点树原样导出|
+|S07|KN02/KN15|[Blender Apply](https://docs.blender.org/manual/en/latest/scene_layout/object/editing/apply.html)|变换应用与对象关系，静态小资产不能代表所有角色流程|
+|S08|KN04|[Object Origin](https://docs.blender.org/manual/en/latest/scene_layout/object/origin.html)|对象原点与操作支点的区别|
+|S09|KN19/KN32|[优化与测量](https://docs.godotengine.org/en/stable/tutorials/performance/general_optimization.html)|识别瓶颈、对照和再测，不盲目优化所有内容|
 |S10|OpenMAIC输入|[官方生成流程](https://github.com/THU-MAIC/OpenMAIC/blob/main/skills/openmaic/references/generate-flow.md)|内容要求与API字段分开，提交任务不等于成功|
 |S11|版本|[Godot archive](https://godotengine.org/download/archive/)|固定实际使用版本，不要求追开发版|
-|S12|C17|[Godot Resources](https://docs.godotengine.org/en/stable/tutorials/scripting/resources.html)|资源共享是日常参数修改必须验收的影响范围，不需学习缓存源码|
+|S12|KN17|[Godot Resources](https://docs.godotengine.org/en/stable/tutorials/scripting/resources.html)|资源共享是日常参数修改必须验收的影响范围，不需学习缓存源码|
 
 本轮重点重新核对S01/S02/S09/S12来界定“必须懂的行为”和“不必深入的实现”。其余为既有官方参考入口，不声称本轮全部逐条重新验证。
 

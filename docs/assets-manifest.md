@@ -3,7 +3,7 @@
 |文件|来源/用途|验证边界|
 |---|---|---|
 |game/assets/star.obj|本课程程序化星星，默认10星关卡使用|Godot导入/网格结构检查；不等于视觉审美验收|
-|game/assets/star.gltf|本课程静态星星，tools/make_star.py可重建|保留作B09往返练习，不含角色绑定|
+|game/assets/star.gltf|本课程静态星星，tools/make_star.py可重建|保留作B05往返练习，不含角色绑定|
 |blender/create_star.py|本课程Blender生成脚本|Python语法可自动检查，Blender实际执行待测|
 |game/materials/uv_checker.gdshader|本课程UV诊断示例|用途是观察贴图分布，不是初级Shader实现考题|
 |game/lessons/b02/*|本次课程制作的基础几何/场景|不使用外部模型或纹理|

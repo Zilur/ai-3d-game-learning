@@ -1,18 +1,18 @@
 # 美术沟通词汇：只学到能看、能说、能改
 
-本表ART编号不替代技术C01–C32。M/K仍表示当前任务的学习深度；英文是检索和沟通的桥梁，不做拼写考试。
+本表ART编号不替代技术KN01–KN32。M/K仍表示当前任务的学习深度；英文是检索和沟通的桥梁，不做拼写考试。
 
 |编号/课|词与人话|本课M到哪里|K或按需查的边界|
 |---|---|---|---|
-|ART01 / R01|Style brief 风格说明；保留/排除项|用五维描述让AI知道目标和禁区|不背艺术流派史|
-|ART02 / R01/R02|Silhouette 剪影；Proportion 比例；Negative space 空隙形成的形状|在缩略图辨认轮廓，修一处比例或间隙|不要求解剖学或雕刻工艺|
-|ART03 / R02/R05|Primary/Secondary/Tertiary 主形/中形/小细节；Detail density 细节密度|先大后小，按游戏镜头决定细节预算|不把某个固定比例当万能配方|
-|ART04 / R03/R06|Hue/Saturation/Value 色相/饱和/明暗；Palette 色盘|固定其他条件调关系，选择有理由的色盘|不学颜色转换公式；软件数值定义用时查|
-|ART05 / R03/R04|Focal point 焦点；Hierarchy 主次；Composition 构图|能说第一眼看到什么，给一个明确调整|不强制黄金比例等规则|
-|ART06 / R04|Moodboard 参考板；Thumbnail 缩略图；Study 局部研习|带问题看一图，提原则后换主题|参考板不是素材授权|
-|ART07 / R06|Look development 质感与外观标准；Painterly 手绘观感；Toon/Cel 卡通分块|建立同风格下不同材质的对照标准|具体描边/手绘/烘焙技术按需学|
-|ART08 / R07|Base mesh 基底；Variant 变体；Kitbash 组合改造；Asset library 资源库|选可靠基底、改造、记录、复用并控制影响范围|不要求制作资产管理平台|
-|ART09 / X02|Anticipation 起势；Contact 接触；Recovery 恢复；Follow-through 跟随动作|选择专题后能读节奏、对齐动作与事件|专业武打编排、动捕清理不是必修|
+|ART01 / A01|Style brief 风格说明；保留/排除项|用五维描述让AI知道目标和禁区|不背艺术流派史|
+|ART02 / A01/B01|Silhouette 剪影；Proportion 比例；Negative space 空隙形成的形状|在缩略图辨认轮廓，修一处比例或间隙|不要求解剖学或雕刻工艺|
+|ART03 / B01/D01|Primary/Secondary/Tertiary 主形/中形/小细节；Detail density 细节密度|先大后小，按游戏镜头决定细节预算|不把某个固定比例当万能配方|
+|ART04 / B03/D02|Hue/Saturation/Value 色相/饱和/明暗；Palette 色盘|固定其他条件调关系，选择有理由的色盘|不学颜色转换公式；软件数值定义用时查|
+|ART05 / B03/B10|Focal point 焦点；Hierarchy 主次；Composition 构图|能说第一眼看到什么，给一个明确调整|不强制黄金比例等规则|
+|ART06 / B10|Moodboard 参考板；Thumbnail 缩略图；Study 局部研习|带问题看一图，提原则后换主题|参考板不是素材授权|
+|ART07 / D02|Look development 质感与外观标准；Painterly 手绘观感；Toon/Cel 卡通分块|建立同风格下不同材质的对照标准|具体描边/手绘/烘焙技术按需学|
+|ART08 / D03|Base mesh 基底；Variant 变体；Kitbash 组合改造；Asset library 资源库|选可靠基底、改造、记录、复用并控制影响范围|不要求制作资产管理平台|
+|ART09 / D06|Anticipation 起势；Contact 接触；Recovery 恢复；Follow-through 跟随动作|选择专题后能读节奏、对齐动作与事件|专业武打编排、动捕清理不是必修|
 
 ## 说给AI听的方式
 

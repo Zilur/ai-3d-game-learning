@@ -9,6 +9,8 @@ import json
 from pathlib import Path
 import runpy
 import sys
+from course_order import ORDER as CANONICAL_ORDER
+from numbered_navigation import finalize_navigation
 from session_coach import enrich_sessions
 from scenario_sections import validate_scenarios, decorate_lesson, enrich_output, ROWS, DISPLAY
 from demo_coach import prepare_lessons, enrich_demo, validate_coaching
@@ -17,14 +19,14 @@ from quality_review import apply_review, enrich_review
 ROOT = Path(__file__).resolve().parents[1]
 AUTHOR = ROOT / 'curriculum/authoring'
 FILES = ['beginner_a.py', 'beginner_b.py', 'intermediate.py', 'advanced.py', 'art.py', 'motion.py']
-ORDER = ['R01', 'B01A', 'B02', 'B04', 'B03', 'B05', 'B01B', 'B06', 'R02', 'B07', 'R03', 'B08', 'B09', 'B10', 'B11', 'B12', 'B13', 'R04', 'B14', 'B15', 'B16', 'I13', 'I14', 'I01', 'I02', 'I03', 'I04', 'I05', 'I06', 'I07', 'I08', 'I09', 'I10', 'R05', 'R06', 'R07', 'R08', 'X01', 'X02', 'I11', 'I12', 'A01', 'A02', 'A03', 'A04', 'A05', 'A06']
+ORDER = CANONICAL_ORDER
 REQUIRED = {'id','title','prereq','concepts','goal','m','k','stop','body','initial','controls','steps','feedback','failure','reset','ui','questions','remember','recall','practice','sources'}
 
 def bullets(values):
     return '\n'.join('- ' + value for value in values)
 
 def validate(lessons, sources):
-    expected = {'B01A','B01B'} | {f'B{i:02}' for i in range(2,17)} | {f'I{i:02}' for i in range(1,15)} | {f'A{i:02}' for i in range(1,7)} | {f'R{i:02}' for i in range(1,9)} | {'X01','X02'}
+    expected = set(CANONICAL_ORDER)
     ids = [row['id'] for row in lessons]
     if set(ids) != expected or len(ids) != 47 or len(set(ORDER)) != 47 or set(ORDER) != expected:
         raise ValueError('Exactly 47 canonical generation units and order entries are required')
@@ -33,10 +35,10 @@ def validate(lessons, sources):
         missing = REQUIRED - row.keys()
         if missing:
             raise ValueError(f"{row['id']} missing {missing}")
-        if len(row['m']) != (0 if row['id'] == 'A05' else 2) or not (1 <= len(row['k']) <= 2):
+        if len(row['m']) != (0 if row['id'] == 'E06' else 2) or not (1 <= len(row['k']) <= 2):
             raise ValueError(f"{row['id']} learning depth mismatch")
         kinds = [q[0] for q in row['questions']]
-        if kinds != (['K'] * 4 if row['id'] == 'A05' else ['P','D','T','K']):
+        if kinds != (['K'] * 4 if row['id'] == 'E06' else ['P','D','T','K']):
             raise ValueError(f"{row['id']} question depth mismatch")
         if len(row['ui']) != 3 or len(row['steps']) != 3 or len(row['body']) < 2:
             raise ValueError(f"{row['id']} missing practical/teaching detail")
@@ -77,7 +79,7 @@ def make_lesson(row, sources, teacher):
         '状态：课件正文与互动规格已编写；尚未逐课生成OpenMAIC课堂或试教。', '',
         '## 1. 本课任务卡', '', f"**产出：** {row['goal']}",
         f"**前置：** {', '.join(row['prereq']) or '无'}；**对应概念：** {row['concepts']}。",
-        '**预计课堂：** ' + ('5–10分钟的认识讨论，可选。' if ident == 'A05' else '20–30分钟，可在实验前后暂停；不含后续真实软件制作时间。'),
+        '**预计课堂：** ' + ('5–10分钟的认识讨论，可选。' if ident == 'E06' else '20–30分钟，可在实验前后暂停；不含后续真实软件制作时间。'),
         '**M 必须掌握：**', bullets(row['m']) if row['m'] else '无。本课全为K认识选修，不进入单机毕业细考。',
         '**K 理解即可：**', bullets(row['k']), f"**停止线：** {row['stop']}", '',
         '## 2. 必要讲解：先看现象，再给术语', '', '\n\n'.join(row['body']), '',
@@ -88,7 +90,7 @@ def make_lesson(row, sources, teacher):
         '**实验步骤：**', '\n'.join(f'{i+1}. {s}' for i,s in enumerate(row['steps'])),
         f"**预期反馈：** {row['feedback']}", f"**故障或反例：** {row['failure']}", f"**复位：** {row['reset']}",
         '**无图/无3D替代：** 用原创简单形状、状态卡或给定时间序列表达同一因果关系；标明“示意”，不得把预设结果说成Godot/Blender实测。不能以假按钮或不响应的截图代替交互。',
-        '**完成判据：** ' + ('只做用途识别，不强制实操、诊断或迁移。' if ident == 'A05' else '对本课两项M提供操作或判断及解释；一个实验可覆盖多项。只有关键M或发现薄弱处才追加故障/变式，不为每个术语加作业。'), '',
+        '**完成判据：** ' + ('只做用途识别，不强制实操、诊断或迁移。' if ident == 'E06' else '对本课两项M提供操作或判断及解释；一个实验可覆盖多项。只有关键M或发现薄弱处才追加故障/变式，不为每个术语加作业。'), '',
         '## 5. 小结与必须牢记', '', bullets(row['remember']), '',
         '## 6. 训练：先作答，再看反馈', '',
         'P=预测，D=诊断，T=迁移，K=用途认识。下面是候选训练，不是每个词都做四次作业。课堂先用预测和一个操作，重点未达标再选D或T；延迟复测换对象，不重复抄答案。', '']
@@ -109,7 +111,7 @@ def make_lesson(row, sources, teacher):
             '> 先提出可实现的页面与互动计划，再生成本课；生成后必须实测控件。参考答案只用于教师反馈，不放在题干或初始幻灯片。前端隐藏不是保密措施。', ''] + lines
         lines += ['## 11. 教师反馈与评分依据（初始课堂不可展示）', '',
             '沿用全仓库0–2锚点：0=缺证据或错误；1=提示后完成或理由不清；2=能选择、解释并验证。实现可由AI提供，评价的是学员判断。课堂不强制凑100分；结业仍按M90/K10反馈，K不能补救关键M失败。',
-            '两项M都需要有效证据，不能按四道题等权平均掩盖能力缺口。普通M用一次有效操作和解释；关键M增加故障/迁移与延迟复测。A05全K只确认用途，没有M成绩。', '']
+            '两项M都需要有效证据，不能按四道题等权平均掩盖能力缺口。普通M用一次有效操作和解释；关键M增加故障/迁移与延迟复测。E06全K只确认用途，没有M成绩。', '']
         for i, (kind, question, answer, hint) in enumerate(row['questions']):
             lines += [f"**{ident}-{kind}{i+1} 核对要点：** {answer}", f'**错因提示：** {hint}',
                 '**反馈策略：** 先指出证据缺口，给该提示；仍困难再示范。看答案后立即复述不算独立掌握。', '']
@@ -129,15 +131,15 @@ def generated(lessons, sources, by_id):
         output[f"openmaic/lessons/{row['id']}.md"] = make_lesson(row, sources, True)
         output[f"curriculum/lessons/{row['id']}.md"] = make_lesson(row, sources, False)
     index = ['# 课程索引：先课件，后素材与真实工程', '',
-        '47份独立生成课件：初级17（B01拆A/B）、中级12、高级6、审美/美术8、动作复用2。编号保留连续性；不要求全部按表学完。',
+        '47份独立生成课件：初级17（A02拆A/B）、中级12、高级6、审美/美术8、动作复用2。编号保留连续性；不要求全部按表学完。',
         '每课都有正文、实验、深度、题目、评分反馈与来源。正文完成不等于课堂生成或试教完成。', '',
         '## 推荐路线', '',
-        'R01 → B01A → B02 → B04 → B03 → B05 → B01B → B06 → R02 → B07 → R03 → B08–B13 → R04 → B14–B16。',
-        '中级I01–I12，I08导航可跳过且不阻塞I09。R05–R08在I05/I06及R04后作为Blender美术进阶。X01/X02与高级A线按实际问题选修。', '',
+        'A01 → A02 → A03 → A04 → A05 → A06 → A07 → A08 → B01 → B02 → B03 → B04–B09 → B10 → B11–B13。',
+        '中级C03–D07，E01导航可跳过且不阻塞C10。D01–D04在C07/C08及B10后作为Blender美术进阶。D05/D06与高级A线按实际问题选修。', '',
         '|课号|主题|前置|深度|学生讲义|OpenMAIC完整输入|', '|---|---|---|---|---|---|']
     for ident in ORDER:
         row = by_id[ident]
-        depth = '全K选修' if ident == 'A05' else '2项M + 必要K'
+        depth = '全K选修' if ident == 'E06' else '2项M + 必要K'
         index.append(f"|{ident}|{row['title']}|{', '.join(row['prereq']) or '无'}|{depth}|[阅读](lessons/{ident}.md)|[复制全文](../openmaic/lessons/{ident}.md)|")
     output['curriculum/lesson-index.md'] = '\n'.join(index) + '\n'
     review = ['# 逐课作者自审记录', '',
@@ -160,10 +162,10 @@ def generated(lessons, sources, by_id):
         output.update(pages)
     # Existing practical files remain; point readers to the canonical classroom text.
     markers = {
-        'curriculum/beginner/01-3d-space/practice.md': '> v4学生讲义：[B01A](../../lessons/B01A.md)、[B01B](../../lessons/B01B.md)。本操作单保留作后续真机补充，课程生成先用统一规格。',
-        'curriculum/beginner/02-scene-node/lesson.md': '> v4课堂主稿：[B02学生讲义](../../lessons/B02.md)；[OpenMAIC完整输入](../../../openmaic/lessons/B02.md)。下方起始/参考工程保留，配套完善在课件之后。',
-        'curriculum/concept-map.md': '> v4技术C01–C32编号保持不变。新增美术词汇见 [美术词汇表](../art/visual-vocabulary.md)，完整课件映射见 [课程索引](lesson-index.md)。',
-        'assessments/exam-blueprint.md': '> v4每课配套题在 [课程索引](../curriculum/lesson-index.md) 的学生讲义中。Cxx-P/T仍为跨课题库；课号题为场景化题，不需要两套都做。审美题按说明与证据评，不按固定审美偏好评。',
+        'curriculum/beginner/01-3d-space/practice.md': '> v4学生讲义：[A02](../../lessons/A02.md)、[A07](../../lessons/A07.md)。本操作单保留作后续真机补充，课程生成先用统一规格。',
+        'curriculum/beginner/02-scene-node/lesson.md': '> v4课堂主稿：[A03学生讲义](../../lessons/A03.md)；[OpenMAIC完整输入](../../../openmaic/lessons/A03.md)。下方起始/参考工程保留，配套完善在课件之后。',
+        'curriculum/concept-map.md': '> v4技术KN01–KN32编号保持不变。新增美术词汇见 [美术词汇表](../art/visual-vocabulary.md)，完整课件映射见 [课程索引](lesson-index.md)。',
+        'assessments/exam-blueprint.md': '> v4每课配套题在 [课程索引](../curriculum/lesson-index.md) 的学生讲义中。KNxx-P/T仍为跨课题库；课号题为场景化题，不需要两套都做。审美题按说明与证据评，不按固定审美偏好评。',
         'docs/validation.md': '> v4仅新增/修订课件与作者工具，未修改game/、blender/或web/实现。旧引擎结果属于其原提交；新课堂均未逐课生成和试教。课件验证另见 [审核记录](../curriculum/lesson-review.md)。',
     }
     for name, marker in markers.items():
@@ -171,8 +173,8 @@ def generated(lessons, sources, by_id):
         if not original.startswith(marker):
             original = marker + '\n\n' + original
         output[name] = original
-    output['curriculum/beginner/01-3d-space/openmaic-spec.md'] = '# B01统一入口\n\n新版使用 [B01A完整生成规格](../../../openmaic/lessons/B01A.md) 和 [B01B完整生成规格](../../../openmaic/lessons/B01B.md)。每次复制一份全文，不再使用旧版一次讲完的长规格。历史文本保留在Git历史，避免并列不同要求。\n'
-    output['curriculum/workshop-recipes.md'] = '# 工作坊规格已并入统一单课\n\n[B04碰撞](../openmaic/lessons/B04.md) · [B08材质](../openmaic/lessons/B08.md) · [B10事件](../openmaic/lessons/B10.md)。三份均含完整讲解、控件、故障、题目和教师反馈。\n\n既有game工程保留，新的逐课素材和起始/完成工程依照用户安排在课件之后完善。不能把生成输入称为已运行课堂。\n'
+    output['curriculum/beginner/01-3d-space/openmaic-spec.md'] = '# A02统一入口\n\n新版使用 [A02完整生成规格](../../../openmaic/lessons/A02.md) 和 [A07完整生成规格](../../../openmaic/lessons/A07.md)。每次复制一份全文，不再使用旧版一次讲完的长规格。历史文本保留在Git历史，避免并列不同要求。\n'
+    output['curriculum/workshop-recipes.md'] = '# 工作坊规格已并入统一单课\n\n[A04碰撞](../openmaic/lessons/A04.md) · [B04材质](../openmaic/lessons/B04.md) · [B06事件](../openmaic/lessons/B06.md)。三份均含完整讲解、控件、故障、题目和教师反馈。\n\n既有game工程保留，新的逐课素材和起始/完成工程依照用户安排在课件之后完善。不能把生成输入称为已运行课堂。\n'
     # Other old requirement links remain valid but cannot compete with the canonical input.
     for path in sorted((ROOT / 'openmaic/requirements').glob('*.md')):
         ident = path.stem.split('-')[0]
@@ -183,7 +185,8 @@ def generated(lessons, sources, by_id):
     enrich_demo(output, by_id, ORDER, ROWS, DISPLAY)
     enrich_review(output, by_id, ORDER, ROWS, DISPLAY)
     enrich_sessions(output, by_id, ORDER, ROWS, DISPLAY)
-    manifest = {'version':'v7-audited-collaboration','date':'2026-09-15','lesson_count':47,
+    finalize_navigation(output, by_id, ORDER, ROWS)
+    manifest = {'version':'sequential-ids-2026-09-15','date':'2026-09-15','lesson_count':47,
         'units':[{'id':ident,'display':DISPLAY[ident],'dialogue':'curriculum/dialogues/'+ident+'.md','prerequisites':by_id[ident]['prereq'],'concepts':by_id[ident]['concepts'],
                   'status':'manuscript-reviewed; classroom-not-generated; learner-not-tested'} for ident in ORDER],
         'source_sha256':{path.relative_to(ROOT).as_posix():hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(AUTHOR.glob('*.py'))},
@@ -215,7 +218,7 @@ def main():
             path.write_text(text, encoding='utf-8')
     if mismatched:
         raise RuntimeError('Out-of-date generated files: ' + ', '.join(mismatched))
-    print(f'MANUSCRIPT CHECK PASS: 47 units; 188 local questions (A05 all K); {len(output)} outputs; dependency graph acyclic')
+    print(f'MANUSCRIPT CHECK PASS: 47 units; 188 local questions (E06 all K); {len(output)} outputs; dependency graph acyclic')
     print('No classroom generated; no game, Blender or learning outcome validated by this command.')
     return 0
 

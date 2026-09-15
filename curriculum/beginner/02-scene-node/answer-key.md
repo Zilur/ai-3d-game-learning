@@ -1,12 +1,12 @@
-# B02 教师参考｜做完再看
+# A03 教师参考｜做完再看
 
-B02-P1：两个实例的根位置独立。修改共享的源场景或其中共享资源可能影响多个使用者，因此“位置独立”和“所有资源深拷贝”不是同一结论。后半句只作提醒，深入资源共享留B08/I03。
+A03-P1：两个实例的根位置独立。修改共享的源场景或其中共享资源可能影响多个使用者，因此“位置独立”和“所有资源深拷贝”不是同一结论。后半句只作提醒，深入资源共享留B04/C05。
 
-B02-R1：starter只有ModuleA，reference有A/B，均实例化module.tscn。broken只把ModuleA/Visual的X改成2，Shape与Label仍留在原处。最小修复是把Visual的X还原为0；不是改Stage相机或删Shape。移动整块应选ModuleA根节点。
+A03-R1：starter只有ModuleA，reference有A/B，均实例化module.tscn。broken只把ModuleA/Visual的X改成2，Shape与Label仍留在原处。最小修复是把Visual的X还原为0；不是改Stage相机或删Shape。移动整块应选ModuleA根节点。
 
-B02-T1：替换另一个实例的Visual.mesh，例如CylinderMesh；保留根Transform、CollisionShape3D和Label。验证新外观、根位置与节点职责即可。圆柱仍使用原盒形简化碰撞；不要把渲染轮廓与物理轮廓不同自动判为错误，也不在本课展开碰撞取舍。
+A03-T1：替换另一个实例的Visual.mesh，例如CylinderMesh；保留根Transform、CollisionShape3D和Label。验证新外观、根位置与节点职责即可。圆柱仍使用原盒形简化碰撞；不要把渲染轮廓与物理轮廓不同自动判为错误，也不在本课展开碰撞取舍。
 
-B02-K1：尺寸一致方便拼接与估计间距。能说明一个用途就够，不追问网格吸附算法。
+A03-K1：尺寸一致方便拼接与估计间距。能说明一个用途就够，不追问网格吸附算法。
 
 提示阶梯：先让学员指出哪个对象整体不对→提醒看父子节点职责→再提醒检查Visual的位置→最后才给数值。给到根因后不把当次尝试算独立通过；改名/换位置再试。
 

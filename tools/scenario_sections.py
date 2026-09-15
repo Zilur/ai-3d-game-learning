@@ -10,14 +10,8 @@ from demo_coach import dialogue_card, EXT
 ROOT = Path(__file__).resolve().parents[1]
 AUTHOR = ROOT / 'curriculum/authoring'
 FILES = ('application_beginner.py', 'application_intermediate.py', 'application_art.py', 'application_optional.py')
-SERIES = (
-    ('A', '基础认知与风格对话', ('R01','B01A','B02','B01B')),
-    ('B', 'Godot核心与小游戏闭环', ('B04','B03','B05','B06','B10','B11','B12','B13','B14','B16','I13','I14')),
-    ('C', 'Blender与审美、资产改造', ('R02','B07','R03','B08','B09','R04','R05','R06','R07','R08')),
-    ('D', 'AI协作、复用与可靠交付', ('B15','I03','I10','I11')),
-    ('E', '角色、进阶与按需专题', ('I01','I02','I04','I05','I06','I07','I08','I09','I12','X01','X02','A01','A02','A03','A04','A05','A06')),
-)
-DISPLAY = {old: f'{letter}-{i:02}' for letter, _, ids in SERIES for i, old in enumerate(ids, 1)}
+SERIES = (('A', '第一组：从零开始，建立空间与操控基础', ('A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07', 'A08')), ('B', '第二组：把基础用成一个完整收集小游戏', ('B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B09', 'B10', 'B11', 'B12', 'B13')), ('C', '第三组：扩图、整合与首次交付', ('C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C10', 'C11', 'C12')), ('D', '第四组：按需要精修，再做最终验收', ('D01', 'D02', 'D03', 'D04', 'D05', 'D06', 'D07')), ('E', '第五组：有需求再学的专项', ('E01', 'E02', 'E03', 'E04', 'E05', 'E06', 'E07')))
+DISPLAY = {ident: ident for _, _, ids in SERIES for ident in ids}
 ROWS = {}
 for filename in FILES:
     block = runpy.run_path(str(AUTHOR / filename))['SCENARIOS']
@@ -26,18 +20,18 @@ for filename in FILES:
     ROWS.update(block)
 ROWS.update(EXT['SCENARIOS'])
 FIELDS = {'place','before','after','task','keep','tweaks','accept','regress','transfer','risk'}
-SANDBOX = {'X01','X02','A01','A02','A03','A04','A06'}
-CRITICAL = {'B01A','B01B','B02','B03','B04','B05','B06','B08','B09','B10','B12','B14','B15','B16','I01','I02','I03','I10','I11','I12','R05','R07','R08'}
+SANDBOX = {'D05','D06','E02','E03','E04','E05','E07'}
+CRITICAL = {'A02','A07','A03','A05','A04','A06','A08','B04','B05','B06','B08','B11','B12','B13','C03','C04','C05','C11','C12','D07','D01','D03','D04'}
 
 
 def mode(ident):
-    if ident == 'X02':
+    if ident == 'D06':
         return '可选轻战斗：隔离验证后并入训练角'
-    if ident == 'A05':
+    if ident == 'E06':
         return 'K用途决策：不实现'
     if ident in SANDBOX:
         return '选修隔离实验：有价值才接入'
-    if ident == 'I08':
+    if ident == 'E01':
         return '可选导航：不阻塞机关路线'
     return '主项目中的功能、视觉或交付决定'
 
@@ -54,7 +48,7 @@ def validate_scenarios(by_id):
         for key in FIELDS - {'tweaks','accept'}:
             if not isinstance(data[key], str) or not data[key].strip():
                 raise ValueError(f'{ident}: empty {key}')
-        count = 1 if ident == 'A05' else 2
+        count = 1 if ident == 'E06' else 2
         if len(data['accept']) != count or len(data['tweaks']) != count:
             raise ValueError(f'{ident}: evidence/tweak load violates M/K scope')
         if any(len(t) != 3 or not all(t) for t in data['tweaks']):
@@ -64,7 +58,7 @@ def validate_scenarios(by_id):
         tasks.add(data['task'])
         if any(x in str(data) for x in ('TODO','待填写','<填入')):
             raise ValueError(f'{ident}: unfilled authoring placeholder')
-        if ident == 'A05' and by_id[ident]['m']:
+        if ident == 'E06' and by_id[ident]['m']:
             raise ValueError('The multiplayer recognition topic must remain K-only')
     return True
 
@@ -84,7 +78,7 @@ def completion_card(row):
         f"**本课产物：** {d['after']}",
         f"**接入边界：** {d['keep']}", '',
         '以下是要采集的证据，不是宣称已经执行。记录“未尝试 / 有提示完成 / 独立验证 / 隔次仍会”；不把这四种状态与M/K学习要求混淆。', '']
-    if ident == 'A05':
+    if ident == 'E06':
         lines += ['本课全部K：只提交一次用途判断，不要求操作、实现或深度故障排查。',
                   '- [ ] ' + d['accept'][0]]
     else:
@@ -102,28 +96,25 @@ def completion_card(row):
 
 def decorate_lesson(row, text, teacher):
     ident = row['id']
-    old_heading = f"# {ident}｜{row['title']}"
-    if text.count(old_heading) != 1:
-        raise ValueError(f'{ident}: unexpected lesson title')
-    text = text.replace(old_heading, f"# {DISPLAY[ident]}｜{row['title']}\n\n> 兼容课号：{ident}。ABCDE是主题入口，不是必须按字母顺序完成；文件链接与题号保留稳定。", 1)
-    text = text.replace('版本：Course Manuscripts v4｜2026-09-15', '版本：Guided Demo v6｜2026-09-15', 1)
+    if text.count(f"# {ident}｜{row['title']}") != 1:
+        raise ValueError(ident + ': heading must match the canonical ID')
+    text = text.replace('版本：Course Manuscripts v4｜2026-09-15', '版本：Applied Curriculum v5｜2026-09-15', 1)
     anchor = '## 3. 界面与参数学习深度'
     if text.count(anchor) != 1:
-        raise ValueError(f'{ident}: missing insertion anchor')
+        raise ValueError(ident + ': missing insertion anchor')
     text = text.replace(anchor, ai_card(row) + '\n' + anchor, 1)
     start = text.index('## 8. 与AI协作的最小任务')
     end = text.index('## 9. 复现与延迟检查', start)
     text = text[:start] + completion_card(row) + '\n' + text[end:]
     if teacher:
-        text = text.replace('## 12. 生成后的验收清单',
-            '## 12. 生成后的验收清单\n\n- [ ] 概念之后立即出现本课真实情境、学习/工作指令和微调入口，不只在结尾贴通用提示。\n- [ ] AI模拟执行与真实工具执行明确区分，主项目成果必须另有应用证据。', 1)
+        text = text.replace('## 12. 生成后的验收清单', '## 12. 生成后的验收清单\n\n- [ ] 概念后有局部AI工作、亲调入口与对应证据。\n- [ ] 模拟和真实工具执行分开。', 1)
     return text
 
 
 def enrich_output(output, by_id, order):
     validate_scenarios(by_id)
     guide = ['# ABCDE主题入口与旧课号对照', '',
-        '新展示号带连字符，例如A-01；旧A01仍指旧高级测量课，不能当成新A-01。只调整展示分类，不改47个稳定文件路径、C01–C32或既有题号。不是第二套课程。',
+        '新展示号带连字符，例如A01；旧E02仍指旧高级测量课，不能当成新A01。只调整展示分类，不改47个稳定文件路径、KN01–KN32或既有题号。不是第二套课程。',
         '主题不是难度。按课程索引前置顺序穿插学习，AI协作从第一课就使用，不等到D系列才开始。', '',
         '|新号|主题|兼容课号|学生讲义|OpenMAIC全文|', '|---|---|---|---|---|']
     for letter, label, ids in SERIES:
@@ -147,10 +138,10 @@ def enrich_output(output, by_id, order):
     page += ['', '## 每课不用额外写一篇报告', '',
         '学员先预测，借助AI准备局部初稿，亲自作一个选择或微调，再证明当前目标与一项旧功能。关键薄弱能力换情境复测。允许查菜单/API和使用AI代码，评分不看提示词花哨程度、代码行数或模型复杂度。', '',
         '## 未选专题怎样处理', '',
-        'X动作与高级专项先在副本；未选不考。A05多人全K，仅讨论两个玩家同时请求同一物品的需求，不要求部署。A06需先有一个实际专项/交付问题的证据，没有则不急着参加，不把未实现当通过。', '',
+        'X动作与高级专项先在副本；未选不考。E06多人全K，仅讨论两个玩家同时请求同一物品的需求，不要求部署。E07需先有一个实际专项/交付问题的证据，没有则不急着参加，不把未实现当通过。', '',
         '## 结构审查与后续验证', '',
         '本次按47条记录逐项写入情境和局部任务，并检查覆盖、M/K负担、输出一致性、单独提示和回归字段。这是作者审查加结构校验，不是独立评审，不保证教学效果已经验证。',
-        '重点复核：B03速度不重复乘delta；B08共享阶段不能宣称对照球固定；B10两层防重分别看证据；I10不能覆盖唯一原档；R04来源与观察分开；X01不保证任意骨架兼容。', '',
+        '重点复核：A05速度不重复乘delta；B04共享阶段不能宣称对照球固定；B06两层防重分别看证据；C11不能覆盖唯一原档；B10来源与观察分开；D05不保证任意骨架兼容。', '',
         '下一步生成代表课堂并实操，再补真实软件配套；本轮没有扩大game/、blender/、web/。图表为文字结构示意，不是游戏截图或大师原作。', '',
         '[原项目里程碑](project-spine.md) · [场景化验收](../assessments/application-evidence.md) · [AI使用边界](ai-workflow.md)', '']
     output['curriculum/application-map.md'] = '\n'.join(page)
@@ -161,5 +152,5 @@ def enrich_output(output, by_id, order):
     if 'curriculum/delivery-status.md' in output:
         output['curriculum/delivery-status.md'] = '> v5：47课已回填实际场景、局部AI工作、人工微调、M证据与回归；ABCDE为展示分类，旧路径兼容。新增课堂生成、真机配套、图片成品和学习效果均尚未由本次文本回填验证。[逐课查验](application-map.md)。\n\n' + output['curriculum/delivery-status.md']
     if 'AGENTS.md' in output:
-        output['AGENTS.md'] += '\n## v5逐课应用约束\n\napplication_*.py是每课真实情境的作者源，由tools/scenario_sections.py与原课源共同展开；不能只改单份生成MD。ABCDE展示号带连字符且有series-guide映射，旧文件/题号与C编号保持兼容。所有M都要有实际场景取证入口，K不升级深考；模拟、工具执行和学员应用分开记录。仍先课件再配套，不自动扩写引擎工程。\n'
+        output['AGENTS.md'] += '\n## v5逐课应用约束\n\napplication_*.py是每课真实情境的作者源，由tools/scenario_sections.py与原课源共同展开；不能只改单份生成MD。ABCDE展示号带连字符且有series-guide映射，旧文件/题号与KN概念编号保持兼容。所有M都要有实际场景取证入口，K不升级深考；模拟、工具执行和学员应用分开记录。仍先课件再配套，不自动扩写引擎工程。\n'
     return output

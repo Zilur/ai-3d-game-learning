@@ -3,7 +3,7 @@
 学员直接看课程索引，不需要读这些Python数据。
 
 1. beginner_a/b、intermediate、advanced、art、motion中的LESSONS是原始逐课内容。
-2. demo_extension.py在构建时明确应用v6修订：新增I13/I14、替换X02、补I12/R08；它是当前这些修改的权威源，不改旧稳定ID。
+2. demo_extension.py在构建时明确应用v6修订：新增C01/C02、替换D06、补D07/D04；它是当前这些修改的权威源，不改旧稳定ID。
 3. application_*.py描述原应用场景，demo_extension.py的SCENARIOS给新增/修改场景。
 4. conversation_plans.py逐课定义首步、证据门、下一步和概念图；不是统一套一句话。
 5. site_*.py为原页面；demo_pages.py与tools/demo_coach.py产生当前导航/状态和对话页。后者在同一构建末尾覆盖旧页面，不并列两个权威入口。

@@ -18,11 +18,11 @@ for filename in REVIEW_FILES:
 QDATA = runpy.run_path(str(AUTHOR / 'review_question_edits.py'))
 EDITS, P_TARGET, T_TARGET = (QDATA[k] for k in ('EDITS', 'P_TARGET', 'T_TARGET'))
 # This lesson's second M is UI layout, not another state-machine objective.
-REVIEWS['B12']['proof'] = [
+REVIEWS['B08']['proof'] = [
     '隐藏UI仍更新权威进度；收齐后重开并再次拾取，实际状态为1/10且未完成。',
     '缩窄窗口后进度与重开按钮仍可见、可操作，选择布局调整并保存后重新运行。'
 ]
-REVIEWS['B12']['target'] = 1
+REVIEWS['B08']['target'] = 1
 VERSION = 'Audited Collaboration v7｜2026-09-15'
 FIELD_SET = {'finding', 'decision', 'ai', 'proof', 'diagnostic', 'target'}
 
@@ -40,7 +40,7 @@ def validate_review(by_id, records=None):
         count = len(by_id[ident]['m'])
         if len(rec['proof']) != count:
             raise ValueError(ident + ': each M needs its own bounded practical evidence')
-        if count != (0 if ident == 'A05' else 2):
+        if count != (0 if ident == 'E06' else 2):
             raise ValueError(ident + ': original M/K boundary changed')
         if rec['target'] not in (range(1, count + 1) if count else [0]):
             raise ValueError(ident + ': diagnostic maps to unknown M')
@@ -66,7 +66,7 @@ def apply_review(lessons, scenarios, sources):
     for row in lessons:
         ident = row['id']
         rec = REVIEWS[ident]
-        if ident != 'A05':
+        if ident != 'E06':
             old = list(row['questions'])
             case, answer, hint, _anchor = rec['diagnostic']
             old[1] = ('D', '【教学构造情境，不是真实测量或某模型故障统计】' + case, answer, hint)
@@ -76,19 +76,19 @@ def apply_review(lessons, scenarios, sources):
             row['questions'] = old
             # The operation stations are the SAME objectives, not additional exams.
             scenarios[ident]['accept'] = list(rec['proof'])
-        if ident == 'B01B':
+        if ident == 'A07':
             row['k'] = ['Origin是对象原点；工具Pivot可临时选择别处，二者不必一致。']
-        if ident == 'B09':
+        if ident == 'B05':
             scenarios[ident].update(
                 place='P03｜更新静态外观并保留当前包装职责',
                 task='只对当前静态视觉和已有包装/形状做一次源文件修改与重导入；记录四层来源和覆盖范围。当前尚未制作拾取、完成或重开，不提前创建这些功能。',
                 keep='已有尺度、包装层、形状与标记保留；未实现的拾取/计数/重开不属于本次验收。',
-                regress='重导入前后核对当前已有外观、尺寸、包装和形状；到B10/B12再补拾取/重开回归。',
+                regress='重导入前后核对当前已有外观、尺寸、包装和形状；到B06/B08再补拾取/重开回归。',
                 transfer='把箱子视觉换成路牌，保留当前包装和形状并再次重导入；不要求尚未学习的计数系统。')
             row['practice'] = '后续使用同一庭院中当前已有的静态资产包装，改源并重导入两次。核对尺寸/材质/已有形状和标记；拾取、计数、重开到对应课再验。本轮课件没有新增真机资产包。'
-        if ident == 'B10':
+        if ident == 'B06':
             row['failure'] = '教学故障明确为通知监听者同步重入，唯一防重写在通知之后；普通顺序调用两次不一定重现。多层防重时分别观察接受/拒绝记录，不捏造重计结果。'
-        if ident == 'R06':
+        if ident == 'D02':
             row['k'] = ['手绘感、渐变、描边、烘焙是可选手段。', 'Look development用于在固定条件下建立和验证外观规则，不要求复杂Shader。']
     sources.update({
         'review_body': ('Godot CharacterBody3D：velocity与物理delta', 'https://docs.godotengine.org/en/stable/classes/class_characterbody3d.html'),
@@ -96,7 +96,7 @@ def apply_review(lessons, scenarios, sources):
         'review_resource': ('Godot Resources：实例与共享引用', 'https://docs.godotengine.org/en/stable/tutorials/scripting/resources.html'),
         'review_tracks': ('Godot动画事件轨道：编辑器预览与运行不同', 'https://docs.godotengine.org/en/stable/tutorials/animation/animation_track_types.html'),
     })
-    for ident, key in [('B03','review_body'), ('B08','review_resource'), ('I03','review_resource'), ('X02','review_area'), ('X02','review_tracks')]:
+    for ident, key in [('A05','review_body'), ('B04','review_resource'), ('C05','review_resource'), ('D06','review_area'), ('D06','review_tracks')]:
         if key not in by_id[ident]['sources']:
             by_id[ident]['sources'].append(key)
     return lessons
@@ -209,7 +209,7 @@ def enrich_review(output, by_id, order, scenarios, display):
         raise ValueError('Review page collides with another source')
     output.update(pages)
     audit = ['# 逐课审查：AI分工、必要内容、题目与实际证据', '',
-             '2026-09-15｜作者逐课审查，不是独立外部评审或学习效果试验。47课不增课时；46道诊断题重写，A05保持全K。其余P/T/K按必要性选择修订，不宣称所有旧题全部重写。', '',
+             '2026-09-15｜作者逐课审查，不是独立外部评审或学习效果试验。47课不增课时；46道诊断题重写，E06保持全K。其余P/T/K按必要性选择修订，不宣称所有旧题全部重写。', '',
              '|课号|本轮发现与修订理由|人必须作出的判断|实操证据入口|', '|---|---|---|---|']
     trace = {'version':'v7', 'lesson_count':47, 'diagnostic_count':46, 'units':[]}
     for ident in order:
@@ -222,7 +222,7 @@ def enrich_review(output, by_id, order, scenarios, display):
     audit += ['', '## 审查后仍不能断言的事情', '',
               '课程输入能否让OpenMAIC稳定生成有效控件、学员负担是否合适、真机是否完成与隔次迁移是否成立，均需实际试学。结构检查不能证明题目有效性或AI能力上限。', '',
               '## 修正的典型错位', '',
-              'B01B的K由提前询问四元数改为Origin/Pivot；B09移除未学拾取和重开的硬门槛；B12把状态循环证据放M1、布局证据放M2；B10明确同步重入条件；X02用日志区分范围内重复攻击的两类原因。', '',
+              'A07的K由提前询问四元数改为Origin/Pivot；B05移除未学拾取和重开的硬门槛；B08把状态循环证据放M1、布局证据放M2；B06明确同步重入条件；D06用日志区分范围内重复攻击的两类原因。', '',
               '[AI协作核心与考察](../assessments/ai-collaboration.md) · [评分校准样例](../assessments/grading-calibration.md) · [打印卡](../print/ai-control-card.md)', '']
     output['curriculum/quality-review.md'] = '\n'.join(audit)
     import json
@@ -235,5 +235,5 @@ def enrich_review(output, by_id, order, scenarios, display):
             output[key] = navigation + output[key]
     output['curriculum/lesson-index.md'] += '\n[逐课质量审查](quality-review.md) · [AI协作考察](../assessments/ai-collaboration.md) · [必记卡](../print/ai-control-card.md)\n'
     output['curriculum/delivery-status.md'] = ('> v7：47课已核对具体人/AI职责与M操作证据，46道诊断题重写并有评分锚点；部分P/T/K修订。新课堂与新Demo未由本轮执行。[审查记录](quality-review.md)。\n\n' + output['curriculum/delivery-status.md'])
-    output['AGENTS.md'] += ('\n## v7质量审查源\n\nreview_*.py保存逐课职责、诊断题、证据与审查说明；tools/quality_review.py在v6课程装配后应用。不得只改生成MD。更新运行build_course_materials.py --check、check_quality_review.py、validate_repo.py。结构检查只证明一致性，不证明教学效果。B09不能提前验B10/B12功能；A05全K不增实操门槛。\n')
+    output['AGENTS.md'] += ('\n## v7质量审查源\n\nreview_*.py保存逐课职责、诊断题、证据与审查说明；tools/quality_review.py在v6课程装配后应用。不得只改生成MD。更新运行build_course_materials.py --check、check_quality_review.py、validate_repo.py。结构检查只证明一致性，不证明教学效果。B05不能提前验B06/B08功能；E06全K不增实操门槛。\n')
     return output

@@ -35,18 +35,18 @@ def main():
             if not row['m']:
                 assert '本次结束：' in text and '不要求实操' in text
     probes = []
-    missing = deepcopy(session.STARTS); missing.pop('B01A')
+    missing = deepcopy(session.STARTS); missing.pop('A02')
     probes.append(lambda: session.validate_session_data(by_id, starts=missing))
-    wrong = deepcopy(session.STARTS); wrong['B02'] = ('unknown','some material')
+    wrong = deepcopy(session.STARTS); wrong['A03'] = ('unknown','some material')
     probes.append(lambda: session.validate_session_data(by_id, starts=wrong))
-    k_bad = deepcopy(session.STARTS); k_bad['A05'] = ('engine','server')
+    k_bad = deepcopy(session.STARTS); k_bad['E06'] = ('engine','server')
     probes.append(lambda: session.validate_session_data(by_id, starts=k_bad))
-    fake = deepcopy(session.REFERENCES); fake['B01A'] = ('game/not-delivered.tscn','not real')
+    fake = deepcopy(session.REFERENCES); fake['A02'] = ('game/not-delivered.tscn','not real')
     probes.append(lambda: session.validate_session_data(by_id, references=fake))
-    unsafe = deepcopy(session.REFERENCES); unsafe['B01A'] = ('game/../AGENTS.md','not a scene')
+    unsafe = deepcopy(session.REFERENCES); unsafe['A02'] = ('game/../AGENTS.md','not a scene')
     probes.append(lambda: session.validate_session_data(by_id, references=unsafe))
     no_gate = dict(output)
-    key = 'curriculum/dialogues/B13.md'
+    key = 'curriculum/dialogues/B09.md'
     no_gate[key] = no_gate[key].replace('继续条件：', 'deleted-marker：', 1)
     probes.append(lambda: session.validate_first_prompts(no_gate, by_id))
     rejected = 0

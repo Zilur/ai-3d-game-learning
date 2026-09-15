@@ -2,6 +2,7 @@
 from __future__ import annotations
 from pathlib import Path
 import runpy
+from course_order import next_unit
 
 ROOT = Path(__file__).resolve().parents[1]
 AUTHOR = ROOT / 'curriculum/authoring'
@@ -12,12 +13,7 @@ ORDER = EXT['ORDER']
 prepare_lessons = EXT['prepare_lessons']
 
 def next_lesson(ident):
-    # The default continuation never silently enrolls a learner in an optional track.
-    skips = {'I07':'I09', 'I10':'I11', 'R08':'I11', 'X02':'I11', 'I12':None, 'A06':None}
-    if ident in skips:
-        return skips[ident]
-    index = ORDER.index(ident)
-    return ORDER[index + 1] if index + 1 < len(ORDER) else None
+    return next_unit(ident)
 
 def validate_coaching(by_id):
     if set(by_id) != set(PLANS) or len(by_id) != 47:
@@ -29,7 +25,7 @@ def validate_coaching(by_id):
             raise ValueError(ident + ': missing conceptual diagram')
         if next_lesson(ident) is not None and next_lesson(ident) not in by_id:
             raise ValueError(ident + ': unknown next lesson')
-    if by_id['A05']['m']:
+    if by_id['E06']['m']:
         raise ValueError('K-only recognition must not become a software execution assessment')
 
 def block(text):
@@ -107,16 +103,16 @@ def enrich_demo(output, by_id, order, scenarios, display):
     pages = runpy.run_path(str(AUTHOR / 'demo_pages.py'))['PAGES']
     output.update(pages)
     index = ['# 课程索引：学一课，借助AI推进一小步', '',
-        '47个课件单元，每个都有学生稿、独立OpenMAIC输入和逐步AI对话。它们是同一课的三种用途，不是141堂课。原45课保留；新增I13小地图和I14世界美化；X02升级为可选轻战斗闭环。',
-        '主题展示继续ABCDE；旧文件路径和题号稳定。B-11/B-12是新增扩展，不是要求入门时一起做。', '',
-        '**默认路线：** 初级循环 → B-11小地图 → B-12世界美化 → 角色与复用/交付。详细美术C线和动作E-10/E-11按需插入。AI协作从第一课开始。',
+        '47个课件单元，每个都有学生稿、独立OpenMAIC输入和逐步AI对话。它们是同一课的三种用途，不是141堂课。原45课保留；新增C01小地图和C02世界美化；D06升级为可选轻战斗闭环。',
+        '主题展示继续ABCDE；旧文件路径和题号稳定。C01/C02是新增扩展，不是要求入门时一起做。', '',
+        '**默认路线：** 初级循环 → C01小地图 → C02世界美化 → 角色与复用/交付。详细美术C线和动作D05/D06按需插入。AI协作从第一课开始。',
         '**单课开始：** 点“跟AI继续”，只复制第1框。需要互动课堂时，把“OpenMAIC全文”整份交给生成器。无需先把整套资料读完。', '',
         '|展示号 / 稳定号|主题|前置|学生稿|OpenMAIC全文|跟AI继续|', '|---|---|---|---|---|---|']
     for ident in order:
         r = by_id[ident]
         deps = '、'.join(display[d] for d in r['prereq']) or '无'
         index.append(f"|{display[ident]} / {ident}|{r['title']}|{deps}|[阅读](lessons/{ident}.md)|[复制](../openmaic/lessons/{ident}.md)|[开始](dialogues/{ident}.md)|")
-    index += ['', 'I08导航、X动作和A高级按需选择；未选不计入基础版验收。制作顺序先文本、再课堂验证、再软件配套；学员使用时每课交替理解与实践。',
+    index += ['', 'E01导航、X动作和A高级按需选择；未选不计入基础版验收。制作顺序先文本、再课堂验证、再软件配套；学员使用时每课交替理解与实践。',
         '[精致Demo验收](demo-quality.md) · [界面参数深度](interface-map.md) · [全部应用情境](application-map.md)', '']
     output['curriculum/lesson-index.md'] = '\n'.join(index)
     roadmap = ['# 路线v6：同一项目，逐步达到精致Demo', '',
@@ -136,10 +132,10 @@ def enrich_demo(output, by_id, order, scenarios, display):
         '|课号|首个可检查结果|下一个局部步骤|真实执行状态|', '|---|---|---|---|']
     for ident in order:
         review.append(f'|{display[ident]} / {ident}|{PLANS[ident][1]}|{PLANS[ident][2]}|新课堂/新配套未验证|')
-    review += ['', '专项修订：扩图先路线；美化先一处样板；X02先动画恢复再判定，预览不当事件执行，已重叠目标和下一次攻击仍可命中；I12基础版与增强版分开。',
+    review += ['', '专项修订：扩图先路线；美化先一处样板；D06先动画恢复再判定，预览不当事件执行，已重叠目标和下一次攻击仍可命中；D07基础版与增强版分开。',
         '对话卡重用现有验收证据，失败时只做一个假设；进度摘要由学员保存，不承诺AI跨会话记忆。', '']
     output['curriculum/lesson-review.md'] = '\n'.join(review)
-    output['AGENTS.md'] += '\n## v6每课连续对话与精致Demo\n\ndemo_extension.py是扩图、美化、X02和I12的作者修订源；conversation_plans.py保存每课首步、继续条件、后续一步和概念图。tools/demo_coach.py把它们加入同一份学生稿/教师稿并生成dialogues。修改源后重新构建，不单独修改生成MD。47课三份用途不是141课。新项目成果仍需逐课运行和学习证据。\n'
+    output['AGENTS.md'] += '\n## v6每课连续对话与精致Demo\n\ndemo_extension.py是扩图、美化、D06和D07的作者修订源；conversation_plans.py保存每课首步、继续条件、后续一步和概念图。tools/demo_coach.py把它们加入同一份学生稿/教师稿并生成dialogues。修改源后重新构建，不单独修改生成MD。47课三份用途不是141课。新项目成果仍需逐课运行和学习证据。\n'
     output['curriculum/project-spine.md'] = '# 项目主线统一入口\n\n最新的核心版/增强版、三段地图、世界美化与训练角边界见 [精致Demo质量表](demo-quality.md)。逐课落点见 [应用地图](application-map.md)，操作从 [逐步对话](lesson-index.md) 开始。\n\n原项目主线详表保留在Git历史。本次是文本规划升级，不是扩大后的游戏已经实现。\n'
     output['openmaic/project-integration-template.md'] = '# 逐课集成已回填，不再让学员拼模板\n\n每课的完整输入见 [课程索引](../curriculum/lesson-index.md)，第2A节为逐步AI对话，第8节为实际应用验收。它们由同一作者源生成；无需把本文件再拼进课程要求。\n\n编写时填：具体问题、局部交付、继续证据、第二小步、可恢复微调、失败分支和接续摘要。K认识课不强制软件执行，模型无连接时只给操作单，不冒充运行。\n'
     return output

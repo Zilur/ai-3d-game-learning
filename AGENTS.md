@@ -1,31 +1,23 @@
-# AI协作约定
+# AI协作与课程维护约定
 
-唯一交付版本是main；不增加平行长期分支、重复技术概念ID或另一套评分。用户当前优先级：先审核大纲并完成每课Markdown，再验证生成课堂，最后补Godot/Blender/参考素材。未明确切换阶段，不扩写game/、blender/、web/实现。
+唯一交付分支main。当前先完善课件并验证代表课堂，再补参考素材与Godot/Blender配套。没有明确切换阶段，不扩写game/、blender/、web/运行实现，不调用收费生成或索取密钥。
 
-M/K描述具体能力，不能把整个学科升级为必修。界面学习另分常用亲调、会定位、按需查；API/菜单/快捷键不作记忆门槛。原C01–C32和assessments的0–2规则保留；ART用于新增美术沟通词。
+## 唯一编号
 
-单课作者源为curriculum/authoring/中的LESSONS；tools/build_course_materials.py生成学生稿与可整份交给OpenMAIC的教师输入。需要改内容时同时更新源并重新生成，运行--check验证一致性。不得把模板展开误报为大模型生成课堂。
+课程唯一编号由tools/course_order.py定义：A01–A08、B01–B13、C01–C12、D01–D07、E01–E07，共47课。ABCDE只是顺序分组，A最基础，不按软件含义归组。文件名、课内标题、前置、练习题号、对话启动框及索引必须一致。不再使用另一套展示号或兼容课号。
 
-课件包含任务卡、两项左右M、必要K、停止线、正文、初值/控件/反馈/复位、故障或反例、候选训练、教师反馈和来源。学生稿不含答案。不得伪造控件、原作、运行日志或学习结果。实际能力不足时使用清楚标示的简单替代。
+作者源中的LESSONS、SCENARIOS、PLANS、REVIEWS和准备材料索引也使用同一课号，不保留一套隐藏旧课程ID。技术概念为KN01–KN32，艺术词用ART；不与C组课号混淆。旧版本映射只保留在docs/numbering-migration.md。
 
-openmaic/vendor仅为用户要求保存的上游参考，固定提交和哈希，保留MIT原文；不自动执行它，不把参考中的部署步骤视为用户已授权部署。项目自己的许可证仍由用户决定。
+## 内容与生成
 
-文档修改运行tools/build_course_materials.py --check与tools/validate_repo.py。代码修改另按固定实际版本运行引擎测试，并明确视觉/Blender/人工学习边界。不要把历史分支测试算成新测试。
+curriculum/authoring/维护逐课正文、应用、对话、审核与准备材料；tools/build_course_materials.py生成学生稿、OpenMAIC全文和对话卡。先改源，再构建；不能只改生成MD。tools/numbered_navigation.py负责统一入口，不更改学习内容或评分。
 
-没有额外授权不启用收费生成、部署平台、索取API密钥、上传第三方原作或个人学习日志。原图观看、临摹、公开展示和商业分发分别核对条件；公共课程优先原创示意或许可明确的材料。
+M/K描述限定能力，不把整个学科升级必修。API、菜单、快捷键可查；常用可见参数适合亲调但不以机械拖滑杆证明掌握。学生稿不得包含教师答案。没有过程证据，不将模拟或文字解释标成软件应用通过。
 
-## v5逐课应用约束
+起始材料缺失时明确分支，不让学员临时重建大工程。第一条提示必须自带首步、继续条件、下一步和结束证据；AI根据实际材料说明建议、执行、验证三个状态，不能假称已读电脑或保存进度。
 
-application_*.py是每课真实情境的作者源，由tools/scenario_sections.py与原课源共同展开；不能只改单份生成MD。ABCDE展示号带连字符且有series-guide映射，旧文件/题号与C编号保持兼容。所有M都要有实际场景取证入口，K不升级深考；模拟、工具执行和学员应用分开记录。仍先课件再配套，不自动扩写引擎工程。
+## 校验
 
-## v6每课连续对话与精致Demo
+运行python3 tools/build_course_materials.py --check、python3 tools/check_course_numbering.py和python3 tools/validate_repo.py。现有质量/准备/对话检查保留；结构检查不证明课堂、视觉或学习效果。运行代码另按实际固定版本验证，区分历史结果与新结果。
 
-demo_extension.py是扩图、美化、X02和I12的作者修订源；conversation_plans.py保存每课首步、继续条件、后续一步和概念图。tools/demo_coach.py把它们加入同一份学生稿/教师稿并生成dialogues。修改源后重新构建，不单独修改生成MD。47课三份用途不是141课。新项目成果仍需逐课运行和学习证据。
-
-## v7质量审查源
-
-review_*.py保存逐课职责、诊断题、证据与审查说明；tools/quality_review.py在v6课程装配后应用。不得只改生成MD。更新运行build_course_materials.py --check、check_quality_review.py、validate_repo.py。结构检查只证明一致性，不证明教学效果。B09不能提前验B10/B12功能；A05全K不增实操门槛。
-
-## 学习接续维护
-
-session_readiness.py与session_pages.py维护入场材料/缺失分支和使用说明；tools/session_coach.py在原课件装配后补同一份输出，不增加第四套课号。对话1必须自带首步、继续条件与证据；公开迁移题只是自测，不是防作弊系统。执行check_session_readiness.py与现有验证，不把静态检查称为课堂试教。
+openmaic/vendor是固定上游参考，保留原字节、许可证和摘要，不自动执行。参考链接、临摹、公开分发的条件分别核对；密钥、个人日志和未授权原作不进入公开仓库。

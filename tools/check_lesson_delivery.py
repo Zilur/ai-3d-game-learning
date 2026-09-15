@@ -22,7 +22,7 @@ def main():
             assert '### 对话1' in text and '### 对话2' in text, (ident, folder, 'missing start')
             assert text.count('```') % 2 == 0, (ident, folder, 'unbalanced fences')
             assert '```mermaid' in text, (ident, folder, 'missing concept structure')
-            if ident != 'A05':
+            if ident != 'E06':
                 panel = text.split('### 对话4', 1)[1].split('### 对话5', 1)[0]
                 copied = panel.split('```text', 1)[1].split('```', 1)[0]
                 for entry, action, observation in ROWS[ident]['tweaks']:
@@ -38,10 +38,10 @@ def main():
         assert '教师反馈与评分依据' in texts['openmaic/lessons'], ident
         assert '## 8. 实际应用验收' in texts['openmaic/lessons'], ident
         assert texts['curriculum/lessons'].count('## 2A.') == 1, (ident, 'duplicate coaching')
-    for ident in ('I13', 'I14'):
+    for ident in ('C01', 'C02'):
         text = (ROOT / 'openmaic/lessons' / (ident + '.md')).read_text(encoding='utf-8')
         assert 'M 必须掌握' in text and 'K 理解即可' in text and '停止线' in text
-    combat = (ROOT / 'openmaic/lessons/X02.md').read_text(encoding='utf-8')
+    combat = (ROOT / 'openmaic/lessons/D06.md').read_text(encoding='utf-8')
     for case in ('空挥','有效窗口','中断','重开','木桩','第二次','预览'):
         assert case in combat, ('combat acceptance case missing', case)
     index = (ROOT / 'curriculum/lesson-index.md').read_text(encoding='utf-8')

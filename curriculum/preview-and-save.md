@@ -28,7 +28,7 @@
 
 材质预览可使用HDRI预览环境；场景灯光和世界环境选项会影响所见条件。遇到“材质预览好看、渲染/游戏不一样”，先核对条件再改模型，不应靠反复加亮补偿所有差异。[依据：Blender Viewport Shading](https://docs.blender.org/manual/en/latest/editors/3dview/display/shading.html)
 
-保存修改后的可编辑源，再按资产流程输出交换文件；Godot重导入后重新检查。保存.blend不是自动更新所有游戏文件，也不意味着复杂节点一定能导出。[对应课程](lessons/B09.md)
+保存修改后的可编辑源，再按资产流程输出交换文件；Godot重导入后重新检查。保存.blend不是自动更新所有游戏文件，也不意味着复杂节点一定能导出。[对应课程](lessons/B05.md)
 
 ## 3. 常用亲调只记“入口—观察—停手依据”
 

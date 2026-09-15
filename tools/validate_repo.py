@@ -38,25 +38,25 @@ def main() -> int:
                 continue
             target = unquote(link.split("#", 1)[0].split("?", 1)[0])
             check((path.parent / target).exists(), f"Broken link: {path.relative_to(ROOT)} -> {target}")
-    expected = {f"C{i:02}" for i in range(1, 33)}
-    concepts = set(re.findall(r"\bC\d{2}\b", read("curriculum/concept-map.md")))
-    check(concepts == expected, "Expected canonical C01-C32 concepts")
-    qids = re.findall(r'\*\*(C\d{2}-[PT])', read("assessments/question-bank.md"))
+    expected = {f"KN{i:02}" for i in range(1, 33)}
+    concepts = set(re.findall(r"\bKN\d{2}\b", read("curriculum/concept-map.md")))
+    check(concepts == expected, "Expected canonical KN01-KN32 concepts")
+    qids = re.findall(r'\*\*(KN\d{2}-[PT])', read("assessments/question-bank.md"))
     check(len(qids) == len(set(qids)) == 64, "Expected 64 distinct cross-stage P/T questions")
     check(set(qids) == {f"{c}-{kind}" for c in expected for kind in ("P", "T")}, "Question/concept mismatch")
-    answers = set(re.findall(r"\bC\d{2}\b", read("assessments/answer-key.md")))
+    answers = set(re.findall(r"\bKN\d{2}\b", read("assessments/answer-key.md")))
     check(expected <= answers, "Teacher answers must cover canonical concepts")
     check(not (ROOT / "assessment").exists(), "Competing assessment directory restored")
     mastery = read("assessments/mastery.md")
     check("统一0–2评分锚点" in mastery, "Missing active 0-2 scoring heading")
     headers = re.findall(r'^\|证据\|.*$', mastery, re.M)
     check(headers == ["|证据|0|1|2|"], "Active scoring table must have exactly 0, 1, 2")
-    for path in ("START-HERE.md", "print/必须牢记.md", "openmaic/requirements/B02-scene-node.md",
+    for path in ("START-HERE.md", "print/必须牢记.md", "openmaic/requirements/A03-scene-node.md",
                  "curriculum/beginner/02-scene-node/lesson.md", "curriculum/beginner/02-scene-node/assessment.md",
                  "curriculum/beginner/02-scene-node/answer-key.md"):
         check((ROOT / path).is_file(), f"Missing learning entry: {path}")
     lesson = read("curriculum/beginner/02-scene-node/lesson.md")
-    check(all(word in lesson for word in ("M 必须掌握", "K 理解即可", "停止线", "starter.tscn", "broken.tscn", "reference.tscn")), "B02 needs depth, boundaries and materials")
+    check(all(word in lesson for word in ("M 必须掌握", "K 理解即可", "停止线", "starter.tscn", "broken.tscn", "reference.tscn")), "A03 needs depth, boundaries and materials")
     for path in (ROOT / "game").rglob("*"):
         if ".godot" in path.parts or path.suffix not in {".gd", ".tscn", ".godot", ".gdshader"}:
             continue
@@ -117,10 +117,12 @@ def main() -> int:
     check(session.returncode == 0, "Learner readiness and cold-start dialogue inconsistent")
     reviewed = subprocess.run([sys.executable, str(ROOT / "tools/check_quality_review.py")], cwd=ROOT, check=False)
     check(reviewed.returncode == 0, "AI collaboration/evidence review inconsistent")
+    numbered = subprocess.run([sys.executable, str(ROOT / "tools/check_course_numbering.py")], cwd=ROOT, check=False)
+    check(numbered.returncode == 0, "Canonical numbering, headers and prerequisite order failed")
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1
-    print(f"COURSE VALIDATION PASS: {checks} checks; 32 concepts, 64 P/T questions; B02 materials preserved")
+    print(f"COURSE VALIDATION PASS: {checks} checks; 32 concepts, 64 P/T questions; A03 materials preserved")
     return 0
 
 if __name__ == "__main__":
