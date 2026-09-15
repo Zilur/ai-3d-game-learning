@@ -23,6 +23,7 @@ def finalize_navigation(output, by_id, order, scenarios):
         for folder in ('curriculum/lessons', 'openmaic/lessons', 'curriculum/dialogues'):
             key = f'{folder}/{ident}.md'
             text = _clean(output[key])
+            text = re.sub(r'^版本：[^\n]*$', '版本：统一课号课程版｜2026-09-15', text, flags=re.M)
             headline = re.search(r'^# ([A-E]\d{2})[｜\s]', text, re.M)
             if not headline or headline[1] != ident:
                 raise ValueError(f'{key}: title does not match the canonical filename')
