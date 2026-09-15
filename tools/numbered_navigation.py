@@ -36,7 +36,7 @@ def finalize_navigation(output, by_id, order, scenarios):
         '共47课。A、B、C、D、E只是按学习先后排列的分组编号，不是软件名或英文词首字母。A组从零开始。每课使用同一个编号：文件名、标题、前置、题号和对话启动卡一致。', '',
         '**首次学习：从A01开始，再到A02、A03。** 按表向下学；遇到选修可以跳过，不把字母更靠后当作必须精通的证明。',
         '**三份材料是同一课的三种用途：** 学生稿供阅读；OpenMAIC全文供生成课堂；跟AI继续供实际操作。47份输入不等于47堂课堂已生成或试教通过。', '',
-        '**基本路线：** A01–A08 → B01–B13 → C01–C12 → D07。D01–D04为美术强化，D05–D06为动作增强，可在D07前按需完成。E组全为专项选修，核对各课前置后选择。', '',
+        '**基本路线：** A01–A08 → B01–B13 → C01–C12 → D01–D04 → D07。D01–D04是本项目的美术生产主线；D05–D06动作增强、E组专项按需选修。', '',
         '|课号|课程|前置|路线|学生稿|OpenMAIC全文|跟AI继续|', '|---|---|---|---|---|---|---|']
     for ident in ORDER:
         row = by_id[ident]
@@ -54,7 +54,7 @@ def finalize_navigation(output, by_id, order, scenarios):
         '|分组|课号|课数|这一段的阶段成果|', '|---|---|---|---|']
     for letter, _label, ids in GROUPS:
         groups.append(f'|{letter}|{ids[0]}–{ids[-1]}|{len(ids)}|{GROUP_RESULTS[letter]}|')
-    groups += ['', 'A、B、C按学习路径推进；D组的选修标记与D07结业分开；E组各专题按需要和前置选择。不能因为跳过选修就阻止主线完成。',
+    groups += ['', 'A、B、C按学习路径推进；D01–D04继续主线的套装二开与风格统一，D05–D06动作增强按需，D07收束；E组各专题按需要和前置选择。',
         '课号如C01指一节课；技术概念使用KN01–KN32，艺术词使用ART编号。概念标识用于作者核对覆盖，学员不需要背编号。', '',
         '[逐课索引](lesson-index.md) · [完整大纲](roadmap.md)', '']
     output['curriculum/series-guide.md'] = '\n'.join(groups)
@@ -98,7 +98,7 @@ def finalize_navigation(output, by_id, order, scenarios):
 
 “完成：我看见……”让AI检查后推进；“不符/报错：实际现象……”进入局部验证；“暂停”生成进度卡，由自己保存。缺软件连接就给操作单，不宣称已经修改电脑；缺场景时先做明示模拟，不判工程通过。
 
-**主线路线：** A → B → C → D07。D01–D04为美术强化，D05–D06为动作增强；E组按需选择。完成当前任务与相关证据比看完47课更重要。
+**主线路线：** A → B → C → D01–D04 → D07。D01–D04是套装二开与风格统一主线；D05–D06动作增强、E组专项按需选择。完成当前任务与相关证据比看完47课更重要。
 
 [第一次如何准备](curriculum/first-session.md) · [预览、亲调与保存](curriculum/preview-and-save.md) · [哪些已交付](curriculum/delivery-status.md) · [待完善](docs/improvements.md)
 '''
