@@ -51,7 +51,8 @@ def main():
     assert rows['A01']['prereq'] == [] and rows['A02']['prereq'] == []
     assert '空间' in rows['A02']['title'] and '高级测量' not in rows['A01']['title']
     assert rows[K_ONLY]['m'] == [] and all(q[0] == 'K' for q in rows[K_ONLY]['questions'])
-    assert next_unit('C12') == 'D07' and next_unit('D07') is None
+    # Core route now includes D01-D04 kitbash/style-unification before D07.
+    assert next_unit('C12') == 'D01' and next_unit('D04') == 'D07' and next_unit('D07') is None
     for ident in [f'E{i:02}' for i in range(1, 8)]:
         assert next_unit(ident) is None, 'No automatic enrollment in unrelated optional topics'
     checks = 0
