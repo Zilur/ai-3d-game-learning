@@ -1,54 +1,60 @@
-name: Unify authorized course numbering
+name: Finalize canonical course navigation
 on:
   push:
     branches: [main]
 permissions:
   contents: read
-concurrency:
-  group: course-numbering-once
-  cancel-in-progress: false
 jobs:
-  migrate:
-    if: contains(github.event.head_commit.message, '[unify-course-numbering]')
+  finalize:
+    if: contains(github.event.head_commit.message, '[finalize-course-numbering]')
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     permissions:
       contents: write
     steps:
-      - name: Checkout the exact authorized source
+      - name: Checkout exact authorized source
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ github.sha }}
           persist-credentials: true
-      - name: Migrate source IDs and colliding filenames, then validate
-        run: python3 tools/migrate_course_ids.py
-      - name: Publish only validated course changes
+      - name: Finish the learner-facing revision label and rebuild
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('tools/numbered_navigation.py')
+          text = path.read_text()
+          old = '            text = _clean(output[key])\n'
+          new = old + "            text = re.sub(r'^版本：[^\\n]*$', '版本：统一课号课程版｜2026-09-15', text, flags=re.M)\n"
+          assert text.count(old) == 1
+          path.write_text(text.replace(old, new, 1))
+          PY
+          python3 tools/build_course_materials.py
+          python3 tools/build_course_materials.py --check
+          python3 tools/check_course_numbering.py
+          python3 tools/validate_repo.py
+      - name: Publish only verified documentation outputs
         env:
           EXPECTED_HEAD: ${{ github.sha }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import subprocess
+          import json, subprocess
           from pathlib import Path
+          manifest = json.loads(Path('curriculum/materials-manifest.json').read_text())
+          allowed = set(manifest['sha256']) | {'curriculum/materials-manifest.json', 'tools/numbered_navigation.py'}
           tracked = subprocess.check_output(['git','diff','--name-only','-z']).decode().split('\0')
           untracked = subprocess.check_output(['git','ls-files','--others','--exclude-standard','-z']).decode().split('\0')
           changed = {p for p in tracked + untracked if p}
-          for p in changed:
-              if p.startswith(('.github/', 'openmaic/vendor/')) or Path(p).suffix not in {'.py','.md','.json'}:
-                  raise SystemExit('Unexpected write scope: ' + p)
-              if p.startswith(('game/','blender/','web/')) and not p.endswith('.md'):
-                  raise SystemExit('Runtime modification refused: ' + p)
+          assert not (changed - allowed), changed - allowed
+          assert not any(p.startswith(('game/','blender/','web/','openmaic/vendor/','.github/')) for p in changed)
           subprocess.run(['git','add','-A','--',*sorted(changed)], check=True)
-          print('Validated migration paths:', len(changed))
           PY
           if git diff --cached --quiet; then exit 0; fi
           ACTUAL_HEAD=$(git ls-remote origin refs/heads/main | cut -f1)
-          if [ "$ACTUAL_HEAD" != "$EXPECTED_HEAD" ]; then
-            echo 'main changed concurrently; do not overwrite'
-            exit 1
-          fi
+          test "$ACTUAL_HEAD" = "$EXPECTED_HEAD"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'course: unify all lesson filenames, sources, questions and navigation as sequential A01-E07 groups'
+          git commit -m 'docs: use one consistent revision label for all renumbered courses'
           git push origin HEAD:main
           git rev-parse HEAD
