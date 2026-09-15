@@ -60,6 +60,10 @@ jobs:
           replace_once('tools/check_lesson_delivery.py',
               '    builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    manifest =',
               '    builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    builder.apply_fixed_view_effects(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    manifest =')
+
+          replace_once('curriculum/authoring/fixed_view_effects.py',
+              "if 'FOV（Field of View' not in '\\n'.join(a08['body']):",
+              "if 'FOV是Field of View' not in '\\n'.join(a08['body']):")
           PY
 
           python3 tools/build_course_materials.py
