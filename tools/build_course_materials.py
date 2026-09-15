@@ -9,22 +9,23 @@ import json
 from pathlib import Path
 import runpy
 import sys
-from scenario_sections import validate_scenarios, decorate_lesson, enrich_output
+from scenario_sections import validate_scenarios, decorate_lesson, enrich_output, ROWS, DISPLAY
+from demo_coach import prepare_lessons, enrich_demo, validate_coaching
 
 ROOT = Path(__file__).resolve().parents[1]
 AUTHOR = ROOT / 'curriculum/authoring'
 FILES = ['beginner_a.py', 'beginner_b.py', 'intermediate.py', 'advanced.py', 'art.py', 'motion.py']
-ORDER = ['R01','B01A','B02','B04','B03','B05','B01B','B06','R02','B07','R03','B08','B09','B10','B11','B12','B13','R04','B14','B15','B16','I01','I02','I03','I04','I05','I06','I07','I08','I09','I10','I11','I12','R05','R06','R07','R08','X01','X02','A01','A02','A03','A04','A05','A06']
+ORDER = ['R01', 'B01A', 'B02', 'B04', 'B03', 'B05', 'B01B', 'B06', 'R02', 'B07', 'R03', 'B08', 'B09', 'B10', 'B11', 'B12', 'B13', 'R04', 'B14', 'B15', 'B16', 'I13', 'I14', 'I01', 'I02', 'I03', 'I04', 'I05', 'I06', 'I07', 'I08', 'I09', 'I10', 'R05', 'R06', 'R07', 'R08', 'X01', 'X02', 'I11', 'I12', 'A01', 'A02', 'A03', 'A04', 'A05', 'A06']
 REQUIRED = {'id','title','prereq','concepts','goal','m','k','stop','body','initial','controls','steps','feedback','failure','reset','ui','questions','remember','recall','practice','sources'}
 
 def bullets(values):
     return '\n'.join('- ' + value for value in values)
 
 def validate(lessons, sources):
-    expected = {'B01A','B01B'} | {f'B{i:02}' for i in range(2,17)} | {f'I{i:02}' for i in range(1,13)} | {f'A{i:02}' for i in range(1,7)} | {f'R{i:02}' for i in range(1,9)} | {'X01','X02'}
+    expected = {'B01A','B01B'} | {f'B{i:02}' for i in range(2,17)} | {f'I{i:02}' for i in range(1,15)} | {f'A{i:02}' for i in range(1,7)} | {f'R{i:02}' for i in range(1,9)} | {'X01','X02'}
     ids = [row['id'] for row in lessons]
-    if set(ids) != expected or len(ids) != 45 or len(set(ORDER)) != 45 or set(ORDER) != expected:
-        raise ValueError('Exactly 45 canonical generation units and order entries are required')
+    if set(ids) != expected or len(ids) != 47 or len(set(ORDER)) != 47 or set(ORDER) != expected:
+        raise ValueError('Exactly 47 canonical generation units and order entries are required')
     by_id = {row['id']: row for row in lessons}
     for row in lessons:
         missing = REQUIRED - row.keys()
@@ -126,7 +127,7 @@ def generated(lessons, sources, by_id):
         output[f"openmaic/lessons/{row['id']}.md"] = make_lesson(row, sources, True)
         output[f"curriculum/lessons/{row['id']}.md"] = make_lesson(row, sources, False)
     index = ['# 课程索引：先课件，后素材与真实工程', '',
-        '45份独立生成课件：初级17（B01拆A/B）、中级12、高级6、审美/美术8、动作复用2。编号保留连续性；不要求全部按表学完。',
+        '47份独立生成课件：初级17（B01拆A/B）、中级12、高级6、审美/美术8、动作复用2。编号保留连续性；不要求全部按表学完。',
         '每课都有正文、实验、深度、题目、评分反馈与来源。正文完成不等于课堂生成或试教完成。', '',
         '## 推荐路线', '',
         'R01 → B01A → B02 → B04 → B03 → B05 → B01B → B06 → R02 → B07 → R03 → B08–B13 → R04 → B14–B16。',
@@ -177,8 +178,9 @@ def generated(lessons, sources, by_id):
         if key not in output and ident in by_id:
             output[key] = f'# {ident}旧入口\n\n请复制 [{ident}完整OpenMAIC课件](../lessons/{ident}.md) 全文。本页只是兼容旧链接的入口，不是生成要求。\n'
     enrich_output(output, by_id, ORDER)
-    manifest = {'version':'v5-application','date':'2026-09-15','lesson_count':45,
-        'units':[{'id':ident,'prerequisites':by_id[ident]['prereq'],'concepts':by_id[ident]['concepts'],
+    enrich_demo(output, by_id, ORDER, ROWS, DISPLAY)
+    manifest = {'version':'v6-guided-demo','date':'2026-09-15','lesson_count':47,
+        'units':[{'id':ident,'display':DISPLAY[ident],'dialogue':'curriculum/dialogues/'+ident+'.md','prerequisites':by_id[ident]['prereq'],'concepts':by_id[ident]['concepts'],
                   'status':'manuscript-reviewed; classroom-not-generated; learner-not-tested'} for ident in ORDER],
         'source_sha256':{path.relative_to(ROOT).as_posix():hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(AUTHOR.glob('*.py'))},
         'sha256':{name:hashlib.sha256(text.encode()).hexdigest() for name,text in output.items()}}
@@ -193,7 +195,9 @@ def main():
     for name in FILES:
         lessons.extend(runpy.run_path(str(AUTHOR / name))['LESSONS'])
     sources = runpy.run_path(str(AUTHOR / 'sources.py'))['SOURCES']
+    lessons = prepare_lessons(lessons, sources)
     by_id = validate(lessons, sources)
+    validate_coaching(by_id)
     output = generated(lessons, sources, by_id)
     mismatched = []
     for name, text in output.items():
@@ -206,7 +210,7 @@ def main():
             path.write_text(text, encoding='utf-8')
     if mismatched:
         raise RuntimeError('Out-of-date generated files: ' + ', '.join(mismatched))
-    print(f'MANUSCRIPT CHECK PASS: 45 units; 180 local questions (A05 all K); {len(output)} outputs; dependency graph acyclic')
+    print(f'MANUSCRIPT CHECK PASS: 47 units; 188 local questions (A05 all K); {len(output)} outputs; dependency graph acyclic')
     print('No classroom generated; no game, Blender or learning outcome validated by this command.')
     return 0
 

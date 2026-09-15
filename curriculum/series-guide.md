@@ -1,6 +1,6 @@
 # ABCDE主题入口与旧课号对照
 
-新展示号带连字符，例如A-01；旧A01仍指旧高级测量课，不能当成新A-01。只调整展示分类，不改45个稳定文件路径、C01–C32或既有题号。不是第二套课程。
+新展示号带连字符，例如A-01；旧A01仍指旧高级测量课，不能当成新A-01。只调整展示分类，不改47个稳定文件路径、C01–C32或既有题号。不是第二套课程。
 主题不是难度。按课程索引前置顺序穿插学习，AI协作从第一课就使用，不等到D系列才开始。
 
 |新号|主题|兼容课号|学生讲义|OpenMAIC全文|
@@ -19,6 +19,8 @@
 |B-08|Godot核心与小游戏闭环：柔和光照：先让目标被看见|B13|[阅读](lessons/B13.md)|[生成输入](../openmaic/lessons/B13.md)|
 |B-09|Godot核心与小游戏闭环：性能入门：先测，再判断要不要优化|B14|[阅读](lessons/B14.md)|[生成输入](../openmaic/lessons/B14.md)|
 |B-10|Godot核心与小游戏闭环：初级结业：把星星换成另一种可用物品|B16|[阅读](lessons/B16.md)|[生成输入](../openmaic/lessons/B16.md)|
+|B-11|Godot核心与小游戏闭环：小地图扩展：把庭院连成一条可探索路线|I13|[阅读](lessons/I13.md)|[生成输入](../openmaic/lessons/I13.md)|
+|B-12|Godot核心与小游戏闭环：世界美化：从好看的物体到统一的小世界|I14|[阅读](lessons/I14.md)|[生成输入](../openmaic/lessons/I14.md)|
 |C-01|Blender与审美、资产改造：训练眼睛一：剪影、比例和细节层级|R02|[阅读](lessons/R02.md)|[生成输入](../openmaic/lessons/R02.md)|
 |C-02|Blender与审美、资产改造：Blender静态资产：先会验收，再谈从零造型|B07|[阅读](lessons/B07.md)|[生成输入](../openmaic/lessons/B07.md)|
 |C-03|Blender与审美、资产改造：训练眼睛二：明度、色相、饱和度与焦点|R03|[阅读](lessons/R03.md)|[生成输入](../openmaic/lessons/R03.md)|
@@ -41,9 +43,9 @@
 |E-06|角色、进阶与按需专题：优化入口：知道什么时候该停|I07|[阅读](lessons/I07.md)|[生成输入](../openmaic/lessons/I07.md)|
 |E-07|角色、进阶与按需专题：导航选修：画得出路径还要走得到|I08|[阅读](lessons/I08.md)|[生成输入](../openmaic/lessons/I08.md)|
 |E-08|角色、进阶与按需专题：可交互对象：提示、条件和结果|I09|[阅读](lessons/I09.md)|[生成输入](../openmaic/lessons/I09.md)|
-|E-09|角色、进阶与按需专题：中级结业：小型原型的完整闭环|I12|[阅读](lessons/I12.md)|[生成输入](../openmaic/lessons/I12.md)|
+|E-09|角色、进阶与按需专题：精致Demo结业：完整探索关卡与可选训练角|I12|[阅读](lessons/I12.md)|[生成输入](../openmaic/lessons/I12.md)|
 |E-10|角色、进阶与按需专题：动作复用：先选兼容资源，再做少量适配|X01|[阅读](lessons/X01.md)|[生成输入](../openmaic/lessons/X01.md)|
-|E-11|角色、进阶与按需专题：武打表现选修：复用片段，打磨节奏与反馈|X02|[阅读](lessons/X02.md)|[生成输入](../openmaic/lessons/X02.md)|
+|E-11|角色、进阶与按需专题：轻战斗融入：现成攻击动作与可重复训练木桩|X02|[阅读](lessons/X02.md)|[生成输入](../openmaic/lessons/X02.md)|
 |E-12|角色、进阶与按需专题：高级测量：用证据决定技术投入|A01|[阅读](lessons/A01.md)|[生成输入](../openmaic/lessons/A01.md)|
 |E-13|角色、进阶与按需专题：Shader选修：能控制效果，不必重造渲染器|A02|[阅读](lessons/A02.md)|[生成输入](../openmaic/lessons/A02.md)|
 |E-14|角色、进阶与按需专题：复杂旋转选修：轨迹对，比公式背得熟重要|A03|[阅读](lessons/A03.md)|[生成输入](../openmaic/lessons/A03.md)|

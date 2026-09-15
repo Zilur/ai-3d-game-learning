@@ -20,5 +20,11 @@
 - `mixamo`：[Adobe Mixamo FAQ：角色、动作及使用条件](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html)
 - `kenney`：[Kenney Support：资产用途与许可说明](https://kenney.nl/support)
 - `quaternius`：[Quaternius：基础角色、动作与风格化套件](https://quaternius.com/)
+- `v6_debug`：[Godot运行检查与可见碰撞工具](https://docs.godotengine.org/en/stable/tutorials/scripting/debug/overview_of_debugging_tools.html)
+- `v6_area`：[Godot Area3D：监测、重叠和物理步更新](https://docs.godotengine.org/en/stable/classes/class_area3d.html)
+- `v6_tracks`：[Godot动画轨道：方法事件不在编辑器预览执行](https://docs.godotengine.org/en/stable/tutorials/animation/animation_track_types.html)
+- `v6_environment`：[Godot环境与后处理：效果及渲染器边界](https://docs.godotengine.org/en/stable/tutorials/3d/environment_and_post_processing.html)
+- `v6_performance`：[Godot三维性能：先测量，关注透明和绘制成本](https://docs.godotengine.org/en/stable/tutorials/performance/optimizing_3d_performance.html)
+- `v6_link`：[Blender Link与Append：引用和本地副本](https://docs.blender.org/manual/en/latest/files/linked_libraries/link_append.html)
 
 艺术偏好、M/K比例、时长和学习顺序是设计选择，不是研究证明的唯一最佳方案。缺图时用明确原创示意，不猜测或伪造页面内容。

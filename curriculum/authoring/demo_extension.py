@@ -3,6 +3,7 @@ from copy import deepcopy
 
 ORDER = ['R01','B01A','B02','B04','B03','B05','B01B','B06','R02','B07','R03','B08','B09','B10','B11','B12','B13','R04','B14','B15','B16','I13','I14','I01','I02','I03','I04','I05','I06','I07','I08','I09','I10','R05','R06','R07','R08','X01','X02','I11','I12','A01','A02','A03','A04','A05','A06']
 SOURCES = {
+ 'v6_debug': ('Godot运行检查与可见碰撞工具', 'https://docs.godotengine.org/en/stable/tutorials/scripting/debug/overview_of_debugging_tools.html'),
  'v6_area': ('Godot Area3D：监测、重叠和物理步更新', 'https://docs.godotengine.org/en/stable/classes/class_area3d.html'),
  'v6_tracks': ('Godot动画轨道：方法事件不在编辑器预览执行', 'https://docs.godotengine.org/en/stable/tutorials/animation/animation_track_types.html'),
  'v6_environment': ('Godot环境与后处理：效果及渲染器边界', 'https://docs.godotengine.org/en/stable/tutorials/3d/environment_and_post_processing.html'),
@@ -76,6 +77,8 @@ SCENARIOS = {
  'X02': dict(place='P07可选增强｜旁路训练角的单次攻击闭环', before='动作能播却空挥也算命中，或攻击结束后不能继续探索。', after='原地攻击只在有效范围与时间命中木桩一次，反馈清楚，结束/取消后恢复，主线可绕过。', task='只使用已验证兼容且许可明确的一段原地攻击。分三步完成：先播放并恢复；再加有效窗口/每攻击每目标一次；最后接一个木桩反馈。先执行第一步，不做连招。', keep='原走跑跳和镜头在非攻击时保持；攻击中暂停水平移动和新跳跃但允许镜头，结束或中断恢复。训练命中不改星星数，训练角不成为通关门槛。', tweaks=[('实际片段预览/速度/过渡（内置或已暴露参数）','固定命中规则，小幅调整一项再回放','准备、接触、恢复是否清晰，脚底是否漂移'),('有效窗口与命中范围（本项目自定义）','依据真片段接触姿态改一项并在运行中验证','空挥不记分，同一次只一次，下次还能命中')], accept=['真实运行中空挥、命中、原地连续两次、快速重复输入各一次的事件证据。','中断/重开后恢复移动，关闭训练角后原十星路线能完成。'], regress='镜头、走跑跳、收集、完成、重开和禁用训练角的基础版均不退化。', transfer='更换一段兼容攻击或调整播放速度，只复测时间、范围、防重与恢复，不引入第二种技能。', risk='检查是否把动画开始当命中、只等新进入信号、永不清理去重、只靠结束信号恢复，或复制未经授权动作到公开仓库。'),
 }
 
+SCENARIOS['I12'] = {'place': 'P06c/P07｜精致Demo的基础版与增强版验收', 'before': '局部任务分别通过，但整段探索、风格和交付尚未连起来。', 'after': '基础版三段地图十星循环可靠；增强版额外有可绕过的攻击木桩闭环。', 'task': '先由我选择基础版或增强版，再按项目质量表验收。先跑从启动、三段探索、收齐到重开的完整路径；只修一个阻碍交付的问题，不增加新系统。', 'keep': '基础十星、原角色/相机行为、已选风格与目标平台固定；未选战斗/导航不成为门槛。', 'tweaks': [('完整路线与三个玩家观察点（验收入口）', '固定输入参数跑同一路线，比较一项改动', '迷路、遮挡、反馈、完成和重开是否改善'), ('训练角启用配置（本项目自定义，仅增强版）', '开和关分别回归，不改星星计数', '攻击防重/恢复与基础收集互不破坏')], 'accept': ['实际从干净启动走完三段地图、十星、完成和重开，并说明三个视觉观察点的风格规则。', '基础版按范围回归；增强版另提供空挥、同次去重、下一次可命中和取消恢复证据，无数据的性能不宣称达标。'], 'regress': '用相同目标设备、分辨率和路线核对原控制、碰撞、资源往返、提示与恢复。', 'transfer': '换一个已学的布局/材质/反馈约束，先说明影响范围再用最小对照验证。', 'risk': '检查AI是否用漂亮截图代替连续游玩、把选修加入通关门槛、隐瞒失败或报告未执行的性能数据。'}
+
 def prepare_lessons(lessons, sources):
     rows = deepcopy(lessons)
     sources.update(SOURCES)
@@ -86,6 +89,9 @@ def prepare_lessons(lessons, sources):
     for i, row in enumerate(rows):
         if row['id'] == 'X02':
             rows[i] = deepcopy(COMBAT)
+        if row['id'] == 'B08':
+            row['initial'] = '两个同尺寸且初始独立材质的球、灰箱、固定灯光相机；第二小实验再切为共享，结束时恢复独立。无GI/Glow。'
+            row['steps'] = ['固定右球，只调左球一项材质并作对照。', '切到共享修改范围实验：共享时两球一起变；分离后才恢复右球基线。', '恢复独立材质，分别比较Emission与独立光源对灰箱的影响。']
         if row['id'] == 'I12':
             row.update(title='精致Demo结业：完整探索关卡与可选训练角', prereq=['I11','I02','I04','I14'],
                 goal='交付有统一世界观感、清楚探索路线与可靠十星循环的小关卡；选择增强版时再验收训练角。',
@@ -94,4 +100,7 @@ def prepare_lessons(lessons, sources):
             row['practice'] = '后续交付基础版与可关闭训练角的增强版验收清单；当前没有发布新的可玩包。沿同一路线采集三个游戏机位和一段连续完成证据，截图不能替代过程。'
         if row['id'] == 'R08':
             row['body'] += ['本课把小套件用在I14的世界美化规则中；已有三段关卡者在同一关卡替换，无需重新造大地图。未做扩图者先用一个转角样板，不能声称已经完成整图。最终按玩家距离看剪影、风格和可辨性，再决定细节是否值得。']
+    for row in rows:
+        if row['id'] != 'A05' and 'v6_debug' not in row['sources']:
+            row['sources'].append('v6_debug')
     return rows

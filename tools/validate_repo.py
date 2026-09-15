@@ -98,8 +98,10 @@ def main() -> int:
     if (ROOT / "curriculum/materials-manifest.json").exists():
         result = subprocess.run([sys.executable, str(ROOT / "tools/build_course_materials.py"), "--check"], cwd=ROOT, check=False)
         check(result.returncode == 0, "Generated lesson Markdown does not match authored content")
-        check(len(list((ROOT / "openmaic/lessons").glob("*.md"))) == 45, "Expected 45 teacher inputs")
-        check(len(list((ROOT / "curriculum/lessons").glob("*.md"))) == 45, "Expected 45 student handouts")
+        guided = subprocess.run([sys.executable, str(ROOT / "tools/check_lesson_delivery.py")], cwd=ROOT, check=False)
+        check(guided.returncode == 0, "Per-lesson guided delivery contract failed")
+        check(len(list((ROOT / "openmaic/lessons").glob("*.md"))) == 47, "Expected 47 teacher inputs")
+        check(len(list((ROOT / "curriculum/lessons").glob("*.md"))) == 47, "Expected 47 student handouts")
         for path in (ROOT / "curriculum/lessons").glob("*.md"):
             check("## 11. 教师反馈" not in path.read_text(encoding="utf-8"), "Teacher answers leaked to student handout")
         pinned = runpy.run_path(str(ROOT / "tools/vendor_openmaic.py"))

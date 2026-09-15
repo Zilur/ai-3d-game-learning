@@ -17,3 +17,7 @@ openmaic/vendor仅为用户要求保存的上游参考，固定提交和哈希�
 ## v5逐课应用约束
 
 application_*.py是每课真实情境的作者源，由tools/scenario_sections.py与原课源共同展开；不能只改单份生成MD。ABCDE展示号带连字符且有series-guide映射，旧文件/题号与C编号保持兼容。所有M都要有实际场景取证入口，K不升级深考；模拟、工具执行和学员应用分开记录。仍先课件再配套，不自动扩写引擎工程。
+
+## v6每课连续对话与精致Demo
+
+demo_extension.py是扩图、美化、X02和I12的作者修订源；conversation_plans.py保存每课首步、继续条件、后续一步和概念图。tools/demo_coach.py把它们加入同一份学生稿/教师稿并生成dialogues。修改源后重新构建，不单独修改生成MD。47课三份用途不是141课。新项目成果仍需逐课运行和学习证据。
