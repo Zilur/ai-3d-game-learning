@@ -26,5 +26,9 @@
 - `v6_environment`：[Godot环境与后处理：效果及渲染器边界](https://docs.godotengine.org/en/stable/tutorials/3d/environment_and_post_processing.html)
 - `v6_performance`：[Godot三维性能：先测量，关注透明和绘制成本](https://docs.godotengine.org/en/stable/tutorials/performance/optimizing_3d_performance.html)
 - `v6_link`：[Blender Link与Append：引用和本地副本](https://docs.blender.org/manual/en/latest/files/linked_libraries/link_append.html)
+- `review_body`：[Godot CharacterBody3D：velocity与物理delta](https://docs.godotengine.org/en/stable/classes/class_characterbody3d.html)
+- `review_area`：[Godot Area3D：重叠列表的物理更新时机](https://docs.godotengine.org/en/stable/classes/class_area3d.html)
+- `review_resource`：[Godot Resources：实例与共享引用](https://docs.godotengine.org/en/stable/tutorials/scripting/resources.html)
+- `review_tracks`：[Godot动画事件轨道：编辑器预览与运行不同](https://docs.godotengine.org/en/stable/tutorials/animation/animation_track_types.html)
 
 艺术偏好、M/K比例、时长和学习顺序是设计选择，不是研究证明的唯一最佳方案。缺图时用明确原创示意，不猜测或伪造页面内容。

@@ -161,6 +161,7 @@ def decorate_review(text, row, teacher=False, dialogue=False):
         '本课由我负责：' + rec['decision'] + '\n可以交给你：' + rec['ai'] + '\n'
         '请标明建议/已执行/已验证的区别。练习可提示；验收先等我作判断，已提示根因则如实记有提示。\n' + prompt_anchor, 1)
     text = text.replace('版本：Guided Demo v6｜2026-09-15', '版本：' + VERSION)
+    text = text.replace('0=缺证据或错误', '0=已显示错误；无证据另记待验证')
     if not dialogue:
         a = '## 2. 必要讲解：先看现象，再给术语'
         if text.count(a) != 1:

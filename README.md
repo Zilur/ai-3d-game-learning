@@ -1,3 +1,5 @@
+> v7审查：[逐课检查](curriculum/quality-review.md) · [AI协作能力](assessments/ai-collaboration.md) · [评分校准](assessments/grading-calibration.md)。每课已有具体人/AI分工和M—实操—题目对应；新课实际效果仍待试学。
+
 # AI时代：做一个精致的小型3D游戏
 
 **学一点概念 → 跟AI做一小步 → 亲自调和观察 → 放回同一项目 → 检查没改坏。**

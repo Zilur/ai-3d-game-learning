@@ -58,3 +58,5 @@
 
 I08导航、X动作和A高级按需选择；未选不计入基础版验收。制作顺序先文本、再课堂验证、再软件配套；学员使用时每课交替理解与实践。
 [精致Demo验收](demo-quality.md) · [界面参数深度](interface-map.md) · [全部应用情境](application-map.md)
+
+[逐课质量审查](quality-review.md) · [AI协作考察](../assessments/ai-collaboration.md) · [必记卡](../print/ai-control-card.md)

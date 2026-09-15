@@ -113,6 +113,8 @@ def main() -> int:
                 actual = hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest()
                 check(actual == expected_sha, f"Upstream reference bytes changed: {source}")
         check((vendor / "UPSTREAM.json").is_file(), "Missing upstream provenance")
+    reviewed = subprocess.run([sys.executable, str(ROOT / "tools/check_quality_review.py")], cwd=ROOT, check=False)
+    check(reviewed.returncode == 0, "AI collaboration/evidence review inconsistent")
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1

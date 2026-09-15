@@ -1,3 +1,5 @@
+> v7审查：[逐课检查](curriculum/quality-review.md) · [AI协作能力](assessments/ai-collaboration.md) · [评分校准](assessments/grading-calibration.md)。每课已有具体人/AI分工和M—实操—题目对应；新课实际效果仍待试学。
+
 # 从这里开始：每次只推进一个可验证的小步骤
 
 先选你今天要学的一课，不需要读完整个仓库。[打开课程索引](curriculum/lesson-index.md)。第一次从 **A-01风格对话** 或 **A-02空间入门** 开始；两个入口都不要求先有完整游戏。

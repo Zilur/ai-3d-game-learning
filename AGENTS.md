@@ -21,3 +21,7 @@ application_*.py是每课真实情境的作者源，由tools/scenario_sections.p
 ## v6每课连续对话与精致Demo
 
 demo_extension.py是扩图、美化、X02和I12的作者修订源；conversation_plans.py保存每课首步、继续条件、后续一步和概念图。tools/demo_coach.py把它们加入同一份学生稿/教师稿并生成dialogues。修改源后重新构建，不单独修改生成MD。47课三份用途不是141课。新项目成果仍需逐课运行和学习证据。
+
+## v7质量审查源
+
+review_*.py保存逐课职责、诊断题、证据与审查说明；tools/quality_review.py在v6课程装配后应用。不得只改生成MD。更新运行build_course_materials.py --check、check_quality_review.py、validate_repo.py。结构检查只证明一致性，不证明教学效果。B09不能提前验B10/B12功能；A05全K不增实操门槛。
