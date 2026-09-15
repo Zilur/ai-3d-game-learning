@@ -1,0 +1,85 @@
+name: Publish practical-stage outputs v2
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: practical-stage-publication-v2
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: contains(github.event.head_commit.message, '[publish-practical-sync-v2]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout exact authorized source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: true
+      - name: Wire canonical practical pages and regenerate
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              s = p.read_text(encoding='utf-8')
+              if new in s:
+                  return
+              if s.count(old) != 1:
+                  raise SystemExit(f'{path}: expected one anchor, got {s.count(old)}')
+              p.write_text(s.replace(old, new, 1), encoding='utf-8')
+
+          replace_once('tools/build_course_materials.py',
+              "    # Existing practical files remain; point readers to the canonical classroom text.",
+              "    practical_pages = runpy.run_path(str(AUTHOR / 'site_practical.py'))['PAGES']\n    output.update(practical_pages)\n    # Existing practical files remain; point readers to the canonical classroom text.")
+          replace_once('curriculum/authoring/fixed_view_strategy.py',
+              "    if 'AGENTS.md' in output:\n        output['AGENTS.md'] +=",
+              "    if 'AGENTS.md' in output and '## 固定视角与套装二开基线' not in output['AGENTS.md']:\n        output['AGENTS.md'] +=")
+          PY
+          python3 tools/build_course_materials.py
+          python3 tools/build_course_materials.py --check
+          python3 tools/check_course_numbering.py
+          python3 tools/check_lesson_delivery.py
+          python3 tools/check_quality_review.py
+          python3 tools/check_session_readiness.py
+          python3 tools/validate_repo.py
+      - name: Commit canonical generator wiring and outputs
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          manifest = json.loads(Path('curriculum/materials-manifest.json').read_text())
+          allowed = set(manifest['sha256']) | {
+              'curriculum/materials-manifest.json',
+              'curriculum/authoring/fixed_view_strategy.py',
+              'tools/build_course_materials.py',
+          }
+          tracked = subprocess.check_output(['git','diff','--name-only','-z']).decode().split('\0')
+          untracked = subprocess.check_output(['git','ls-files','--others','--exclude-standard','-z']).decode().split('\0')
+          changed = {p for p in tracked + untracked if p}
+          bad = changed - allowed
+          if bad or any(p.startswith(('game/','blender/','web/')) for p in changed):
+              raise SystemExit('Unexpected publication scope: ' + repr(sorted(bad or changed)))
+          if changed:
+              subprocess.run(['git','add','--',*sorted(changed)], check=True)
+          print('Approved regenerated files:', len(changed))
+          PY
+          if git diff --cached --quiet; then exit 0; fi
+          ACTUAL_HEAD=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [ "$ACTUAL_HEAD" != "$EXPECTED_HEAD" ]; then
+            echo 'Concurrent main change; refusing overwrite'
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs: make practical stage and clean style canonical'
+          git push origin HEAD:main
