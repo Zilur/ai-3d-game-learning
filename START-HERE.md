@@ -15,3 +15,7 @@
 **主线路线：** A → B → C → D07。D01–D04为美术强化，D05–D06为动作增强；E组按需选择。完成当前任务与相关证据比看完47课更重要。
 
 [第一次如何准备](curriculum/first-session.md) · [预览、亲调与保存](curriculum/preview-and-save.md) · [哪些已交付](curriculum/delivery-status.md) · [待完善](docs/improvements.md)
+
+## 这个项目默认做什么样的3D
+
+固定或有限镜头、温暖风格化卡通、漂亮但不写实。美术重点是选择一套视觉基因接近的资产，拼装、二开、统一配色/材质，再回Godot玩家机位验收；不是从零建完所有模型。[查看工作流](curriculum/fixed-view-art-workflow.md)。

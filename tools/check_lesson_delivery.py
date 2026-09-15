@@ -8,6 +8,15 @@ from scenario_sections import ROWS
 ROOT = Path(__file__).resolve().parents[1]
 
 def main():
+    import runpy
+    import build_course_materials as builder
+    lessons = []
+    for name in builder.FILES:
+        lessons.extend(runpy.run_path(str(builder.AUTHOR / name))['LESSONS'])
+    sources = runpy.run_path(str(builder.AUTHOR / 'sources.py'))['SOURCES']
+    lessons = builder.prepare_lessons(lessons, sources)
+    lessons = builder.apply_review(lessons, builder.ROWS, sources)
+    builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)
     manifest = json.loads((ROOT / 'curriculum/materials-manifest.json').read_text(encoding='utf-8'))
     units = manifest['units']
     assert len(units) == 47 and len({u['id'] for u in units}) == 47, '47 unique lesson units required'

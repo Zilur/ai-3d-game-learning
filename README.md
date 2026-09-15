@@ -1,6 +1,6 @@
 # AI时代3D游戏学习
 
-把必要概念、审美判断和AI协作应用到同一个逐步成长的小游戏：从方块庭院到可探索的卡通小关卡，再按需加入一段攻击与训练木桩。
+围绕固定或有限镜头、风格化卡通和资产套装二开，从方块庭院到可探索的卡通小关卡，再按需加入一段攻击与训练木桩。
 
 ## 学习入口
 
@@ -19,3 +19,5 @@ ABCDE是按学习顺序的分组编号，不代表某款软件。A组最基础�
 [AI协作要领](assessments/ai-collaboration.md) · [打印要点](print/必须牢记.md) · [打印AI随手卡](print/ai-control-card.md) · [上游OpenMAIC Skill](openmaic/upstream-reference.md)
 
 旧书签与进度可能使用旧号；请用[迁移说明](docs/numbering-migration.md)核对标题，不凭旧文件名猜课。
+
+[固定视角与套装二开](curriculum/fixed-view-art-workflow.md)

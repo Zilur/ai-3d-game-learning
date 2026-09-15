@@ -30,5 +30,7 @@
 - `review_area`：[Godot Area3D：重叠列表的物理更新时机](https://docs.godotengine.org/en/stable/classes/class_area3d.html)
 - `review_resource`：[Godot Resources：实例与共享引用](https://docs.godotengine.org/en/stable/tutorials/scripting/resources.html)
 - `review_tracks`：[Godot动画事件轨道：编辑器预览与运行不同](https://docs.godotengine.org/en/stable/tutorials/animation/animation_track_types.html)
+- `fixed_camera`：[Godot Camera3D：投影、FOV与相机属性](https://docs.godotengine.org/en/stable/classes/class_camera3d.html)
+- `asset_library`：[Blender Asset Libraries：资产复用入口](https://docs.blender.org/manual/en/latest/files/asset_libraries/introduction.html)
 
 艺术偏好、M/K比例、时长和学习顺序是设计选择，不是研究证明的唯一最佳方案。缺图时用明确原创示意，不猜测或伪造页面内容。

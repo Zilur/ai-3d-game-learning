@@ -21,6 +21,7 @@ def main():
     sources = runpy.run_path(str(builder.AUTHOR / 'sources.py'))['SOURCES']
     lessons = builder.prepare_lessons(lessons, sources)
     lessons = builder.apply_review(lessons, builder.ROWS, sources)
+    lessons = builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)
     by_id = builder.validate(lessons, sources)
     session.validate_session_data(by_id)
     output = {f'{folder}/{ident}.md': (ROOT / folder / f'{ident}.md').read_text(encoding='utf-8')

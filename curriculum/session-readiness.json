@@ -81,7 +81,7 @@
       "id": "A08",
       "display": "A08",
       "mode": "engine",
-      "minimum": "已能走跳的角色和简单墙角；能够运行、停止并释放鼠标，不要求新美术素材。",
+      "minimum": "已能走跳的角色、低平台和墙角；默认固定三分之四机位，无需鼠标持续控制镜头。",
       "reference": [
         "game/scenes/main.tscn",
         "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
@@ -220,7 +220,7 @@
       "id": "C01",
       "display": "C01",
       "mode": "engine",
-      "minimum": "已经验证的初级小庭院与走跑跳/镜头参数基线；新增两段路用灰盒，不要求地形插件。",
+      "minimum": "已经验证的庭院与固定/有限镜头基线；新增林路和观景台先用灰盒，每区先标一个玩家机位。",
       "reference": null,
       "support_fade": false
     },
@@ -228,7 +228,7 @@
       "id": "C02",
       "display": "C02",
       "mode": "engine",
-      "minimum": "已能跑通的庭院、林路、观景台，以及风格卡和三个观察点；先有一个入口转角可作样板。",
+      "minimum": "已跑通的三段灰盒、固定/有限镜头基线、风格卡和一个来源清楚的主资产套装；先只做入口样板。",
       "reference": null,
       "support_fade": false
     },
@@ -316,7 +316,7 @@
       "id": "D01",
       "display": "D01",
       "mode": "asset",
-      "minimum": "一件许可适用的可编辑基底、风格卡、游戏距离机位和只读原件；坏基底允许换，不强迫从零建模。",
+      "minimum": "一件来源和修改条件明确的可编辑套装基底、风格卡、固定玩家机位和只读原件；从二开开始，不从零建模。",
       "reference": null,
       "support_fade": false
     },
@@ -324,7 +324,7 @@
       "id": "D02",
       "display": "D02",
       "mode": "asset",
-      "minimum": "两三件道具及中性对照环境；只有Blender预览时先记录引擎验证未做。",
+      "minimum": "两三件来自套装的道具、风格卡、固定玩家机位与中性对照；先做配色/材质统一，不要求原创贴图。",
       "reference": null,
       "support_fade": false
     },
@@ -332,7 +332,7 @@
       "id": "D03",
       "display": "D03",
       "mode": "data",
-      "minimum": "少量真实或明确标为示意的资产卡、源/变体关系和来源信息；不以资产数量作为成绩。",
+      "minimum": "少量真实资产：至少一个主套装基底和一两个二开变体，带来源/尺度/接口/材质与验证信息；不以数量评分。",
       "reference": null,
       "support_fade": false
     },
@@ -340,7 +340,7 @@
       "id": "D04",
       "display": "D04",
       "mode": "observe",
-      "minimum": "一个实际可查看的场景样本或转角、自己的风格卡和资产信息；没有完整地图不声称整图已完成。",
+      "minimum": "一个已可玩的固定视角转角/小场景、主资产套装、风格卡和一两件二开变体；没有整图也可只做样板。",
       "reference": null,
       "support_fade": true
     },
@@ -348,7 +348,7 @@
       "id": "D05",
       "display": "D05",
       "mode": "optional",
-      "minimum": "已选动作复用路线、一个角色及真实动作文件或说明卡；无许可清楚的片段时只做选型判断。",
+      "minimum": "一个已选角色、两份来源清楚的动作包/说明卡；先试一个片段，不要求自己制作武打动作。",
       "reference": null,
       "support_fade": false
     },
@@ -356,7 +356,7 @@
       "id": "D06",
       "display": "D06",
       "mode": "optional",
-      "minimum": "已试过兼容的一段原地攻击、可恢复的控制器和木桩测试副本；没有真实动作只做时间线模拟。",
+      "minimum": "D05已验证的一段原地攻击、现有控制器和一个木桩测试副本；动作来自资源复用，不要求原创。",
       "reference": null,
       "support_fade": false
     },

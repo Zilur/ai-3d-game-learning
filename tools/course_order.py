@@ -10,7 +10,7 @@ ORDER = [ident for _, _, ids in GROUPS for ident in ids]
 OPTIONAL = {f'D{i:02}' for i in range(1, 7)} | {f'E{i:02}' for i in range(1, 8)}
 K_ONLY = 'E06'
 GROUP_RESULTS = {
-    'A': '能看懂对象与空间，借助AI完成走、跑、跳和第三人称观察。',
+    'A': '能看懂对象与空间，借助AI完成走、跑、跳和固定/有限镜头观察。',
     'B': '静态资产进入同一庭院，完成十星拾取、反馈、重开与初级排错。',
     'C': '庭院连接林路和观景台，统一世界观感，整合角色、交互与一个目标平台。',
     'D': '选做资产精修或训练角；D07按已选范围完成整体验收。',

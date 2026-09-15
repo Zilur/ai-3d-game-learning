@@ -197,7 +197,7 @@ def apply_fixed_view_strategy(lessons, scenarios, plans, diagrams, reviews, star
     # A compact validation contract for the authored strategy.
     if len(a08['m']) != 2 or len(a08['k']) != 2:
         raise ValueError('A08 fixed-camera depth must stay bounded')
-    if 'Orbit' not in a08['stop'] or '套装' not in d01['title'] or '配色' not in d02['title']:
+    if '自由环绕' not in a08['stop'] or '套装' not in d01['title'] or '配色' not in d02['title']:
         raise ValueError('Fixed-view/kitbash emphasis did not apply')
     if 'Facade' not in c02['k'][1] or 'action_reuse' not in diagrams:
         raise ValueError('Fixed-view visual cheats or action reuse diagram missing')

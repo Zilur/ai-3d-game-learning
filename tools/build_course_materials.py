@@ -11,13 +11,16 @@ import runpy
 import sys
 from course_order import ORDER as CANONICAL_ORDER
 from numbered_navigation import finalize_navigation
-from session_coach import enrich_sessions
+from session_coach import enrich_sessions, STARTS
 from scenario_sections import validate_scenarios, decorate_lesson, enrich_output, ROWS, DISPLAY
-from demo_coach import prepare_lessons, enrich_demo, validate_coaching
-from quality_review import apply_review, enrich_review
+from demo_coach import prepare_lessons, enrich_demo, validate_coaching, PLANS, DIAGRAMS
+from quality_review import apply_review, enrich_review, REVIEWS
 
 ROOT = Path(__file__).resolve().parents[1]
 AUTHOR = ROOT / 'curriculum/authoring'
+FIXED_VIEW = runpy.run_path(str(AUTHOR / 'fixed_view_strategy.py'))
+apply_fixed_view_strategy = FIXED_VIEW['apply_fixed_view_strategy']
+enrich_fixed_view = FIXED_VIEW['enrich_fixed_view']
 FILES = ['beginner_a.py', 'beginner_b.py', 'intermediate.py', 'advanced.py', 'art.py', 'motion.py']
 ORDER = CANONICAL_ORDER
 REQUIRED = {'id','title','prereq','concepts','goal','m','k','stop','body','initial','controls','steps','feedback','failure','reset','ui','questions','remember','recall','practice','sources'}
@@ -186,7 +189,8 @@ def generated(lessons, sources, by_id):
     enrich_review(output, by_id, ORDER, ROWS, DISPLAY)
     enrich_sessions(output, by_id, ORDER, ROWS, DISPLAY)
     finalize_navigation(output, by_id, ORDER, ROWS)
-    manifest = {'version':'sequential-ids-2026-09-15','date':'2026-09-15','lesson_count':47,
+    enrich_fixed_view(output, by_id, ORDER, ROWS)
+    manifest = {'version':'fixed-view-kitbash-2026-09-15','date':'2026-09-15','lesson_count':47,
         'units':[{'id':ident,'display':DISPLAY[ident],'dialogue':'curriculum/dialogues/'+ident+'.md','prerequisites':by_id[ident]['prereq'],'concepts':by_id[ident]['concepts'],
                   'status':'manuscript-reviewed; classroom-not-generated; learner-not-tested'} for ident in ORDER],
         'source_sha256':{path.relative_to(ROOT).as_posix():hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(AUTHOR.glob('*.py'))},
@@ -204,6 +208,7 @@ def main():
     sources = runpy.run_path(str(AUTHOR / 'sources.py'))['SOURCES']
     lessons = prepare_lessons(lessons, sources)
     lessons = apply_review(lessons, ROWS, sources)
+    lessons = apply_fixed_view_strategy(lessons, ROWS, PLANS, DIAGRAMS, REVIEWS, STARTS, sources)
     by_id = validate(lessons, sources)
     validate_coaching(by_id)
     output = generated(lessons, sources, by_id)
