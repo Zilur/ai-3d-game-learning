@@ -1,0 +1,81 @@
+name: Finalize reviewed dialogue alignment
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: final-review-alignment
+  cancel-in-progress: false
+jobs:
+  finalize:
+    if: contains(github.event.head_commit.message, '[finalize-review-alignment]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout authorized reviewed main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: true
+      - name: Correct exact remaining source mismatches
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          def replace(path, old, new):
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              if new in text:
+                  return
+              if text.count(old) != 1:
+                  raise SystemExit('Unexpected source: ' + path + ' / ' + repr(old))
+              p.write_text(text.replace(old,new,1),encoding='utf-8')
+          replace('curriculum/authoring/conversation_plans.py',
+                  '只改源资产一个外观细节再重导，验证包装的碰撞与拾取仍存在。',
+                  '只改源资产一个外观细节再重导，核对已有包装、形状和标记仍保留；拾取和重开到相应课实现后再测。')
+          replace('curriculum/authoring/conversation_plans.py',
+                  '先把我给的参考或文字拆成形状、比例、色盘、光感四栏；只提出一张三条规则的风格卡，不生成整张场景。',
+                  '先把我给的参考或文字拆成形状、比例、色彩、光照、表面五栏；我先选一项喜欢与一项不要的特征，再完善风格卡，不生成整张场景。')
+          replace('tools/quality_review.py',
+                  "            scenarios[ident].update(\n                task='只对当前静态视觉",
+                  "            scenarios[ident].update(\n                place='P03｜更新静态外观并保留当前包装职责',\n                task='只对当前静态视觉")
+          replace('tools/check_quality_review.py',
+                  "    assert '到B10/B12再补' in builder.ROWS['B09']['regress']\n",
+                  "    assert '到B10/B12再补' in builder.ROWS['B09']['regress']\n    for folder in ('curriculum/lessons', 'curriculum/dialogues', 'openmaic/lessons'):\n        b09 = (ROOT / folder / 'B09.md').read_text(encoding='utf-8')\n        assert '核对已有包装、形状和标记仍保留' in b09\n        assert '验证包装的碰撞与拾取仍存在' not in b09\n        assert '更新静态外观并保留当前包装职责' in b09\n    assert '形状、比例、色彩、光照、表面五栏' in (ROOT / 'curriculum/dialogues/R01.md').read_text(encoding='utf-8')\n")
+          print('Exact reviewed source corrections applied; no runtime changes')
+          PY
+          python3 tools/build_course_materials.py
+          python3 tools/build_course_materials.py --check
+          python3 tools/check_quality_review.py
+          python3 tools/validate_repo.py
+      - name: Publish only reviewed text and consistency checks
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          manifest = json.loads(Path('curriculum/materials-manifest.json').read_text())
+          allowed = set(manifest['sha256']) | {'curriculum/materials-manifest.json','curriculum/authoring/conversation_plans.py','tools/quality_review.py','tools/check_quality_review.py'}
+          changed = {p for cmd in (['git','diff','--name-only','-z'],['git','ls-files','--others','--exclude-standard','-z']) for p in subprocess.check_output(cmd).decode().split('\0') if p}
+          if changed - allowed or any(p.startswith(('game/','blender/','web/')) for p in changed):
+              raise SystemExit('Unexpected changes: ' + repr(sorted(changed-allowed)))
+          if changed:
+              subprocess.run(['git','add','--',*sorted(changed)],check=True)
+          print('Allowed changes:',len(changed))
+          PY
+          if git diff --cached --quiet; then exit 0; fi
+          ACTUAL_HEAD=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [ "$ACTUAL_HEAD" != "$EXPECTED_HEAD" ]; then
+            echo 'main changed concurrently; refusing overwrite'
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs: align B09 dialogue with current capabilities and restore five-part style briefing'
+          git push origin HEAD:main
+          git rev-parse HEAD
