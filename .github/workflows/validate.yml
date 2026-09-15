@@ -36,6 +36,13 @@ jobs:
           timeout 90 godot --headless --audio-driver Dummy --path game --fixed-fps 60 --script res://tests/smoke.gd 2>&1 | tee /tmp/smoke.log
           if grep -Eq 'SCRIPT ERROR|Parse Error|ERROR:' /tmp/smoke.log; then exit 1; fi
           grep -q 'SMOKE PASS:' /tmp/smoke.log
+      - name: Run fixed-view visual lab behavior test
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60 godot --headless --audio-driver Dummy --path game --script res://tests/visual_lab.gd 2>&1 | tee /tmp/visual_lab.log
+          if grep -Eq 'SCRIPT ERROR|Parse Error|ERROR:' /tmp/visual_lab.log; then exit 1; fi
+          grep -q 'VISUAL LAB PASS:' /tmp/visual_lab.log
       - name: Run B02 reference and fault tests
         shell: bash
         run: |
