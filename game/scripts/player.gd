@@ -1,12 +1,13 @@
 extends CharacterBody3D
-## C08/C09/C10: velocity is units/second; learners judge motion and camera behavior.
+## Fixed/limited-camera baseline: movement stays predictable; the camera is an art-direction tool.
 
 @export_range(0.1, 20.0, 0.1) var walk_speed: float = 4.0
 @export_range(0.1, 30.0, 0.1) var run_speed: float = 7.0
 @export_range(0.1, 30.0, 0.1) var jump_velocity: float = 8.0
 @export_range(0.1, 80.0, 0.1) var gravity: float = 24.0
 @export_range(0.0001, 0.02, 0.0001) var mouse_sensitivity: float = 0.002
-@export var capture_mouse_on_start: bool = true
+@export var capture_mouse_on_start: bool = false
+@export var allow_camera_orbit: bool = false
 
 @onready var orbit: Node3D = $Orbit
 @onready var arm: SpringArm3D = $Orbit/SpringArm3D
@@ -31,10 +32,14 @@ func _ready() -> void:
 	add_to_group("player")
 	spawn_position = global_position
 	arm.add_excluded_object(get_rid())
-	if capture_mouse_on_start and DisplayServer.get_name() != "headless":
+	if capture_mouse_on_start and allow_camera_orbit and DisplayServer.get_name() != "headless":
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	else:
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not allow_camera_orbit:
+		return
 	if event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	elif event is InputEventMouseButton:
@@ -49,9 +54,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	var axes := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	# Only yaw affects movement: looking up must not make the player fly.
-	var direction := orbit.global_basis * Vector3(axes.x, 0.0, axes.y)
-	direction.y = 0.0
+	# World-aligned controls are intentionally stable in this first fixed-camera slice.
+	var direction := Vector3(axes.x, 0.0, axes.y)
 	direction = direction.limit_length(1.0)
 	var speed := run_speed if Input.is_action_pressed("sprint") else walk_speed
 	velocity.x = direction.x * speed
@@ -64,7 +68,6 @@ func _physics_process(delta: float) -> void:
 		velocity.y = jump_velocity
 	if direction.length_squared() > 0.001:
 		visual.rotation.y = atan2(-direction.x, -direction.z)
-	# Godot 4 handles the physics timestep inside this method.
 	move_and_slide()
 	if global_position.y < -12.0:
 		respawn()

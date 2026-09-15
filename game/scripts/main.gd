@@ -1,5 +1,5 @@
 extends Node3D
-## C16: the level owns progress; UI only displays it.
+## The level owns progress; UI only displays it. This scene is also the first stylized vertical slice.
 
 const STAR_SCENE: PackedScene = preload("res://scenes/star.tscn")
 @export_range(0, 10, 1) var star_count: int = 10
@@ -29,7 +29,6 @@ func _ready() -> void:
 	_refresh_ui()
 
 func _on_star_collected(pickup_id: String) -> void:
-	# Defensive at the level boundary too; do not trust duplicate events.
 	if pickup_id.is_empty() or seen_ids.has(pickup_id):
 		return
 	seen_ids[pickup_id] = true
@@ -42,11 +41,11 @@ func _refresh_ui() -> void:
 	if total_stars == 0:
 		status_label.text = "No stars in this test level. R to restart."
 	elif completed:
-		status_label.text = "Complete! R to restart."
+		status_label.text = "Complete! The clean stylized slice is fully explored."
 	elif collected_count > 0:
-		status_label.text = "Collected! Find the next star."
+		status_label.text = "Collected. Follow the warm path and open grass."
 	else:
-		status_label.text = "Find all stars. Try the ramp and platform."
+		status_label.text = "Follow the warm path. Notice clusters and empty breathing space."
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
@@ -59,3 +58,7 @@ func _restart() -> void:
 func _open_lab() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	get_tree().change_scene_to_file("res://scenes/lab.tscn")
+
+func _open_visual_lab() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	get_tree().change_scene_to_file("res://scenes/visual_lab.tscn")
