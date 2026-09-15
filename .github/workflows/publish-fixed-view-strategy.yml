@@ -57,7 +57,10 @@ jobs:
               "'version':'sequential-ids-2026-09-15'",
               "'version':'fixed-view-kitbash-2026-09-15'")
 
-          for path in ('tools/check_quality_review.py','tools/check_session_readiness.py','tools/check_course_numbering.py'):
+          replace_once('tools/check_quality_review.py',
+              '    lessons = review.apply_review(lessons, builder.ROWS, sources)\n    by_id = builder.validate(lessons, sources)',
+              '    lessons = review.apply_review(lessons, builder.ROWS, sources)\n    lessons = builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    by_id = builder.validate(lessons, sources)')
+          for path in ('tools/check_session_readiness.py','tools/check_course_numbering.py'):
               replace_once(path,
                   '    lessons = builder.apply_review(lessons, builder.ROWS, sources)\n    by_id = builder.validate(lessons, sources)',
                   '    lessons = builder.apply_review(lessons, builder.ROWS, sources)\n    lessons = builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    by_id = builder.validate(lessons, sources)')
