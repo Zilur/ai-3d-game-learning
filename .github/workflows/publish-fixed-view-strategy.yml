@@ -1,0 +1,119 @@
+name: Publish fixed-view kitbash curriculum refinement
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: fixed-view-curriculum-publication
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: contains(github.event.head_commit.message, '[publish-fixed-view]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout exact authorized source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: true
+      - name: Wire fixed-view strategy into the canonical generator
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              s = p.read_text(encoding='utf-8')
+              if new in s:
+                  return
+              if s.count(old) != 1:
+                  raise SystemExit(f'{path}: expected one patch anchor, got {s.count(old)} for {old!r}')
+              p.write_text(s.replace(old, new, 1), encoding='utf-8')
+
+          replace_once('tools/build_course_materials.py',
+              'from session_coach import enrich_sessions',
+              'from session_coach import enrich_sessions, STARTS')
+          replace_once('tools/build_course_materials.py',
+              'from demo_coach import prepare_lessons, enrich_demo, validate_coaching',
+              'from demo_coach import prepare_lessons, enrich_demo, validate_coaching, PLANS, DIAGRAMS')
+          replace_once('tools/build_course_materials.py',
+              'from quality_review import apply_review, enrich_review',
+              'from quality_review import apply_review, enrich_review, REVIEWS')
+          replace_once('tools/build_course_materials.py',
+              "AUTHOR = ROOT / 'curriculum/authoring'\nFILES =",
+              "AUTHOR = ROOT / 'curriculum/authoring'\nFIXED_VIEW = runpy.run_path(str(AUTHOR / 'fixed_view_strategy.py'))\napply_fixed_view_strategy = FIXED_VIEW['apply_fixed_view_strategy']\nenrich_fixed_view = FIXED_VIEW['enrich_fixed_view']\nFILES =")
+          replace_once('tools/build_course_materials.py',
+              '    lessons = apply_review(lessons, ROWS, sources)\n    by_id = validate(lessons, sources)',
+              '    lessons = apply_review(lessons, ROWS, sources)\n    lessons = apply_fixed_view_strategy(lessons, ROWS, PLANS, DIAGRAMS, REVIEWS, STARTS, sources)\n    by_id = validate(lessons, sources)')
+          replace_once('tools/build_course_materials.py',
+              '    finalize_navigation(output, by_id, ORDER, ROWS)\n    manifest =',
+              '    finalize_navigation(output, by_id, ORDER, ROWS)\n    enrich_fixed_view(output, by_id, ORDER, ROWS)\n    manifest =')
+          replace_once('tools/build_course_materials.py',
+              "'version':'sequential-ids-2026-09-15'",
+              "'version':'fixed-view-kitbash-2026-09-15'")
+
+          for path in ('tools/check_quality_review.py','tools/check_session_readiness.py','tools/check_course_numbering.py'):
+              replace_once(path,
+                  '    lessons = builder.apply_review(lessons, builder.ROWS, sources)\n    by_id = builder.validate(lessons, sources)',
+                  '    lessons = builder.apply_review(lessons, builder.ROWS, sources)\n    lessons = builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)\n    by_id = builder.validate(lessons, sources)')
+
+          replace_once('tools/course_order.py',
+              "'A': '能看懂对象与空间，借助AI完成走、跑、跳和第三人称观察。',",
+              "'A': '能看懂对象与空间，借助AI完成走、跑、跳和固定/有限镜头观察。',")
+          PY
+
+          python3 tools/build_course_materials.py
+          python3 tools/build_course_materials.py --check
+          python3 tools/check_course_numbering.py
+          python3 tools/check_lesson_delivery.py
+          python3 tools/check_quality_review.py
+          python3 tools/check_session_readiness.py
+          python3 tools/validate_repo.py
+          grep -q '^# A08｜固定/有限镜头' openmaic/lessons/A08.md
+          grep -q '^# D01｜资产套装二开' openmaic/lessons/D01.md
+          grep -q '^# D02｜风格统一' openmaic/lessons/D02.md
+          grep -q 'Facade/Shell' openmaic/lessons/C02.md
+          grep -q '固定视角套装二开工作流' curriculum/lesson-index.md
+      - name: Commit reviewed course outputs only
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          manifest = json.loads(Path('curriculum/materials-manifest.json').read_text())
+          allowed = set(manifest['sha256']) | {
+              'curriculum/materials-manifest.json',
+              'tools/build_course_materials.py',
+              'tools/check_quality_review.py',
+              'tools/check_session_readiness.py',
+              'tools/check_course_numbering.py',
+              'tools/course_order.py',
+              'curriculum/fixed-view-direction.md',
+          }
+          tracked = subprocess.check_output(['git','diff','--name-only','-z']).decode().split('\0')
+          untracked = subprocess.check_output(['git','ls-files','--others','--exclude-standard','-z']).decode().split('\0')
+          changed = {p for p in tracked + untracked if p}
+          bad = changed - allowed
+          if bad or any(p.startswith(('game/','blender/','web/')) for p in changed):
+              raise SystemExit('Unexpected publication scope: ' + repr(sorted(bad or changed)))
+          if changed:
+              subprocess.run(['git','add','--',*sorted(changed)], check=True)
+          print('Approved fixed-view outputs:', len(changed))
+          PY
+          if git diff --cached --quiet; then exit 0; fi
+          ACTUAL_HEAD=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [ "$ACTUAL_HEAD" != "$EXPECTED_HEAD" ]; then
+            echo 'Concurrent main change; refusing overwrite'
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs: focus curriculum on fixed-view stylized kitbash and animation reuse'
+          git push origin HEAD:main
