@@ -298,8 +298,8 @@
         "让地面移动在固定镜头下方向一致；需要分区切镜时检查进入、退出和边界稳定。"
       ],
       "k": [
-        "Perspective/Orthographic是两种投影选择；按画面目标比较，不背投影数学。",
-        "Camera Zone、SpringArm/RayCast是按需处理切镜或遮挡的工具。"
+        "Perspective/Orthographic是两种投影选择；FOV（Field of View，视野角）只用于透视镜头，正交镜头主要调Size。",
+        "Camera Zone、短促Camera impulse/Shake、轻微Dynamic FOV或Size Pulse都是按需镜头语言；先懂用途，再决定是否使用。"
       ],
       "human": "先锁定玩家实际看到的构图，选择机位/投影并定义一致移动规则；只在地图确有需要时加切镜。",
       "ai": "搭固定机位A/B、显示移动参考和切换状态；不自动加入Orbit、头晃、动态FOV或震屏。",
@@ -586,7 +586,8 @@
         "比较反馈强度，检查不遮挡目标且静音可辨。"
       ],
       "k": [
-        "Tween、粒子、空间音效是可选表现工具。"
+        "Tween、粒子、空间音效是可选表现工具。",
+        "短促Camera impulse、轻微FOV/Size Pulse属于可选强调；静音与低镜头运动时仍应能读懂结果。"
       ],
       "human": "规定玩家应感知的成功信息及强度，不把播放特效等同于奖励成功。",
       "ai": "把反馈接在已确认的成功结果后，给出静音与弱效果选项。",
@@ -916,7 +917,7 @@
       ],
       "k": [
         "Set dressing、Focal point、Negative space用于场景布置、焦点与留白。",
-        "Facade/Shell、Billboard、Forced Perspective是固定视角下的背景制作手段；玩家可达处仍按玩法验收。"
+        "Facade/Shell、Billboard、Forced Perspective、Parallax（视差）与Atmospheric Perspective（空气透视）是固定视角常用的深度/背景手段；玩家可达处仍按玩法验收。"
       ],
       "human": "决定共同风格和留白，保留路线净空，只推广已验证样板。",
       "ai": "按允许清单替换一组环境资产，记录引用与范围，不自动铺满全图。",
@@ -1162,7 +1163,8 @@
         "核对Blender展示与Godot实际渲染的差异。"
       ],
       "k": [
-        "Lightmap/GI/反射探针知道用途即可。"
+        "Lightmap/GI/反射探针知道用途即可。",
+        "Tonemapping/Exposure、Color Adjustments、Glow、Fog、SSAO、DOF与自定义后处理知道各自解决什么；先核对渲染器支持，不要求全开。"
       ],
       "human": "从实际动态角色和目标设备需求选择一种可行方案，不追最复杂GI。",
       "ai": "核对所用版本/渲染器支持，准备同条件最小静态与动态样本。",
@@ -1573,7 +1575,8 @@
         "亲测空挥、命中、防重复及结束/中断后的恢复，并验证不影响收集主线。"
       ],
       "k": [
-        "Hitbox/Hurtbox、方法事件轨道、Hit stop和Root Motion知道用途，不要求全部采用。"
+        "Hitbox/Hurtbox、方法事件轨道、Hit stop和Root Motion知道用途，不要求全部采用。",
+        "Hit flash、Impact particles、Trail、目标反应、短促Camera impulse/Shake，以及透视FOV Pulse或正交Size Pulse是可组合的打击感层；不要求每层都上。"
       ],
       "human": "定义准备/有效/恢复与每次攻击去重规则，核对动作、命中、反馈而非一帧截图。",
       "ai": "复用一段已核对动作，提供攻击编号/窗口/目标记录，最小命中与恢复测试。",

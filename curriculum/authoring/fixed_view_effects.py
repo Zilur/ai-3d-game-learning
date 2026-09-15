@@ -104,7 +104,7 @@ def apply_fixed_view_effects(lessons, scenarios, plans, diagrams, reviews, start
             raise ValueError(ident + ': effects overlay changed M depth')
         if not (1 <= len(row['k']) <= 2):
             raise ValueError(ident + ': effects overlay exceeded K depth')
-    if 'FOV（Field of View' not in '\n'.join(a08['body']):
+    if 'FOV是Field of View' not in '\n'.join(a08['body']):
         raise ValueError('FOV plain-language explanation missing')
     if 'Parallax' not in '\n'.join(c02['body']) or 'Glow' not in '\n'.join(c08['body']):
         raise ValueError('Fixed-view depth or rendering catalogue missing')

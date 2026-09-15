@@ -22,6 +22,7 @@ def main():
     lessons = builder.prepare_lessons(lessons, sources)
     lessons = review.apply_review(lessons, builder.ROWS, sources)
     lessons = builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)
+    lessons = builder.apply_fixed_view_effects(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)
     by_id = builder.validate(lessons, sources)
     review.validate_review(by_id)
     trace = json.loads((ROOT / 'curriculum/quality-trace.json').read_text(encoding='utf-8'))

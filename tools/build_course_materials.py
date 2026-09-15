@@ -21,6 +21,9 @@ AUTHOR = ROOT / 'curriculum/authoring'
 FIXED_VIEW = runpy.run_path(str(AUTHOR / 'fixed_view_strategy.py'))
 apply_fixed_view_strategy = FIXED_VIEW['apply_fixed_view_strategy']
 enrich_fixed_view = FIXED_VIEW['enrich_fixed_view']
+FIXED_EFFECTS = runpy.run_path(str(AUTHOR / 'fixed_view_effects.py'))
+apply_fixed_view_effects = FIXED_EFFECTS['apply_fixed_view_effects']
+enrich_fixed_view_effects = FIXED_EFFECTS['enrich_fixed_view_effects']
 FILES = ['beginner_a.py', 'beginner_b.py', 'intermediate.py', 'advanced.py', 'art.py', 'motion.py']
 ORDER = CANONICAL_ORDER
 REQUIRED = {'id','title','prereq','concepts','goal','m','k','stop','body','initial','controls','steps','feedback','failure','reset','ui','questions','remember','recall','practice','sources'}
@@ -190,7 +193,8 @@ def generated(lessons, sources, by_id):
     enrich_sessions(output, by_id, ORDER, ROWS, DISPLAY)
     finalize_navigation(output, by_id, ORDER, ROWS)
     enrich_fixed_view(output, by_id, ORDER, ROWS)
-    manifest = {'version':'fixed-view-kitbash-2026-09-15','date':'2026-09-15','lesson_count':47,
+    enrich_fixed_view_effects(output, by_id, ORDER, ROWS)
+    manifest = {'version':'fixed-view-effects-2026-09-15','date':'2026-09-15','lesson_count':47,
         'units':[{'id':ident,'display':DISPLAY[ident],'dialogue':'curriculum/dialogues/'+ident+'.md','prerequisites':by_id[ident]['prereq'],'concepts':by_id[ident]['concepts'],
                   'status':'manuscript-reviewed; classroom-not-generated; learner-not-tested'} for ident in ORDER],
         'source_sha256':{path.relative_to(ROOT).as_posix():hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(AUTHOR.glob('*.py'))},
@@ -209,6 +213,7 @@ def main():
     lessons = prepare_lessons(lessons, sources)
     lessons = apply_review(lessons, ROWS, sources)
     lessons = apply_fixed_view_strategy(lessons, ROWS, PLANS, DIAGRAMS, REVIEWS, STARTS, sources)
+    lessons = apply_fixed_view_effects(lessons, ROWS, PLANS, DIAGRAMS, REVIEWS, STARTS, sources)
     by_id = validate(lessons, sources)
     validate_coaching(by_id)
     output = generated(lessons, sources, by_id)

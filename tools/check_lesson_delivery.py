@@ -17,6 +17,7 @@ def main():
     lessons = builder.prepare_lessons(lessons, sources)
     lessons = builder.apply_review(lessons, builder.ROWS, sources)
     builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)
+    builder.apply_fixed_view_effects(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)
     manifest = json.loads((ROOT / 'curriculum/materials-manifest.json').read_text(encoding='utf-8'))
     units = manifest['units']
     assert len(units) == 47 and len({u['id'] for u in units}) == 47, '47 unique lesson units required'

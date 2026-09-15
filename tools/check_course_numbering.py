@@ -41,6 +41,7 @@ def main():
     lessons = builder.prepare_lessons(lessons, sources)
     lessons = builder.apply_review(lessons, builder.ROWS, sources)
     lessons = builder.apply_fixed_view_strategy(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)
+    lessons = builder.apply_fixed_view_effects(lessons, builder.ROWS, builder.PLANS, builder.DIAGRAMS, builder.REVIEWS, builder.STARTS, sources)
     rows = builder.validate(lessons, sources)
     validate_dependencies(rows)
     assert list(builder.ORDER) == ORDER
