@@ -220,6 +220,6 @@ def enrich_fixed_view(output, by_id, order, scenarios):
         output['curriculum/demo-quality.md'] = ('> 固定/有限镜头基线：最终Demo默认不要求玩家持续自由转镜头。每个区域按实际玩家画面验收；头晃、动态FOV、强震屏和运动模糊不是默认需求。美术优先套装拼装与二开，而不是从零重做全部网格。\n\n' + output['curriculum/demo-quality.md'])
     if 'curriculum/delivery-status.md' in output:
         output['curriculum/delivery-status.md'] = ('> 项目方向已进一步收敛为固定/有限镜头、风格化卡通、资产套装二开与动作资源融合；这是课件设计更新，不代表新镜头/美术/动作工程已经实现。\n\n' + output['curriculum/delivery-status.md'])
-    if 'AGENTS.md' in output:
+    if 'AGENTS.md' in output and '## 固定视角与套装二开基线' not in output['AGENTS.md']:
         output['AGENTS.md'] += ('\n## 固定视角与套装二开基线\n\n本项目默认固定/有限镜头、温暖风格化卡通。A08不恢复为自由Orbit主课；C01/C02按玩家镜头设计地图和世界；D01-D04以资产套装选择、拼装、二开、风格统一和复用为主；D05/D06以现成动作融合为主。不得把“原创”解释成必须从零建模/动画。\n')
     return output

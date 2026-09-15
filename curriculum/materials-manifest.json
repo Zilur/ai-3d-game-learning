@@ -506,7 +506,7 @@
     "curriculum/authoring/demo_extension.py": "dcb98927061eeffa8142ee319ed5697fbf6422f97c769a084ec3faf22f90e465",
     "curriculum/authoring/demo_pages.py": "2f2abc11e20704ea94d342de566e83389cba6dc771b487b18f2d440274b50277",
     "curriculum/authoring/fixed_view_effects.py": "115ad6b3dc15a532bbca917f059f37a569f7e9a653f826632662b7d1d20b52d2",
-    "curriculum/authoring/fixed_view_strategy.py": "06ef59acb721a2c188104d4a9a0cd86b265ff5f73463f52a1dcaa048ee579beb",
+    "curriculum/authoring/fixed_view_strategy.py": "48ccbd9f799b8fac27310a32ea10fe07d6bc568fd5b359b6cf0a839b40bb6104",
     "curriculum/authoring/intermediate.py": "96ebb4067075baa3c37c9de81f894c2762ed0ce629b3ebdc4a7ac7a39c7a1617",
     "curriculum/authoring/motion.py": "ecd8cf225e88f8fe857936a1d9ebc4e893c6cdfe0013e1f9652193f098f29d16",
     "curriculum/authoring/review_art.py": "66f999eb14e3e10f8af523989698aab4e410fbe97a760bd289e104e99a9c042c",
@@ -520,6 +520,7 @@
     "curriculum/authoring/site_art.py": "c5499b1fae52be3aac29888a08608e6393e3709032fea86b63766334b2178591",
     "curriculum/authoring/site_content.py": "868e6323d6955eb4b3b95762a273f9a05b8292d7a35f97c4d9b84abab1e188c4",
     "curriculum/authoring/site_openmaic.py": "d2db081bb1b484b0abc6a4ac2dd8f2a757ec6ec8c4fa9ef7db2dd94d3e7998ff",
+    "curriculum/authoring/site_practical.py": "17c2dc05fb1a2e27d25ae820d3e59da3187f7c7a90e36ee13ac2fbe56a6e1512",
     "curriculum/authoring/sources.py": "313b7ba29de86680d5cfe56eaddcffd1e32cc4cd5f0e400e20486086a09460b6"
   },
   "sha256": {
@@ -635,7 +636,7 @@
     "docs/improvements.md": "fa981acb9ba028e7f9fba293be54a0c8d515c27411a1748d3b6e8eb91ca16c3b",
     "art/reference-gallery.md": "81382edfdd7ab79f3ff928b668cebf073f9816b8a04fa8526e4cc77b0a9cdf01",
     "art/visual-vocabulary.md": "e443b66fabba8dae64b14e10f0e20ab42f9b730b8c50bed8eed5b65dce64afbf",
-    "art/style-and-library.md": "1ae945eeb150810107a131c56a0af76ebe83bf1c866686120f95c84edc6c1639",
+    "art/style-and-library.md": "de36b338ef9b6b08e187dec02a78722e5752e79f47cf878826e7d7ffe095f9e2",
     "print/art-must-remember.md": "6dbffbd0ccf4ee9204e799dc41c861f32523fa39d632b405fcb59877e8c9c4a8",
     "curriculum/beginner/01-3d-space/practice.md": "3b9054e0b2a20d7ed89972609e36d68e63e9d14d6c85db04a66ea416e781c562",
     "curriculum/beginner/02-scene-node/lesson.md": "eb09a88f89656066da2463859e715e247ba2d772d5d94d380e3e5e0170793489",
