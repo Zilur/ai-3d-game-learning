@@ -1,0 +1,60 @@
+name: Publish reviewed guided-demo lessons
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: guided-demo-publication
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: contains(github.event.head_commit.message, '[publish-guided-demo]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout exact authorized source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: true
+      - name: Activate reviewed source and render all lesson formats
+        run: |
+          set -euo pipefail
+          python3 tools/activate_demo_coach.py
+          python3 tools/build_course_materials.py
+          python3 tools/build_course_materials.py --check
+          python3 tools/check_lesson_delivery.py
+          python3 tools/validate_repo.py
+      - name: Commit only the allowed authoring and Markdown changes
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          m = json.loads(Path('curriculum/materials-manifest.json').read_text())
+          allowed = set(m['sha256']) | {'curriculum/materials-manifest.json', 'tools/build_course_materials.py', 'tools/scenario_sections.py', 'curriculum/authoring/demo_extension.py', 'curriculum/authoring/conversation_plans.py'}
+          tracked = subprocess.check_output(['git','diff','--name-only','-z']).decode().split('\0')
+          untracked = subprocess.check_output(['git','ls-files','--others','--exclude-standard','-z']).decode().split('\0')
+          changed = {p for p in tracked + untracked if p}
+          if changed - allowed or any(p.startswith(('game/','blender/','web/')) for p in changed):
+              raise SystemExit('Refusing writes outside course scope: ' + repr(sorted(changed - allowed)))
+          if changed:
+              subprocess.run(['git','add','--',*sorted(changed)], check=True)
+          print('Approved text/authoring outputs:', len(changed))
+          PY
+          if git diff --cached --quiet; then exit 0; fi
+          ACTUAL_HEAD=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [ "$ACTUAL_HEAD" != "$EXPECTED_HEAD" ]; then
+            echo 'Concurrent main change; refusing to overwrite'
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs: publish 47 step-by-step AI lesson flows, world upgrade and optional training corner'
+          git push origin HEAD:main
+          git rev-parse HEAD
