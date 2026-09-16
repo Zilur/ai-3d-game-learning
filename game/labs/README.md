@@ -1,23 +1,11 @@
-# Godot 概念实验室
+# Godot共享实验目录
 
-这里的场景是为了**理解概念和拖参数看因果**，不是正式游戏架构。
+[统一入口与分工](../../LABS-START.md) · [逐课核对](../../curriculum/practical-resource-audit.md)
 
-原则：
+打开`lab_hub.tscn`按F6；主游戏`Concept labs`按钮也进入此目录。相邻课共享实验，只看当前任务。新增侧栏中文、可滚动，固定相机避免不必要的镜头控制。
 
-- 每个实验只暴露少量关键变量。
-- 必须能复位或重新运行回到基线。
-- 允许使用很人工的教学场景。
-- 实验结论最终要回正式项目做迁移验证。
+camera：真实透视/正交和方向；event：按钮注入的条件/状态/反馈/重开；interaction：实际Area/门条件/专用存档及异常；platform：真实物理承载；animation：已导入原创骨架、蒙皮、三动作与AnimationTree。
 
-当前实验：
+collision补真实Layer/Mask与装饰对照，Reset同时恢复开关；motion区分恢复参数和保参重播；material支持真实共享/独立及Emission/实际光源。现有空间、视觉和A03起点保留。
 
-- `material_lab.tscn`：Roughness / Metallic / Emission；Emission、Glow、Light 的边界。
-- `collision_roles_lab.tscn`：Visual / Collision / Trigger 三种职责，拖目标位置观察角色被墙挡住或进入 Trigger。
-- `motion_lab.tscn`：Speed / Jump Velocity / Gravity，直接看每秒位移和跳跃曲线。
-
-另外：
-
-- `../scenes/lab.tscn`：Transform、父/自身/世界空间、门轴和基础材质概念。
-- `../scenes/visual_lab.tscn`：FOV、主光和 Clean/Clutter 对照。
-
-**实验通过不等于正式项目完成。** 正式项目流程见 `../../curriculum/lab-production-workflow.md`。
+多数实验在运行时构建节点；Remote场景树可观察，不需要在编辑器里重建。完整恢复重置当前实验，门的持久化文件另有专用删除按钮。脚本实现与实验结果不是学员已掌握的证明。

@@ -1,36 +1,14 @@
-# Blender 概念实验室
+# Blender共享起始文件
 
-这些文件用于“拖参数看效果”，不是正式项目资产。
+[直接打开与操作说明](../../LABS-START.md) · [逐课对应](../../curriculum/practical-resource-audit.md)
 
-## transform_origin_lab.blend
+直接打开现成`.blend`，先另存副本。运行基线Blender5.2 LTS；本轮作者检查固定5.2.0。无需插件、密钥或另找网络模型。
 
-练习：
+- `transform_origin_lab.blend`：中心/侧边门轴、静态变换与尺度。
+- `kitbash_style_lab.blend`：Base/Variant小屋、比例、部件、风格统一；不要求从零建模。
+- `uv_material_lab.blend`：内嵌棋盘格，正常/拉伸/密度对照，真实共享/独立网格和材质。
+- `animation_fixture.blend`：原创5骨骼蒙皮小人，Idle/Walk/Attack片段与NLA；不要求先绑骨架。
 
-- `Door_Center` / `Door_Hinge` 的 Rotation Z。
-- Origin 改变为什么会改变旋转轨迹。
-- `Scale_Unapplied` / `Scale_Applied` 的 Object Scale 与 Dimensions。
+新文件有中文说明文本。原有场景的英文对象名是定位标记，不考记忆。按实际软件轴向观察；Blender预览或渲染不等同于Godot成品效果。
 
-重点：知道什么时候要检查 Origin / Scale，不把 `Apply Transform` 当万能修复。
-
-## kitbash_style_lab.blend
-
-练习：
-
-- `Variant_Roof` 的比例。
-- 门窗/雨棚/烟囱模块保留或隐藏。
-- `Wall_Variant`、`Roof_Variant` 材质的 Base Color / Roughness。
-- 在相同 Camera/Light 下比较 BASE 与 VARIANT。
-
-重点：套装二开不是“越改越多”，而是先保留合格部分，只改影响固定机位观感的关键关系。
-
-## 可重建源
-
-`build_labs.py` 是 `.blend` 的可重建源。课程固定用 Blender 5.2 LTS 系列；二进制文件生成时记录具体 patch 版本。
-
-运行示例：
-
-```bash
-blender --background --python blender/labs/build_labs.py -- --output-dir blender/labs
-```
-
-学员不需要学习这段 Python；它用于维护者确保实验可重建。
+`build_labs.py`与`build_practical_labs.py`是**作者复建/验证工具**，不是孩子开始课程的步骤。新增构建器会将同一原创角色导出`game/assets/practice_robot_roundtrip.glb`，为往返检查提供已完成样本；真正改动后的项目仍由学员验收。所有样本保留源，软件课程完成不代表正式美术库已完成。

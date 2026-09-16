@@ -10,6 +10,8 @@
 
 [设计理念与研究边界](learning-system/design.md) · [爸爸怎样陪](learning-system/parent-guide.md) · [数据与提醒](learning-system/data-and-reminders.md) · [审查与后续工作](learning-system/audit-and-next.md)
 
+**[先打开现成实验，不从零搭场景](LABS-START.md)**。每课0A列出实际文件、首步与局限。
+
 ## 今天只做这三件事
 
 先让AI给一个小挑战，不一次讲完整课。完成后，让孩子用自己的话说“是什么、我改了什么、为什么这样判断”，并让爸爸试一下。最后由成人记录真实观察；没有观察到的就留待验证，不宣布已经掌握。

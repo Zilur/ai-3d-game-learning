@@ -57,7 +57,7 @@ func _restart() -> void:
 
 func _open_lab() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	get_tree().change_scene_to_file("res://scenes/lab.tscn")
+	get_tree().change_scene_to_file("res://labs/lab_hub.tscn")
 
 func _open_visual_lab() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE

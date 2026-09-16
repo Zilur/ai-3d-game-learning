@@ -5,6 +5,7 @@ Run: blender --background --python blender/labs/build_practical_labs.py
 from __future__ import annotations
 import math
 import os
+import sys
 from pathlib import Path
 import bpy
 from mathutils import Vector
@@ -39,6 +40,13 @@ def label(value, at, size=0.22):
     bpy.context.collection.objects.link(obj)
     obj.location = at
     obj.rotation_euler.x = math.pi / 2
+    mat = bpy.data.materials.get('Label_Unlit')
+    if mat is None:
+        mat = material('Label_Unlit', (1, 1, 1))
+        node = mat.node_tree.nodes['Principled BSDF']
+        node.inputs['Emission Color'].default_value = (1, 1, 1, 1)
+        node.inputs['Emission Strength'].default_value = 1
+    obj.data.materials.append(mat)
     return obj
 
 def camera_and_light(at, target, ortho):
@@ -145,6 +153,7 @@ def rig_lab():
     bpy.context.scene.frame_start = 1
     bpy.context.scene.frame_end = 30
     bpy.context.scene.frame_set(12)
+    # Export while only the imported teaching rig is present. Keep imported stashed actions.
     bpy.ops.export_scene.gltf(filepath=str(ROOT / 'game/assets/practice_robot_roundtrip.glb'), export_format='GLB', export_animations=True, export_animation_mode='ACTIONS', export_yup=True)
     camera_and_light((3, -5, 3), (0, 0, 1), 3.8)
     bpy.ops.object.select_all(action='DESELECT')
@@ -180,6 +189,7 @@ def verify():
 
 if __name__ == '__main__':
     OUT.mkdir(parents=True, exist_ok=True)
-    uv_lab()
-    rig_lab()
+    if "--verify-only" not in sys.argv:
+        uv_lab()
+        rig_lab()
     verify()

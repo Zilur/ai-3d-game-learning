@@ -1,3 +1,5 @@
+> **现成场景入口：** [直接打开Godot / Blender实验](LABS-START.md) · [亲子学习](FAMILY-START.md)。不需要先从空项目搭建。
+
 > **第一次学习：** [三段学习路径](curriculum/learning-journey.md) → [核心记忆卡](print/essential-memory.md) → [单元/阶段检查](assessments/unit-checkpoints.md)。A/B基础后即可按[生产任务单](curriculum/production-work-orders.md)开发；C/D按需继续，不等47课全学完。
 
 # AI时代3D游戏学习

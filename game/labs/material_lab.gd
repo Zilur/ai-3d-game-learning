@@ -1,85 +1,54 @@
-extends Node3D
-## C12/C13. A: adjustable material. B: fixed reference. No GI or glow is enabled.
+extends "res://labs/lab_shell.gd"
+## B04 / C05 / D02: real shared resources, independent state, emission vs light.
 var material := StandardMaterial3D.new()
-var readout := Label.new()
+var reference: StandardMaterial3D
+var left: MeshInstance3D
+var right: MeshInstance3D
 var point_light := OmniLight3D.new()
+var shared := false
 
 func _ready() -> void:
-    var camera := Camera3D.new()
-    add_child(camera)
-    camera.position = Vector3(0, 3.2, 7)
-    camera.look_at(Vector3(0, 0.8, 0))
-    camera.current = true
-    var environment := WorldEnvironment.new()
-    environment.environment = Environment.new()
-    var sky := Sky.new()
-    sky.sky_material = ProceduralSkyMaterial.new()
-    environment.environment.background_mode = Environment.BG_SKY
-    environment.environment.sky = sky
-    add_child(environment)
-    var sun := DirectionalLight3D.new()
-    add_child(sun)
-    sun.rotation_degrees = Vector3(-45, -30, 0)
-    sun.shadow_enabled = true
-    material.albedo_color = Color(0.9, 0.48, 0.12)
-    material.roughness = 0.4
-    material.emission_enabled = true
-    material.emission = Color(1, 0.5, 0.1)
-    material.emission_energy_multiplier = 0.0
-    for i in range(2):
-        var ball := MeshInstance3D.new()
-        var mesh := SphereMesh.new()
-        mesh.radius = 0.7
-        mesh.height = 1.4
-        ball.mesh = mesh
-        ball.material_override = material if i == 0 else (material.duplicate() as StandardMaterial3D)
-        add_child(ball)
-        ball.position = Vector3(-1.3 + 2.6 * i, 0.8, 0)
-    var floor_mesh := MeshInstance3D.new()
-    var box := BoxMesh.new()
-    box.size = Vector3(8, 0.1, 6)
-    floor_mesh.mesh = box
-    add_child(floor_mesh)
-    add_child(point_light)
-    point_light.position = Vector3(-1.3, 1.8, 0)
-    point_light.light_color = Color(1, 0.5, 0.1)
-    point_light.omni_range = 4.0
-    point_light.visible = false
-    var layer := CanvasLayer.new()
-    add_child(layer)
-    var panel := PanelContainer.new()
-    layer.add_child(panel)
-    panel.position = Vector2(16, 16)
-    var rows := VBoxContainer.new()
-    panel.add_child(rows)
-    rows.add_child(readout)
-    _slider(rows, "roughness", 0, 1, 0.4)
-    _slider(rows, "metallic", 0, 1, 0)
-    _slider(rows, "emission_energy_multiplier", 0, 4, 0)
-    var light_switch := CheckButton.new()
-    light_switch.text = "Add actual OmniLight (not emission)"
-    rows.add_child(light_switch)
-    light_switch.toggled.connect(func(value: bool): point_light.visible = value)
-    var note := Label.new()
-    note.text = "Left: variable | Right: fixed reference\nEmission != glow != lighting the floor.\nNo GI / glow in this lab. Reset: stop and press F6."
-    rows.add_child(note)
-    _update_text()
+	setup("B04 / C05｜材质与共享", "先固定光照只调左球，再切换共享。预测右球会不会改变。")
+	camera.position = Vector3(5, 4, 7)
+	camera.fov = 45
+	camera.look_at(Vector3(-1.2, 0.8, 0))
+	material.albedo_color = Color("dca55f")
+	material.roughness = 0.4
+	material.emission_enabled = true
+	material.emission = Color("ffc155")
+	material.emission_energy_multiplier = 0
+	reference = material.duplicate() as StandardMaterial3D
+	left = ball(Vector3(-1.2, 1, 0), material)
+	right = ball(Vector3(1.5, 1, 0), reference)
+	stage.add_child(point_light)
+	point_light.position = Vector3(-1.2, 2, 0)
+	point_light.omni_range = 4
+	point_light.light_color = Color("ffc155")
+	point_light.visible = false
+	slider("roughness", "粗糙度 Roughness", 0, 1, 0.4, 0.05, func(v): material.roughness = v; refresh())
+	slider("metallic", "金属度 Metallic", 0, 1, 0, 0.05, func(v): material.metallic = v; refresh())
+	slider("emission", "自发光 Emission", 0, 4, 0, 0.1, func(v): material.emission_energy_multiplier = v; refresh())
+	toggle("shared", "两球使用同一份材质", false, set_shared)
+	toggle("light", "另开真实灯光（不是自发光）", false, func(v): point_light.visible = v; refresh())
+	button("color", "只改左球所引用材质的颜色", func(): material.albedo_color = Color("689bb8"); refresh())
+	text("关闭共享：右球恢复固定参考。球的位置始终独立。这里不启用GI/Glow，不把表面发亮说成照亮地面。")
+	refresh()
 
-func _slider(parent: VBoxContainer, property: String, low: float, high: float, initial: float) -> void:
-    var label := Label.new()
-    label.text = property
-    parent.add_child(label)
-    var slider := HSlider.new()
-    slider.min_value = low
-    slider.max_value = high
-    slider.step = 0.05
-    slider.value = initial
-    slider.custom_minimum_size = Vector2(370, 28)
-    parent.add_child(slider)
-    slider.value_changed.connect(func(value: float):
-        material.set(property, value)
-        _update_text())
+func ball(at: Vector3, mat: StandardMaterial3D) -> MeshInstance3D:
+	var result := MeshInstance3D.new()
+	var mesh := SphereMesh.new()
+	mesh.radius = 0.8
+	mesh.height = 1.6
+	result.mesh = mesh
+	result.material_override = mat
+	stage.add_child(result)
+	result.position = at
+	return result
 
-func _update_text() -> void:
-    readout.text = "A: rough %.2f / metal %.2f / emission %.2f" % [material.roughness,
-        material.metallic, material.emission_energy_multiplier]
+func set_shared(value: bool) -> void:
+	shared = value
+	right.material_override = material if value else reference
+	refresh()
+
+func refresh() -> void:
+	status.text = "左球：粗糙 %.2f / 金属 %.2f\n同一资源 %s | 灯光 %s\n右球粗糙 %.2f" % [material.roughness, material.metallic, str(left.material_override == right.material_override), str(point_light.visible), right.material_override.roughness]

@@ -24,6 +24,7 @@ def build() -> dict:
         accessors.append(item)
         return len(accessors)-1
     positions=[]; normals=[]; joints=[]; weights=[]; indices=[]
+    # Rigidly weighted cubes are enough to expose a genuine skin/bone relationship.
     pieces=[((0,1.1,0),(.65,.75,.4),0),((0,1.8,0),(.5,.5,.5),0),
             ((-.57,1.17,0),(.22,.68,.25),1),((.57,1.17,0),(.22,.68,.25),2),
             ((-.2,.4,0),(.25,.8,.28),3),((.2,.4,0),(.25,.8,.28),4)]

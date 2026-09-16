@@ -1,12 +1,16 @@
-extends Node3D
+extends "res://labs/lab_shell.gd"
 ## Teaching lab: visible mesh, blocking collision and trigger detection are separate roles.
+
+var switches: Dictionary = {}
+var decoration: CharacterBody3D
+var decoration_overlap := false
+var decor_tween: Tween
 
 var wall: StaticBody3D
 var wall_visual: MeshInstance3D
 var wall_shape: CollisionShape3D
 var trigger: Area3D
 var probe: CharacterBody3D
-var status: Label
 var target_slider: HSlider
 var target_x: float = -3.0
 var move_speed: float = 3.0
@@ -31,6 +35,7 @@ func _physics_process(_delta: float) -> void:
 		trigger_overlap = probe in trigger.get_overlapping_bodies()
 	else:
 		trigger_overlap = false
+	decoration_overlap = decoration in trigger.get_overlapping_bodies() if trigger.monitoring else false
 	_refresh()
 
 func _build_world() -> void:
@@ -47,10 +52,11 @@ func _build_world() -> void:
 	sun.shadow_enabled = true
 	add_child(sun)
 
-	var camera := Camera3D.new()
+	camera = Camera3D.new()
 	camera.position = Vector3(0, 5.2, 9.5)
 	add_child(camera)
-	camera.look_at(Vector3(0, 0.6, 0))
+	camera.fov = 52
+	camera.look_at(Vector3(-2.0, 0.6, 0))
 	camera.current = true
 
 	var floor_mesh := MeshInstance3D.new()
@@ -130,59 +136,37 @@ func _build_world() -> void:
 	probe_shape.shape = sphere
 	probe.add_child(probe_shape)
 
+	decoration = CharacterBody3D.new()
+	decoration.name = "DecorationLayer3"
+	decoration.collision_layer = 4
+	decoration.collision_mask = 0
+	decoration.position = Vector3(4.0, 0.35, 0.8)
+	add_child(decoration)
+	var decor_mesh := MeshInstance3D.new()
+	var sphere_mesh := SphereMesh.new()
+	sphere_mesh.radius = 0.25
+	sphere_mesh.height = 0.5
+	decor_mesh.mesh = sphere_mesh
+	decoration.add_child(decor_mesh)
+	var decor_shape := CollisionShape3D.new()
+	var sphere_shape := SphereShape3D.new()
+	sphere_shape.radius = 0.25
+	decor_shape.shape = sphere_shape
+	decoration.add_child(decor_shape)
+
 func _build_ui() -> void:
-	var layer := CanvasLayer.new()
-	add_child(layer)
-	var panel := PanelContainer.new()
-	panel.position = Vector2(14, 14)
-	layer.add_child(panel)
-	var rows := VBoxContainer.new()
-	panel.add_child(rows)
+	setup_ui("A04｜外观、阻挡与检测", "把黄色角色移向蓝色检测区。先猜：只隐藏墙，能不能通过？")
+	target_slider = slider("target", "角色的目标位置 X", -3, 3.4, -3, 0.1, _set_target_x)
+	switches["visual"] = toggle("visual", "墙的外观可见", true, _set_visual_enabled)
+	switches["collision"] = toggle("collision", "墙的物理阻挡", true, _set_collision_enabled)
+	switches["trigger"] = toggle("trigger", "检测区启用", true, _set_trigger_enabled)
+	switches["player_mask"] = toggle("player_mask", "检测角色（第2层）", true, _set_mask_bit.bind(2))
+	switches["decor_mask"] = toggle("decor_mask", "检测装饰（第3层）", false, _set_mask_bit.bind(4))
+	button("decor_enter", "让白色装饰重新进入检测区", _replay_decoration)
+	text("改变检测范围后，让对象退出再进入。蓝框是检测区的示意外观；是否命中以真实Area重叠记录为准。")
 
-	var title := Label.new()
-	title.text = "Visual / Collision / Trigger lab"
-	rows.add_child(title)
-	status = Label.new()
-	rows.add_child(status)
-
-	var target_label := Label.new()
-	target_label.text = "Target X: move the yellow probe across the wall toward the blue Trigger"
-	rows.add_child(target_label)
-	target_slider = HSlider.new()
-	target_slider.min_value = -3.0
-	target_slider.max_value = 3.4
-	target_slider.step = 0.1
-	target_slider.value = -3.0
-	target_slider.custom_minimum_size = Vector2(430, 28)
-	target_slider.value_changed.connect(_set_target_x)
-	rows.add_child(target_slider)
-
-	var visual_toggle := CheckButton.new()
-	visual_toggle.text = "Wall visual visible"
-	visual_toggle.button_pressed = true
-	visual_toggle.toggled.connect(_set_visual_enabled)
-	rows.add_child(visual_toggle)
-
-	var collision_toggle := CheckButton.new()
-	collision_toggle.text = "Wall collision enabled"
-	collision_toggle.button_pressed = true
-	collision_toggle.toggled.connect(_set_collision_enabled)
-	rows.add_child(collision_toggle)
-
-	var trigger_toggle := CheckButton.new()
-	trigger_toggle.text = "Trigger detection enabled"
-	trigger_toggle.button_pressed = true
-	trigger_toggle.toggled.connect(_set_trigger_enabled)
-	rows.add_child(trigger_toggle)
-
-	var reset := Button.new()
-	reset.text = "Reset"
-	reset.pressed.connect(_reset_lab)
-	rows.add_child(reset)
-
-	var note := Label.new()
-	note.text = "Try: hide the wall but keep collision; then disable collision and enter the Trigger.\nVisible != blocking != event detection."
-	rows.add_child(note)
+func reset_lab() -> void:
+	_reset_lab()
 
 func _set_target_x(value: float) -> void:
 	target_x = clampf(value, -3.0, 3.4)
@@ -201,7 +185,27 @@ func _set_trigger_enabled(enabled: bool) -> void:
 		trigger_overlap = false
 	_refresh()
 
+func _replay_decoration() -> void:
+	if decor_tween:
+		decor_tween.kill()
+	decoration.position.x = 4.0
+	decor_tween = create_tween()
+	decor_tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
+	decor_tween.tween_interval(0.1)
+	decor_tween.tween_property(decoration, "position:x", 2.2, 0.5)
+
+func _set_mask_bit(enabled: bool, bit: int) -> void:
+	trigger.collision_mask = (trigger.collision_mask | bit) if enabled else (trigger.collision_mask & ~bit)
+
 func _reset_lab() -> void:
+	if decor_tween:
+		decor_tween.kill()
+	decoration.position = Vector3(4, 0.35, 0.8)
+	for key in ["visual", "collision", "trigger", "player_mask"]:
+		switches[key].set_pressed_no_signal(true)
+	switches["decor_mask"].set_pressed_no_signal(false)
+	trigger.collision_mask = 2
+	decoration_overlap = false
 	target_x = -3.0
 	if is_instance_valid(target_slider):
 		target_slider.value = -3.0
@@ -216,10 +220,7 @@ func _reset_lab() -> void:
 func _refresh() -> void:
 	if not is_instance_valid(status) or not is_instance_valid(probe):
 		return
-	status.text = "probe x %.2f | visual %s | collision %s | trigger %s | overlap %s" % [
-		probe.position.x,
-		"ON" if wall_visual.visible else "OFF",
-		"OFF" if wall_shape.disabled else "ON",
-		"ON" if trigger.monitoring else "OFF",
-		"YES" if trigger_overlap else "NO"
-	]
+	status.text = "角色X %.2f\n外观 %s | 阻挡 %s | 检测 %s\n检测到角色 %s | 装饰 %s" % [
+		probe.position.x, "开" if wall_visual.visible else "关",
+		"关" if wall_shape.disabled else "开", "开" if trigger.monitoring else "关",
+		"是" if trigger_overlap else "否", "是" if decoration_overlap else "否"]

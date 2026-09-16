@@ -1,9 +1,8 @@
-extends Node3D
+extends "res://labs/lab_shell.gd"
 ## Teaching lab for units/second speed and jump/gravity tuning.
 
 var runner: MeshInstance3D
 var jumper: MeshInstance3D
-var status: Label
 var speed_slider: HSlider
 var jump_slider: HSlider
 var gravity_slider: HSlider
@@ -52,10 +51,11 @@ func _build_world() -> void:
 	sun.shadow_enabled = true
 	add_child(sun)
 
-	var camera := Camera3D.new()
+	camera = Camera3D.new()
 	camera.position = Vector3(0, 5.5, 10.5)
 	add_child(camera)
-	camera.look_at(Vector3(0, 0.7, 0))
+	camera.fov = 52
+	camera.look_at(Vector3(-2, 0.7, 0))
 	camera.current = true
 
 	var track := MeshInstance3D.new()
@@ -107,56 +107,17 @@ func _build_world() -> void:
 	add_child(jumper)
 
 func _build_ui() -> void:
-	var layer := CanvasLayer.new()
-	add_child(layer)
-	var panel := PanelContainer.new()
-	panel.position = Vector2(14, 14)
-	layer.add_child(panel)
-	var rows := VBoxContainer.new()
-	panel.add_child(rows)
+	setup_ui("A05 / A06｜速度与跳跃", "先改一个参数，预测同样时间走多远、跳多高，再重播对比。这是简化运动模型。")
+	speed_slider = slider("speed", "速度（单位/秒）", 1, 10, speed, 0.5, _set_speed)
+	jump_slider = slider("jump", "起跳速度", 2, 12, jump_velocity, 0.5, _set_jump_velocity)
+	gravity_slider = slider("gravity", "重力", 5, 35, gravity, 1, _set_gravity)
+	button("run", "跑过同一段路", _start_run)
+	button("jump_now", "跳跃（空中不能再次起跳）", _jump)
+	button("replay", "仅回到起点，保留参数", _replay_lab)
+	text("上方“恢复全部初值”也恢复三个参数。要验证真实角色落地、墙边与不同帧率，请再到主游戏试，不把小球模型当完整控制器。")
 
-	var title := Label.new()
-	title.text = "Motion lab: speed / jump / gravity"
-	rows.add_child(title)
-	status = Label.new()
-	rows.add_child(status)
-
-	speed_slider = _slider(rows, "Speed (units / second)", 1.0, 10.0, 0.5, speed, _set_speed)
-	jump_slider = _slider(rows, "Jump velocity", 2.0, 12.0, 0.5, jump_velocity, _set_jump_velocity)
-	gravity_slider = _slider(rows, "Gravity", 5.0, 35.0, 1.0, gravity, _set_gravity)
-
-	var buttons := HBoxContainer.new()
-	rows.add_child(buttons)
-	var run_button := Button.new()
-	run_button.text = "Run across track"
-	run_button.pressed.connect(_start_run)
-	buttons.add_child(run_button)
-	var jump_button := Button.new()
-	jump_button.text = "Jump"
-	jump_button.pressed.connect(_jump)
-	buttons.add_child(jump_button)
-	var reset_button := Button.new()
-	reset_button.text = "Reset"
-	reset_button.pressed.connect(_reset_lab)
-	buttons.add_child(reset_button)
-
-	var note := Label.new()
-	note.text = "Speed is distance per second; physics uses speed * delta each frame.\nChange one slider at a time, predict first, then compare."
-	rows.add_child(note)
-
-func _slider(parent: VBoxContainer, label_text: String, low: float, high: float, step: float, initial: float, callback: Callable) -> HSlider:
-	var label := Label.new()
-	label.text = label_text
-	parent.add_child(label)
-	var slider := HSlider.new()
-	slider.min_value = low
-	slider.max_value = high
-	slider.step = step
-	slider.value = initial
-	slider.custom_minimum_size = Vector2(430, 28)
-	slider.value_changed.connect(callback)
-	parent.add_child(slider)
-	return slider
+func reset_lab() -> void:
+	_reset_lab()
 
 func _set_speed(value: float) -> void:
 	speed = clampf(value, 1.0, 10.0)
@@ -179,7 +140,7 @@ func _jump() -> void:
 		jump_vy = jump_velocity
 		airborne = true
 
-func _reset_lab() -> void:
+func _replay_lab() -> void:
 	running = false
 	airborne = false
 	jump_vy = 0.0
@@ -190,6 +151,14 @@ func _reset_lab() -> void:
 func _refresh(delta: float = 1.0 / 60.0) -> void:
 	if not is_instance_valid(status):
 		return
-	status.text = "speed %.1f u/s | this physics-step displacement ≈ %.3f | jump %.1f | gravity %.1f | jumper y %.2f" % [
-		speed, speed * delta, jump_velocity, gravity, jumper.position.y if is_instance_valid(jumper) else GROUND_Y
-	]
+	status.text = "速度 %.1f 单位/秒\n本物理步位移约 %.3f\n起跳 %.1f | 重力 %.1f\n当前高度 %.2f" % [
+		speed, speed * delta, jump_velocity, gravity, jumper.position.y if is_instance_valid(jumper) else GROUND_Y]
+
+func _reset_lab() -> void:
+	speed = 4.0
+	jump_velocity = 7.0
+	gravity = 20.0
+	speed_slider.set_value_no_signal(speed)
+	jump_slider.set_value_no_signal(jump_velocity)
+	gravity_slider.set_value_no_signal(gravity)
+	_replay_lab()

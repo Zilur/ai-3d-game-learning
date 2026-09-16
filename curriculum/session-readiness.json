@@ -26,10 +26,10 @@
       "id": "A03",
       "display": "A03",
       "mode": "engine",
-      "minimum": "一个模块根节点、一个外观子节点和功能位置标记；不需要先有移动脚本。",
+      "minimum": "现成实验：game/lessons/b02/starter.tscn、game/lessons/b02/broken.tscn。先做：打开现成starter，选中模块整体和外观子节点分别观察；再另存副本改一项。；不要从空项目重建。",
       "reference": [
         "game/lessons/b02/starter.tscn",
-        "已有起始场景；本课无玩家，打开当前场景，不把主游戏误当练习。"
+        "这是A03的真实起点与故障对照；历史目录名b02不代表当前B02，不先读reference答案。"
       ],
       "support_fade": false
     },
@@ -37,10 +37,10 @@
       "id": "A04",
       "display": "A04",
       "mode": "engine",
-      "minimum": "一堵外观与碰撞分开的墙、可用于测试的物理角色、一个检测区；移动能力可由提供的测试器承担，本课不考编写控制器。",
+      "minimum": "现成实验：game/labs/collision_roles_lab.tscn。先做：把角色目标移到墙另一侧，分别切换外观和阻挡；复位后再切检测角色/装饰。；不要从空项目重建。",
       "reference": [
-        "game/scenes/main.tscn",
-        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+        "game/labs/collision_roles_lab.tscn",
+        "真实Area与物理；改Mask后让角色或白色装饰重新进入，分别验证谁被检测。不是只由M1替M2。"
       ],
       "support_fade": false
     },
@@ -48,10 +48,10 @@
       "id": "A05",
       "display": "A05",
       "mode": "engine",
-      "minimum": "已经能碰撞的地面与测试角色、可编辑控制脚本或明确的局部操作入口；计时/距离记录可由AI准备。",
+      "minimum": "现成实验：game/labs/motion_lab.tscn、game/scenes/main.tscn。先做：在现成运动Lab只改速度，比较相同时间位移；再在主游戏检查直走/斜走。；不要从空项目重建。",
       "reference": [
-        "game/scenes/main.tscn",
-        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+        "game/labs/motion_lab.tscn",
+        "Lab是简化运动模型；真实控制器、帧率差异与碰撞在提供的主游戏副本和实际运行条件中检查。"
       ],
       "support_fade": false
     },
@@ -59,10 +59,10 @@
       "id": "A06",
       "display": "A06",
       "mode": "engine",
-      "minimum": "已有走跑、地面和一块已知高度低平台；能观察起跳与落地，不要求正式角色动画。",
+      "minimum": "现成实验：game/labs/motion_lab.tscn、game/scenes/main.tscn。先做：固定重力只改起跳速度，按跳跃观察；用“仅回到起点”重播对照。；不要从空项目重建。",
       "reference": [
-        "game/scenes/main.tscn",
-        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+        "game/labs/motion_lab.tscn",
+        "恢复全部初值会复位参数和控件，重播保留参数；边缘/墙边真实落地仍在主游戏检查。"
       ],
       "support_fade": false
     },
@@ -83,8 +83,8 @@
       "mode": "engine",
       "minimum": "已能走跳的角色、低平台和墙角；默认固定三分之四机位，无需鼠标持续控制镜头。",
       "reference": [
-        "game/scenes/main.tscn",
-        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+        "game/labs/camera_lab.tscn",
+        "真实Camera3D投影和地面方向；没有完整分区切镜或事件镜头，未选这些增强不增加作业。"
       ],
       "support_fade": false
     },
@@ -100,7 +100,7 @@
       "id": "B02",
       "display": "B02",
       "mode": "asset",
-      "minimum": "一件来源明确、允许本次使用的可编辑静态道具副本；没有角色也能学，不在唯一源文件上修改。",
+      "minimum": "现成实验：blender/labs/transform_origin_lab.blend、blender/labs/kitbash_style_lab.blend。先做：直接打开现成静态样本，在副本中比较对象变换与网格编辑；再选小屋轮廓。；不要从空项目重建。",
       "reference": null,
       "support_fade": false
     },
@@ -116,10 +116,10 @@
       "id": "B04",
       "display": "B04",
       "mode": "engine",
-      "minimum": "两个可独立调材质的球、固定相机灯光和邻近灰箱；共享实验单独切换，不能假设已有参考场景全部实现。",
+      "minimum": "现成实验：game/labs/material_lab.tscn、blender/labs/uv_material_lab.blend。先做：保持灯光不动，先只改左球粗糙度；复位后切换共享材质，再改一次。；不要从空项目重建。",
       "reference": [
         "game/labs/material_lab.tscn",
-        "已有双球参考；共享/独立切换并非该场景默认配齐，缺少部分先标未实现。"
+        "双球可切真实共享/独立资源，自发光与实际光源可分开；不把自发光球当环境照明或Glow已实现。"
       ],
       "support_fade": false
     },
@@ -135,10 +135,10 @@
       "id": "B06",
       "display": "B06",
       "mode": "engine",
-      "minimum": "已能移动的玩家、一颗有检测形状的星星及计数观察入口；防重和通知是本课逐步接入的部分，不必课前全部实现。",
+      "minimum": "现成实验：game/labs/event_lab.tscn、game/scenes/main.tscn。先做：在事件Lab先发一次正确对象请求，再发错误对象和同帧双请求，比较计数。；不要从空项目重建。",
       "reference": [
-        "game/scenes/main.tscn",
-        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+        "game/labs/event_lab.tscn",
+        "按钮注入事件用于时序与状态实验，不伪称鼠标点击就是Area碰撞；真实拾取在主游戏，故障开关不带到成品。"
       ],
       "support_fade": false
     },
@@ -146,10 +146,10 @@
       "id": "B07",
       "display": "B07",
       "mode": "engine",
-      "minimum": "已经有证据确认的拾取成功事件和计数；不需要预先具备声音、粒子或整套特效。",
+      "minimum": "现成实验：game/labs/event_lab.tscn、game/scenes/main.tscn。先做：在事件Lab切换可见反馈，比较成功计数和显示；再观察主游戏真实拾取。；不要从空项目重建。",
       "reference": [
-        "game/scenes/main.tscn",
-        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+        "game/labs/event_lab.tscn",
+        "现成反馈与规则分离；本Lab未提供完整音频/粒子/打击感库，不以反馈关掉判规则失败。"
       ],
       "support_fade": false
     },
@@ -157,10 +157,10 @@
       "id": "B08",
       "display": "B08",
       "mode": "engine",
-      "minimum": "已有有效拾取和明确进度来源；能改变运行窗口大小，本课再接完成、重开和布局。",
+      "minimum": "现成实验：game/labs/event_lab.tscn、game/scenes/main.tscn。先做：先在事件Lab完成、重开并再次请求，再在主游戏改变窗口检查布局。；不要从空项目重建。",
       "reference": [
-        "game/scenes/main.tscn",
-        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+        "game/labs/event_lab.tscn",
+        "事件Lab有独立状态和显示、可重复重开；主游戏的完整十星与窗口布局仍分别实测。"
       ],
       "support_fade": false
     },
@@ -198,10 +198,10 @@
       "id": "B12",
       "display": "B12",
       "mode": "data",
-      "minimum": "一处明确的预期/实际差异、最近修改和可回退版本；无真实故障时用教学修改卡，不假装读过个人项目。",
+      "minimum": "现成实验：game/lessons/b02/broken.tscn、game/labs/event_lab.tscn、game/scenes/main.tscn。先做：先在现成故障副本说明实际现象，再提出一个可能原因和最小验证，不先读答案。；不要从空项目重建。",
       "reference": [
-        "game/scenes/main.tscn",
-        "已有完整收集参考解，只用于观察/排错；逐课隔离起点与全部新验收项仍待核验。"
+        "game/lessons/b02/broken.tscn",
+        "可用A03故障或事件防重故障练排查；工程diff/版本恢复仍用自己的修改记录，不能自动判会。"
       ],
       "support_fade": true
     },
@@ -236,39 +236,51 @@
       "id": "C03",
       "display": "C03",
       "mode": "asset",
-      "minimum": "现有控制器和占位外观，以及实际提供的候选角色与来源说明；没有可用角色时只做资源卡选择。",
-      "reference": null,
+      "minimum": "现成实验：game/labs/animation_lab.tscn、blender/labs/animation_fixture.blend、game/scenes/main.tscn。先做：先打开原创动作样本查看骨架、蒙皮、三段片段，再比较角色大小与控制器职责。；不要从空项目重建。",
+      "reference": [
+        "game/labs/animation_lab.tscn",
+        "原创教学角色与实际动画现成可用；不是正式美术选型或通用骨架兼容保证，替换自己的角色还需验证。"
+      ],
       "support_fade": false
     },
     {
       "id": "C04",
       "display": "C04",
       "mode": "engine",
-      "minimum": "一个已验过基本兼容的角色与确实存在的动作片段；没有跑/跳片段不编造名称，先做可支持的最小状态。",
-      "reference": null,
+      "minimum": "现成实验：game/labs/animation_lab.tscn、blender/labs/animation_fixture.blend。先做：在动作Lab只调待机到行走的融合值和过渡时间，观察肢体而非读源码。；不要从空项目重建。",
+      "reference": [
+        "game/labs/animation_lab.tscn",
+        "真实AnimationTree与导入片段；Walk原地播放，主游戏移动/动画同步和脚滑验收仍需接到自己的控制器。"
+      ],
       "support_fade": false
     },
     {
       "id": "C05",
       "display": "C05",
       "mode": "engine",
-      "minimum": "至少两个同类实例、可检查的资源引用和独立状态；不用一上来复制整个资源库。",
-      "reference": null,
+      "minimum": "现成实验：game/labs/material_lab.tscn、blender/labs/uv_material_lab.blend、game/lessons/b02/starter.tscn。先做：先切Godot材质共享/独立，再在Blender检查Shared_A/B与Independent_C的数据引用。；不要从空项目重建。",
+      "reference": [
+        "game/labs/material_lab.tscn",
+        "提供真实材质和网格共享对照；动画引用及独立运行状态在实际角色实例中另验，不用一个静态图包办。"
+      ],
       "support_fade": false
     },
     {
       "id": "C06",
       "display": "C06",
       "mode": "engine",
-      "minimum": "已有支点、碰撞、触发或交互测试入口；主任务只选一种门/机关，平台是可选变式。",
-      "reference": null,
+      "minimum": "现成实验：game/labs/interaction_lab.tscn、game/labs/platform_lab.tscn。先做：先在门实验观察靠近与开门；需要平台变式时，打开平台实验比较站立跟随和起跳离开。；不要从空项目重建。",
+      "reference": [
+        "game/labs/interaction_lab.tscn",
+        "门与平台均已可交互；平台是实际独立CharacterBody与AnimatableBody，完整机关阻挡/关卡集成仍需实际项目验证。"
+      ],
       "support_fade": false
     },
     {
       "id": "C07",
       "display": "C07",
       "mode": "asset",
-      "minimum": "两三件简单模块、统一尺寸参照及棋盘格诊断材质；不要求人物UV或高分辨率素材包。",
+      "minimum": "现成实验：blender/labs/uv_material_lab.blend、blender/labs/kitbash_style_lab.blend。先做：打开UV样本，上排几何和光照相同，先观察棋盘格；只调整中间板的UV，不改几何尺寸。；不要从空项目重建。",
       "reference": null,
       "support_fade": false
     },
@@ -276,8 +288,11 @@
       "id": "C08",
       "display": "C08",
       "mode": "engine",
-      "minimum": "真实目标设备/渲染器、一个静态样本及会移动的对象；不强制两个候选方案都已实现。",
-      "reference": null,
+      "minimum": "现成实验：game/scenes/visual_lab.tscn、game/labs/material_lab.tscn、game/labs/camera_lab.tscn。先做：在现成同机位样本中先比较光照、材质或投影的一项，再核对实际渲染器。；不要从空项目重建。",
+      "reference": [
+        "game/scenes/visual_lab.tscn",
+        "提供实际渲染基线；Fog/Glow/DOF等候选仍按目标渲染器另试，不假装全套效果控件已配齐。"
+      ],
       "support_fade": false
     },
     {
@@ -292,16 +307,22 @@
       "id": "C10",
       "display": "C10",
       "mode": "engine",
-      "minimum": "一个已有机关或可交互对象、输入意图、距离/目标可观察入口；不需要背包。",
-      "reference": null,
+      "minimum": "现成实验：game/labs/interaction_lab.tscn。先做：拖动角色接近蓝区，先不拿钥匙尝试开门，再只改变钥匙条件。；不要从空项目重建。",
+      "reference": [
+        "game/labs/interaction_lab.tscn",
+        "真实检测/允许条件/门状态/提示分离，重复开门可验证；不含背包或完整正式关卡系统。"
+      ],
       "support_fade": false
     },
     {
       "id": "C11",
       "display": "C11",
       "mode": "data",
-      "minimum": "最小需要保存的进度/设置，以及正常、缺失、损坏的测试数据副本；不用真实玩家唯一存档。",
-      "reference": null,
+      "minimum": "现成实验：game/labs/interaction_lab.tscn。先做：在门实验先保存门进度与偏好，再改临时位置、门或偏好，按读取观察哪些恢复。；不要从空项目重建。",
+      "reference": [
+        "game/labs/interaction_lab.tscn",
+        "真实专用本地文件，可准备缺失/坏档/v0旧档；恢复初值不删文件，只能删除本实验档，不代表正式游戏存档已接入。"
+      ],
       "support_fade": false
     },
     {
@@ -349,7 +370,10 @@
       "display": "D05",
       "mode": "optional",
       "minimum": "一个已选角色、两份来源清楚的动作包/说明卡；先试一个片段，不要求自己制作武打动作。",
-      "reference": null,
+      "reference": [
+        "game/labs/animation_lab.tscn",
+        "有真实骨架、蒙皮与动作；不是外部动作库或通用重定向，新角色仍先做一段兼容小试。"
+      ],
       "support_fade": false
     },
     {
@@ -357,7 +381,10 @@
       "display": "D06",
       "mode": "optional",
       "minimum": "D05已验证的一段原地攻击、现有控制器和一个木桩测试副本；动作来自资源复用，不要求原创。",
-      "reference": null,
+      "reference": [
+        "game/labs/animation_lab.tscn",
+        "现成窗口/距离/一次性规则实验；未把攻击接入主游戏控制器，关闭训练角后的十星回归仍要自己集成后验证。"
+      ],
       "support_fade": false
     },
     {
