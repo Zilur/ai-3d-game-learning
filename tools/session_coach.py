@@ -34,7 +34,7 @@ def validate_session_data(by_id, starts=None, references=None):
         if len(record) != 2 or not all(record):
             raise ValueError(ident + ': reference needs limitation')
         rel = Path(record[0])
-        if rel.is_absolute() or '..' in rel.parts or not str(rel).startswith('game/'):
+        if rel.is_absolute() or '..' in rel.parts or not rel.as_posix().startswith('game/'):
             raise ValueError(ident + ': unsafe reference path')
         if not (ROOT / rel).is_file():
             raise ValueError(ident + ': claimed reference file is absent')

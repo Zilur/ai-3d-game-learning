@@ -57,7 +57,7 @@ class PolishTests(unittest.TestCase):
         (root/'game/.godot').mkdir(); (root/'game/.godot/private').write_text('cache')
         return root
     def test_copy_unique_project_and_reference_unchanged(self):
-        with tempfile.TemporaryDirectory() as d:
+        with tempfile.TemporaryDirectory(dir=Path(tempfile.gettempdir()).resolve()) as d:
             root=self.workspace_root(d); home=Path(d)/'private'
             dest=w.create('my-world',home,root)
             self.assertIn('Workshop - my-world',(dest/'game/project.godot').read_text())
@@ -66,20 +66,20 @@ class PolishTests(unittest.TestCase):
             self.assertTrue((dest/'source-manifest.json').is_file())
             with self.assertRaises(ValueError):w.create('my-world',home,root)
     def test_restore_requires_confirmation_and_keeps_backup(self):
-        with tempfile.TemporaryDirectory() as d:
+        with tempfile.TemporaryDirectory(dir=Path(tempfile.gettempdir()).resolve()) as d:
             root=self.workspace_root(d); home=Path(d)/'private'; dest=w.create('world',home,root)
             current=dest/'game/world/creation.tres'; current.write_text('my edit')
             self.assertIsNone(w.restore('world','parameters',home,False,root)); self.assertEqual(current.read_text(),'my edit')
             backup=w.restore('world','parameters',home,True,root)
             self.assertEqual(backup.read_text(),'my edit'); self.assertEqual(current.read_text(),'baseline\n')
     def test_work_copy_path_guards(self):
-        with tempfile.TemporaryDirectory() as d:
+        with tempfile.TemporaryDirectory(dir=Path(tempfile.gettempdir()).resolve()) as d:
             root=self.workspace_root(d)
             for name in ['..','../escape','a/b','']:
                 with self.assertRaises(ValueError):w.create(name,Path(d)/'private',root)
             with self.assertRaises(ValueError):w.create('x',root/'game',root)
     def test_symlink_write_rejected(self):
-        with tempfile.TemporaryDirectory() as d:
+        with tempfile.TemporaryDirectory(dir=Path(tempfile.gettempdir()).resolve()) as d:
             root=self.workspace_root(d); link=Path(d)/'link'
             try:link.symlink_to(root/'game',target_is_directory=True)
             except OSError:self.skipTest('symlink unavailable')
