@@ -23,13 +23,15 @@ jobs:
         run: |
           python3 tools/build_world_assets.py
           python3 tools/build_course_materials.py
-      - name: Validate source, resources and family tools
+      - name: Validate source, resources and all 59 family-growth-practical unit tests
         run: |
           python3 tools/validate_repo.py
           python3 tools/check_learning_pathway.py
           python3 tools/check_practical_labs.py
           python3 tools/check_production.py
-          python3 -m unittest discover -s tools -p 'test_*.py' -v
+          python3 -m unittest discover -s tools -p 'test_family_learning.py' -v
+          python3 -m unittest discover -s tools -p 'test_growth_workshop.py' -v
+          python3 -m unittest discover -s tools -p 'test_practical_labs.py' -v
       - name: Install pinned official Godot
         run: python3 tools/install_godot_ci.py
       - name: Execute original and new suites and cross-process saves
