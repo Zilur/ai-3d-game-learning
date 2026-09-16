@@ -45,7 +45,7 @@ jobs:
           python3 -m unittest discover -s tools -p 'test_family_learning.py' -v
           python3 -m unittest discover -s tools -p 'test_growth_workshop.py' -v
           python3 -m unittest discover -s tools -p 'test_practical_labs.py' -v
-      - name: Import and run all original and new engine behavior suites
+      - name: Import and run original suites plus practical_labs.gd
         run: |
           set -euo pipefail
           timeout 120 godot --headless --path game --editor --import 2>&1 | tee import-check.log
