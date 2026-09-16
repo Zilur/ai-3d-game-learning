@@ -16,6 +16,13 @@ EDITABLE = {'parameters': 'world/creation.tres', 'layout': 'world/exploration.ts
 SKIP = {'.godot', '.git', '.learning', 'build', 'exports', '.export', 'export_credentials.cfg'}
 
 
+def console(text: str, stream=None) -> None:
+    """Do not abort a completed file operation on a non-CJK Windows console."""
+    stream = sys.stdout if stream is None else stream
+    encoding = getattr(stream, 'encoding', None) or 'utf-8'
+    print(text.encode(encoding, 'backslashreplace').decode(encoding), file=stream)
+
+
 def clean_path(path: Path) -> Path:
     absolute = path.absolute()
     if any(p.is_symlink() for p in (absolute, *absolute.parents)):
@@ -76,7 +83,7 @@ def create(name: str, home: Path, root=ROOT) -> Path:
 
 本副本使用独立项目名，因此Godot用户数据目录与参考工程隔离。学习记录继续放原仓库.learning/family，不往游戏包里放私人观察。
 ''', encoding='utf-8')
-        # Atomic publication; a competing existing destination must not be replaced.
+        # Exclusive destination; a competing existing destination must not be replaced.
         if dest.exists(): raise ValueError('目标刚被创建，取消复制。')
         shutil.copytree(stage, dest)  # Exclusive destination mkdir; never replace an existing directory.
     return dest
@@ -89,7 +96,7 @@ def restore(name: str, key: str, home: Path, confirm=False, root=ROOT) -> Path |
     baseline = clean_path(dest / '.baseline' / (key + Path(rel).suffix))
     if not current.is_file() or not baseline.is_file(): raise ValueError('工作副本或基线缺失，不从当前新版本猜测旧内容。')
     if not confirm:
-        print('将恢复 ' + str(current) + '；当前文件会先备份。未修改；核对后加--confirm。')
+        console('将恢复 ' + str(current) + '；当前文件会先备份。未修改；核对后加--confirm。')
         return None
     backup_dir = clean_path(dest / 'restore-backups')
     backup_dir.mkdir(exist_ok=True)
@@ -108,12 +115,12 @@ def main(argv=None):
     q = sub.add_parser('create'); q.add_argument('name')
     q = sub.add_parser('restore'); q.add_argument('name'); q.add_argument('--file', choices=EDITABLE, required=True); q.add_argument('--confirm', action='store_true')
     a = p.parse_args(argv)
-    if a.command == 'create': print('已创建：' + str(create(a.name, a.home) / 'game/project.godot'))
+    if a.command == 'create': console('已创建：' + str(create(a.name, a.home) / 'game/project.godot'))
     else:
         backup = restore(a.name, a.file, a.home, a.confirm)
-        if backup: print('已恢复一项，改前备份：' + str(backup))
+        if backup: console('已恢复一项，改前备份：' + str(backup))
 
 
 if __name__ == '__main__':
     try: main()
-    except (ValueError, OSError) as exc: print('未完成：' + str(exc), file=sys.stderr); sys.exit(2)
+    except (ValueError, OSError) as exc: console('未完成：' + str(exc), stream=sys.stderr); sys.exit(2)
