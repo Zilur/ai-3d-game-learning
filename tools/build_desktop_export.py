@@ -18,15 +18,24 @@ ERRORS=re.compile(r'SCRIPT ERROR|Parse Error|ERROR:|ObjectDB instances leaked|re
 
 
 def run(command,log,cwd,env=None,marker=None,timeout=300):
-    result=subprocess.run(command,cwd=cwd,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,encoding='utf-8',errors='replace',timeout=timeout)
-    log.parent.mkdir(parents=True,exist_ok=True); log.write_text(result.stdout,encoding='utf-8'); print(result.stdout)
+    log.parent.mkdir(parents=True,exist_ok=True)
+    try:
+        result=subprocess.run(command,cwd=cwd,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,encoding='utf-8',errors='replace',timeout=timeout)
+    except subprocess.TimeoutExpired as exc:
+        partial=exc.stdout or ''
+        if isinstance(partial,bytes):partial=partial.decode('utf-8','replace')
+        log.write_text(partial+'\nPROCESS TIMEOUT\n',encoding='utf-8')
+        raise
+    log.write_text(result.stdout,encoding='utf-8');print(result.stdout)
     if result.returncode or ERRORS.search(result.stdout) or marker and marker not in result.stdout:
         raise RuntimeError('Export/runtime check failed: '+str(log))
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__); p.add_argument('--godot',default=os.environ.get('GODOT_BINARY','godot'));p.add_argument('--out',type=Path,default=Path('build/desktop'));p.add_argument('--render',action='store_true');a=p.parse_args()
-    system=platform.system(); preset={'Linux':'Linux','Windows':'Windows','Darwin':'macOS'}[system]
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--godot',default=os.environ.get('GODOT_BINARY','godot'));p.add_argument('--out',type=Path,default=Path('build/desktop'));p.add_argument('--render',action='store_true');a=p.parse_args()
+    system=platform.system();preset={'Linux':'Linux','Windows':'Windows','Darwin':'macOS'}[system]
+    license_path=ROOT/'game/assets/village/LICENSE.txt'
+    if not license_path.is_file():raise ValueError('Original asset license is missing; export refused.')
     out=a.out.resolve()/preset
     if out.exists():raise ValueError('Output exists; choose a new folder, never overwrite a package.')
     package=out/'package';package.mkdir(parents=True);evidence=out/'evidence';evidence.mkdir()
@@ -37,9 +46,12 @@ def main():
     run(base+['--export-release',preset,str(target)],evidence/'export.log',ROOT)
     if system=='Darwin':
         subprocess.run(['ditto','-x','-k',str(target),str(package)],check=True);target.unlink()
-    env=os.environ.copy();env['NOTICES_OUT']=str(package/'GODOT-THIRD-PARTY-NOTICES.txt')
+    notice=package/'GODOT-THIRD-PARTY-NOTICES.txt'
+    env=os.environ.copy();env['EXPORT_NOTICE_PATH']=str(notice)
     run(base+['--script','res://tests/write_notices.gd'],evidence/'notices.log',ROOT,env)
-    shutil.copy2(ROOT/'game/assets/village/LICENSE.txt',package/'ASSET-LICENSE.txt')
+    if not notice.is_file() or notice.stat().st_size<2000:
+        raise RuntimeError('Engine notices were not generated; package is incomplete.')
+    shutil.copy2(license_path,package/'ASSET-LICENSE.txt')
     shutil.copy2(ROOT/'game/assets/practice-asset-notes.md',package/'PRACTICE-ASSET-NOTES.md')
     (package/'README.txt').write_text('星光小庭院｜亲子课程独立体验包\n\n解压整个目录，不要只移动exe或pck。Windows运行Starlight.exe；Linux运行Starlight.x86_64；macOS打开.app。\n需要操作系统提供中文字体；不随包分发字体。WASD移动，Shift跑，空格跳，E交互，J训练，Esc暂停，F9保存，F10读档。\n窗口关闭和实验往返已有保存保护；内存暂存不是磁盘存档。仅教学试玩，未经商店签名/公证，不建议绕过系统安全机制；遇拦截由成人核对来源并使用源码项目。\n行为自动测试不等于所有设备、听感、儿童学习或商业品质已验收。\n',encoding='utf-8')
     if system=='Darwin':
