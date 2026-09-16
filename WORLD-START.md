@@ -7,6 +7,8 @@
 用Godot **4.7.2**导入`game/project.godot`，等待首次资源导入完成，按F5。默认启动`game/world/exploration.tscn`。
 旧`game/scenes/main.tscn`仍是原十星教学参考；不要用旧场景判断新功能是否存在。
 
+中文界面使用电脑已有的中文系统字体，例如苹方、微软雅黑或Noto Sans CJK SC。不随工程打包字体。极简或全新系统出现缺字/字体加载报错时，由成人先检查中文字体安装并重启Godot；macOS的干净测试环境已补装中文字体后通过运行检查。
+
 |操作|作用|
 |---|---|
 |WASD / Shift / 空格|移动 / 跑 / 跳；斜向不额外增速|
