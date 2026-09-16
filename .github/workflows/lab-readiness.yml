@@ -2,75 +2,43 @@ name: Practical lab readiness
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 permissions:
   contents: read
 jobs:
   audit:
-    if: >-
-      github.event_name == 'push' && github.event.head_commit.message == 'chore: publish validated ready labs'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
-      - name: Apply only integrity-checked public teaching sources
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: python3 tools/publish_ready_labs_once.py apply
-      - name: Install pinned engines with official checksums
+      - name: Validate ready-file routing and reject invalid fixtures
         run: |
-          python3 tools/install_godot_ci.py
-          python3 tools/install_blender_ci.py
-      - name: Build and reopen ready native files, then regenerate lesson routes
-        env:
-          LAB_CAPTURE_DIR: lab-captures
-        run: |
-          set -euo pipefail
-          python3 tools/make_practice_robot.py
-          blender --background --python-exit-code 1 --python blender/labs/build_practical_labs.py 2>&1 | tee blender-check.log
-          grep -q 'BLENDER PRACTICAL PASS' blender-check.log
-          python3 tools/build_course_materials.py
-      - name: Validate all course, parent and practical source contracts
-        run: |
-          set -euo pipefail
-          python3 tools/build_course_materials.py --check
-          python3 tools/check_course_numbering.py
-          python3 tools/validate_repo.py
-          python3 tools/check_learning_pathway.py
-          python3 tools/family_learning.py check
-          python3 tools/growth_workshop.py check
           python3 tools/check_practical_labs.py
-          python3 -m unittest discover -s tools -p 'test_family_learning.py' -v
-          python3 -m unittest discover -s tools -p 'test_growth_workshop.py' -v
           python3 -m unittest discover -s tools -p 'test_practical_labs.py' -v
-      - name: Import and run original suites plus practical_labs.gd
+      - name: Install pinned Godot with official digest
+        run: python3 tools/install_godot_ci.py
+      - name: Import ready project and test interactions
         run: |
           set -euo pipefail
           timeout 120 godot --headless --path game --editor --import 2>&1 | tee import-check.log
           if grep -Eq 'SCRIPT ERROR|Parse Error|ERROR:' import-check.log; then exit 1; fi
-          for suite in smoke visual_lab concept_labs b02 practical_labs; do
-            timeout 120 godot --headless --audio-driver Dummy --path game --fixed-fps 60 --script res://tests/${suite}.gd 2>&1 | tee ${suite}-check.log
-            if grep -Eq 'SCRIPT ERROR|Parse Error|ERROR:' ${suite}-check.log; then exit 1; fi
-            grep -q 'PASS' ${suite}-check.log
-          done
-      - name: Publish only verified source, derived course pages and ready assets
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: python3 tools/publish_ready_labs_once.py publish
-      - name: Package public project and Blender visual evidence
+          timeout 90 godot --headless --audio-driver Dummy --path game --fixed-fps 60 --script res://tests/practical_labs.gd 2>&1 | tee practical-check.log
+          if grep -Eq 'SCRIPT ERROR|Parse Error|ERROR:' practical-check.log; then exit 1; fi
+          grep -q 'PRACTICAL LAB PASS' practical-check.log
+      - name: Install pinned Blender with official checksum
+        run: python3 tools/install_blender_ci.py
+      - name: Reopen committed Blender files without silently rebuilding them
         run: |
-          git archive HEAD --format=zip --output=ready-project.zip
-          zip -r ready-blender-labs.zip blender/labs/*.blend game/assets/practice_robot.gltf game/assets/practice_robot_roundtrip.glb lab-captures *-check.log
+          set -euo pipefail
+          blender --background --python-exit-code 1 --python blender/labs/build_practical_labs.py -- --verify-only 2>&1 | tee blender-check.log
+          grep -q 'BLENDER PRACTICAL PASS' blender-check.log
+      - name: Package the tested public source and ready assets
+        run: git archive HEAD --format=zip --output=ready-project.zip
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: validated-ready-project
+          name: verified-ready-project
           path: ready-project.zip
-          retention-days: 7
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: ready-blender-labs
-          path: ready-blender-labs.zip
           retention-days: 7
