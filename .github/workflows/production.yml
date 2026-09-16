@@ -29,7 +29,10 @@ jobs:
           python tools/build_course_materials.py --check
           python tools/check_practical_labs.py
           python tools/check_production.py
+          python -m unittest discover -s tools -p test_effect_captures.py -v
       - name: Install official pinned desktop runtime
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: python tools/install_godot_desktop_ci.py
       - name: Run old and new suites plus cross-process save roundtrip
         shell: bash
@@ -51,6 +54,8 @@ jobs:
         with:
           persist-credentials: false
       - name: Install software graphics drivers and pinned engine
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y xvfb mesa-vulkan-drivers libgl1-mesa-dri fonts-noto-cjk

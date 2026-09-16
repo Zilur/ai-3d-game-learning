@@ -1,4 +1,4 @@
-"""Read actual Godot RGBA8 PNG captures and compare only scene pixels, not UI.
+"""Read actual Godot RGB8/RGBA8 PNG captures and compare only scene pixels, not UI.
 Standard library only; deliberately rejects other image encodings rather than guessing.
 Pixel change is evidence of rendering, not evidence of attractiveness or learning.
 """
@@ -17,18 +17,22 @@ def png(path: Path) -> tuple[int, int, list[bytes]]:
     i = 8
     compressed = bytearray()
     width = height = 0
+    channels = 0
     while i < len(data):
         size, kind = struct.unpack('>I4s', data[i:i+8])
         body = data[i+8:i+8+size]
         if kind == b'IHDR':
             width, height, depth, color, cm, fm, interlace = struct.unpack('>IIBBBBB', body)
-            if (depth, color, cm, fm, interlace) != (8, 6, 0, 0, 0) or width*height > 4_000_000:
-                raise ValueError('Expected bounded Godot RGBA8 image')
+            if (depth, cm, fm, interlace) != (8, 0, 0, 0) or color not in (2, 6) or not 0 < width*height <= 4_000_000:
+                raise ValueError('Expected bounded Godot RGB8 or RGBA8 image')
+            channels = 3 if color == 2 else 4
         if kind == b'IDAT':
             compressed.extend(body)
         i += size + 12
     raw = zlib.decompress(compressed)
-    stride = width * 4
+    if channels == 0:
+        raise ValueError('Missing PNG header')
+    stride = width * channels
     if len(raw) != height * (stride + 1):
         raise ValueError('Wrong PNG scanline length')
     rows: list[bytes] = []
@@ -36,17 +40,26 @@ def png(path: Path) -> tuple[int, int, list[bytes]]:
     for y in range(height):
         at = y * (stride+1)
         kind = raw[at]
+        if kind > 4:
+            raise ValueError('Unsupported PNG scanline filter')
         row = bytearray(raw[at+1:at+1+stride])
         for x in range(stride):
-            a = row[x-4] if x >= 4 else 0
+            a = row[x-channels] if x >= channels else 0
             b = prior[x]
-            c = prior[x-4] if x >= 4 else 0
+            c = prior[x-channels] if x >= channels else 0
             p = a+b-c
             pa, pb, pc = abs(p-a), abs(p-b), abs(p-c)
             paeth = a if pa <= pb and pa <= pc else b if pb <= pc else c
             add = (0, a, b, (a+b)//2, paeth)[kind]
             row[x] = (row[x] + add) & 255
-        rows.append(bytes(row))
+        if channels == 4:
+            rows.append(bytes(row))
+        else:
+            rgba = bytearray(width*4)
+            for pixel in range(width):
+                rgba[pixel*4:pixel*4+3] = row[pixel*3:pixel*3+3]
+                rgba[pixel*4+3] = 255
+            rows.append(bytes(rgba))
         prior = row
     return width, height, rows
 

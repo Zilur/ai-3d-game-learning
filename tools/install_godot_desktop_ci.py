@@ -16,7 +16,11 @@ BASE = f'https://api.github.com/repos/godotengine/godot-builds/releases/tags/{VE
 
 
 def request(url: str):
-    return urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'starlight-course-ci'}), timeout=120)
+    headers = {'User-Agent': 'starlight-course-ci'}
+    # Authenticate only GitHub API metadata requests, never external download redirects.
+    if url.startswith('https://api.github.com/') and os.environ.get('GH_TOKEN'):
+        headers['Authorization'] = 'Bearer ' + os.environ['GH_TOKEN']
+    return urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=120)
 
 
 def main() -> None:
