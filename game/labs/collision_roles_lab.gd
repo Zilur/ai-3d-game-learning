@@ -49,9 +49,9 @@ func _build_world() -> void:
 
 	var camera := Camera3D.new()
 	camera.position = Vector3(0, 5.2, 9.5)
+	add_child(camera)
 	camera.look_at(Vector3(0, 0.6, 0))
 	camera.current = true
-	add_child(camera)
 
 	var floor_mesh := MeshInstance3D.new()
 	var floor_box := BoxMesh.new()
