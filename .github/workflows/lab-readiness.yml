@@ -9,24 +9,33 @@ permissions:
 jobs:
   audit:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
       - name: Install pinned Godot with official digest
         run: python3 tools/install_godot_ci.py
-      - name: Package public source snapshot for practical audit
-        run: git archive HEAD --format=zip --output=source-snapshot.zip
+      - name: Install pinned Blender with official checksum
+        run: python3 tools/install_blender_ci.py
+      - name: Generate original fixture and ready Blender files
+        env:
+          LAB_CAPTURE_DIR: lab-captures
+        run: |
+          set -euo pipefail
+          python3 tools/make_practice_robot.py
+          blender --background --python-exit-code 1 --python blender/labs/build_practical_labs.py 2>&1 | tee blender-check.log
+          grep -q 'BLENDER PRACTICAL PASS' blender-check.log
+      - name: Import actual exported animation asset
+        run: |
+          set -euo pipefail
+          timeout 120 godot --headless --path game --editor --import 2>&1 | tee import-check.log
+          if grep -Eq 'SCRIPT ERROR|Parse Error|ERROR:' import-check.log; then exit 1; fi
+      - name: Package ready files and audit evidence
+        run: |
+          zip -r ready-blender-labs.zip blender/labs/*.blend game/assets/practice_robot* lab-captures blender-check.log import-check.log
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: practical-audit-source
-          path: source-snapshot.zip
+          name: ready-blender-labs
+          path: ready-blender-labs.zip
           retention-days: 7
-      - name: Package test runtime
-        run: zip -j -6 godot-test-runtime.zip "$(command -v godot)"
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: godot-test-runtime
-          path: godot-test-runtime.zip
-          retention-days: 1
