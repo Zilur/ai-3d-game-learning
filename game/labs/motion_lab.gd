@@ -54,9 +54,9 @@ func _build_world() -> void:
 
 	var camera := Camera3D.new()
 	camera.position = Vector3(0, 5.5, 10.5)
+	add_child(camera)
 	camera.look_at(Vector3(0, 0.7, 0))
 	camera.current = true
-	add_child(camera)
 
 	var track := MeshInstance3D.new()
 	var track_mesh := BoxMesh.new()
