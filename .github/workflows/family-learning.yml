@@ -1,0 +1,21 @@
+name: Family learning companion validation
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  family-learning:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Validate all 47 lesson bindings and privacy boundary
+        run: python3 tools/family_learning.py check
+      - name: Test evidence, scheduling, storage, and calendar export
+        run: python3 -m unittest discover -s tools -p 'test_family_learning.py' -v
