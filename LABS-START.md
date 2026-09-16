@@ -1,8 +1,8 @@
 # 现成实验入口：先打开、试一试，不从零搭建
 
-打开完整仓库的 `game/project.godot`，使用 **Godot 4.7.2**。在文件面板打开 **`labs/lab_hub.tscn`**，按 **F6（运行当前场景）**；也可F5进入主游戏后点 `Concept labs`。F5是运行整个项目，不一定运行你选中的实验。
+打开完整仓库的 `game/project.godot`，使用 **Godot 4.7.2**。在文件面板打开 **`labs/lab_hub.tscn`**，按 **F6（运行当前场景）**；也可F5进入新主游戏，按Esc后进入概念实验；旧参考仍保留 `Concept labs`。F5是运行整个项目，不一定运行你选中的实验。
 
-实验目录共12个入口，含已有参考与A03起点；不是新增12套独立课程。每课只用0A指向的一个模式，先预测，再改一项。新实验的中文侧栏可滚动、可键盘聚焦；旧参考界面中保留的英文可对照逐课说明，不要求背按钮名。
+实验目录共17个入口，含已有参考与A03起点；不是新增17套独立课程。每课只用0A指向的一个模式，先预测，再改一项。新实验的中文侧栏可滚动、可键盘聚焦；旧参考界面中保留的英文可对照逐课说明，不要求背按钮名。
 
 **孩子不需要先写脚本、搭完整场景、创建测试骨架或下载角色。** 实验脚本在运行时装配的节点，可在运行后的Remote场景树看见；编辑器启动前看到一个根节点不表示场景没做完。要保留修改请另存副本/记录参数，Remote临时修改不是保存到原场景。
 
@@ -21,7 +21,12 @@
 |移动平台和角色关系|`game/labs/platform_lab.tscn`|站稳后比较跟随，起跳和离开；角色不是平台的子节点|
 |靠近、允许、交互结果、保存恢复|`game/labs/interaction_lab.tscn`|靠近但没钥匙、拿钥匙、重复开门；再试正常/缺失/坏档/旧档|
 |骨骼、蒙皮、动作片段、融合和命中窗口|`game/labs/animation_lab.tscn`；`blender/labs/animation_fixture.blend`|现成原创角色的待机/行走融合；攻击/中断/远近各一次，不先绑骨架|
-|真实收集、走跑跳、UI与项目回归|`game/scenes/main.tscn`|WASD移动，Shift跑，空格跳，R重开；这是参考工程，不是孩子已完成的作品|
+|导航与真实通行|`game/labs/navigation_lab.tscn`|分别改变导航预留半径与真实碰撞半径，比较路径和窄门通行|
+|单效果Shader|`game/labs/shader_lab.tscn`|只开条纹、边缘强调或风摆，保留左侧参考；可冻结与关闭|
+|Fog／Glow／景深|`game/labs/effects_lab.tscn`|原生参数对照；Compatibility无景深时禁用，Forward+／Mobile再验|
+|批量、LOD、剔除、分块与异步读取|`game/labs/large_scene_lab.tscn`|保持分布不变逐项对照；再异步读一个真实场景，观察驻留变化|
+|三段地图、钥匙门、战斗与存档|`game/world/exploration.tscn`|F5启动；真实走通十星，试可选训练和主动保存；详见WORLD-START|
+|旧收集参考、走跑跳、UI与回归|`game/scenes/main.tscn`|WASD移动，Shift跑，空格跳，R重开；这是参考工程，不是孩子已完成的作品|
 
 ## Blender：直接开已有文件，不先运行生成器
 
@@ -49,6 +54,6 @@
 
 新实验的“恢复全部初值”会恢复参数、对象、开关和动画/事件状态；运动另有保参重播。门实验是例外：**重置场景保留专用存档**，删除按钮只操作`user://teaching_interaction_lab_v1.json`，不读取你的其他游戏存档。测试坏档也只写这个实验文件；先看按钮文字，不使用个人唯一存档做测试。
 
-事件Lab通过按钮注入请求，不伪装物理碰撞。动作Lab使用真实蒙皮/AnimationTree和窗口/距离判定，不含与主游戏合体的完整战斗。新资产是原创教学样本，不是最终选型、通用重定向或成品美术。
+事件Lab通过按钮注入请求，不伪装物理碰撞。动作Lab使用真实蒙皮/AnimationTree和窗口/距离判定，现在可在新主游戏对照整合后的木桩训练。新主游戏使用12类原创GLB生产参考资产，不虚构采购外部包，也不把参考美术当成最终审美验收；不包含通用重定向。
 
-[逐课配套核对表](curriculum/practical-resource-audit.md) · [验证与未验证项](docs/practical-lab-validation.md) · [家庭学习](FAMILY-START.md) · [全部课程](curriculum/lesson-index.md)
+[三段主游戏](WORLD-START.md) · [逐课配套核对表](curriculum/practical-resource-audit.md) · [验证与未验证项](docs/practical-lab-validation.md) · [家庭学习](FAMILY-START.md) · [全部课程](curriculum/lesson-index.md)

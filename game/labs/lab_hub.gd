@@ -1,5 +1,10 @@
 extends "res://labs/lab_shell.gd"
 const LABS = [
+	["三段世界：探索 / 训练 / 保存", "res://world/exploration.tscn"],
+	["C08｜雾、辉光、景深", "res://labs/effects_lab.tscn"],
+	["E01｜导航与真实通行", "res://labs/navigation_lab.tscn"],
+	["E03｜Shader对照", "res://labs/shader_lab.tscn"],
+	["E02 / E05｜批量、LOD与分块", "res://labs/large_scene_lab.tscn"],
 	["A02 / A07｜空间与门轴", "res://scenes/lab.tscn"],
 	["A03｜节点：现成小起点", "res://lessons/b02/starter.tscn"],
 	["A04｜外观、阻挡、检测与Mask", "res://labs/collision_roles_lab.tscn"],

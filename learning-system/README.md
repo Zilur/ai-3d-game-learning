@@ -88,3 +88,7 @@ python3 tools/growth_workshop.py session prototype --cycle route-test --openmaic
 一轮只选一个问题，不把整本成长指南投喂成孩子的必读课。阶段标识不是新增课号；原M/K不变。任意新专题先用自由MD写观察与下次复测，不假称旧调度器已经支持自动追踪。发布前另用[发布检查单](templates/release-readiness.md)，产品质量和孩子理解分别看。
 
 [项目复查与工作优先级](project-review-2026-09-16.md)区分了已写好的设计/工具、尚缺的工程与必须真实执行的试学。
+
+## 现成主游戏与专项实验
+
+[主游戏操作](../WORLD-START.md)与[实验入口](../LABS-START.md)已经接通。F5运行三段参考；先体验和解释，再在副本中作局部改动，不必从空场景准备。OpenMAIC课堂按家庭安排稍后生成。

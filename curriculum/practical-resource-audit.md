@@ -27,37 +27,37 @@
 |[B11 性能入门：先测，再判断要不要优化](lessons/B11.md)|已有游戏参考/自己的工程/目标设备|[main.tscn](../game/scenes/main.tscn)|记录实际设备/分辨率/路线，再测一次基线，不先盲目优化。|不自带已验证性能收益；结果来自你的设备。|
 |[B12 验收AI改动：小假设、小修改、可回退](lessons/B12.md)|OpenMAIC先理解；Godot真实对照|[broken.tscn](../game/lessons/b02/broken.tscn)、[event_lab.tscn](../game/labs/event_lab.tscn)、[main.tscn](../game/scenes/main.tscn)|先在现成故障副本说明实际现象，再提出一个可能原因和最小验证，不先读答案。|可用A03故障或事件防重故障练排查；工程diff/版本恢复仍用自己的修改记录，不能自动判会。|
 |[B13 初级结业：把星星换成另一种可用物品](lessons/B13.md)|已有游戏参考/自己的工程/目标设备|[main.tscn](../game/scenes/main.tscn)|沿本课任务换一种可用物品，先写允许改与必须保留项。|完整参考用于比较；检查使用自己的快照和未揭示变式。|
-|[C01 小地图扩展：用固定镜头串起可探索路线](lessons/C01.md)|已有游戏参考/自己的工程/目标设备|[main.tscn](../game/scenes/main.tscn)|先画主路与返回路径，用代理块在副本扩一个区域。|当前主场景不是已完成的庭院/林路/观景台三段地图。|
-|[C02 世界美化：镜头决定世界，套装统一风格](lessons/C02.md)|OpenMAIC先理解；Godot真实对照|[visual_lab.tscn](../game/scenes/visual_lab.tscn)|只切换Clutter，指出焦点、路径和留白变化。|密度样例；不包含全套视差/背景层实现。|
+|[C01 小地图扩展：用固定镜头串起可探索路线](lessons/C01.md)|OpenMAIC先理解；Godot真实对照|[exploration.tscn](../game/world/exploration.tscn)|先运行三段路线，指出主路、找钥匙的支路和回程；另存副本只改变一个路口。|三段参考已实现，不等于自己的地图已通过；新路线仍要实走与陌生玩家检验。|
+|[C02 世界美化：镜头决定世界，套装统一风格](lessons/C02.md)|OpenMAIC先理解；Godot真实对照|[visual_lab.tscn](../game/scenes/visual_lab.tscn)、[exploration.tscn](../game/world/exploration.tscn)|先在疏密实验作对照，再用实际玩家镜头检查庭院、林路、观景台的焦点。|原生实验与原创资产参考都已备好；视觉选择由真人验收，未冒称商业品质。|
 |[C03 接入现成角色：会选、会替换、会验收](lessons/C03.md)|OpenMAIC先理解；Godot/Blender各验相关部分|[animation_lab.tscn](../game/labs/animation_lab.tscn)、[animation_fixture.blend](../blender/labs/animation_fixture.blend)、[main.tscn](../game/scenes/main.tscn)|先打开原创动作样本查看骨架、蒙皮、三段片段，再比较角色大小与控制器职责。|原创教学角色与实际动画现成可用；不是正式美术选型或通用骨架兼容保证，替换自己的角色还需验证。|
 |[C04 动画状态：动作片段如何接起来](lessons/C04.md)|OpenMAIC先理解；Godot/Blender各验相关部分|[animation_lab.tscn](../game/labs/animation_lab.tscn)、[animation_fixture.blend](../blender/labs/animation_fixture.blend)|在动作Lab只调待机到行走的融合值和过渡时间，观察肢体而非读源码。|真实AnimationTree与导入片段；Walk原地播放，主游戏移动/动画同步和脚滑验收仍需接到自己的控制器。|
 |[C05 复用与资源：共享什么、独立什么](lessons/C05.md)|OpenMAIC先理解；Godot/Blender各验相关部分|[material_lab.tscn](../game/labs/material_lab.tscn)、[uv_material_lab.blend](../blender/labs/uv_material_lab.blend)、[starter.tscn](../game/lessons/b02/starter.tscn)|先切Godot材质共享/独立，再在Blender检查Shared_A/B与Independent_C的数据引用。|提供真实材质和网格共享对照；动画引用及独立运行状态在实际角色实例中另验，不用一个静态图包办。|
 |[C06 门与移动平台：复用已会的空间和状态](lessons/C06.md)|OpenMAIC先理解；Godot真实对照|[interaction_lab.tscn](../game/labs/interaction_lab.tscn)、[platform_lab.tscn](../game/labs/platform_lab.tscn)|先在门实验观察靠近与开门；需要平台变式时，打开平台实验比较站立跟随和起跳离开。|门与平台均已可交互；平台是实际独立CharacterBody与AnimatableBody，完整机关阻挡/关卡集成仍需实际项目验证。|
 |[C07 模块拼接与简单UV：统一尺度和纹理密度](lessons/C07.md)|Blender现成副本|[uv_material_lab.blend](../blender/labs/uv_material_lab.blend)、[kitbash_style_lab.blend](../blender/labs/kitbash_style_lab.blend)|打开UV样本，上排几何和光照相同，先观察棋盘格；只调整中间板的UV，不改几何尺寸。|纹理已打包，正常/拉伸/密度样本现成；模块连接用小屋部件，复杂角色UV不列入当前必修。|
-|[C08 风格化光照方案：效果必须能进游戏](lessons/C08.md)|OpenMAIC先理解；Godot真实对照|[visual_lab.tscn](../game/scenes/visual_lab.tscn)、[material_lab.tscn](../game/labs/material_lab.tscn)、[camera_lab.tscn](../game/labs/camera_lab.tscn)|在现成同机位样本中先比较光照、材质或投影的一项，再核对实际渲染器。|提供实际渲染基线；Fog/Glow/DOF等候选仍按目标渲染器另试，不假装全套效果控件已配齐。|
+|[C08 风格化光照方案：效果必须能进游戏](lessons/C08.md)|OpenMAIC先理解；Godot真实对照|[effects_lab.tscn](../game/labs/effects_lab.tscn)|全关基线开始，一次开Fog、Glow或景深；观察实际渲染器和对应参数。|普通雾/辉光已实现；景深需Forward+或Mobile，Compatibility明确禁用；不冒充体积雾。|
 |[C09 优化入口：知道什么时候该停](lessons/C09.md)|已有游戏参考/自己的工程/目标设备|[main.tscn](../game/scenes/main.tscn)|对同一构建/机位选择一项真实测量，不改多种设置。|基准由目标设备提供，headless不代表GPU画面性能。|
-|[C10 可交互对象：提示、条件和结果](lessons/C10.md)|OpenMAIC先理解；Godot真实对照|[interaction_lab.tscn](../game/labs/interaction_lab.tscn)|拖动角色接近蓝区，先不拿钥匙尝试开门，再只改变钥匙条件。|真实检测/允许条件/门状态/提示分离，重复开门可验证；不含背包或完整正式关卡系统。|
-|[C11 存档与设置：能恢复比能写入更重要](lessons/C11.md)|OpenMAIC先理解；Godot真实对照|[interaction_lab.tscn](../game/labs/interaction_lab.tscn)|在门实验先保存门进度与偏好，再改临时位置、门或偏好，按读取观察哪些恢复。|真实专用本地文件，可准备缺失/坏档/v0旧档；恢复初值不删文件，只能删除本实验档，不代表正式游戏存档已接入。|
-|[C12 交付：别人电脑上第一次运行](lessons/C12.md)|已有游戏参考/自己的工程/目标设备|[main.tscn](../game/scenes/main.tscn)|核对目标平台和当前导出条件，再生成自己的可运行包。|有项目源码不等于已给出跨平台成品包。|
+|[C10 可交互对象：提示、条件和结果](lessons/C10.md)|OpenMAIC先理解；Godot真实对照|[interaction_lab.tscn](../game/labs/interaction_lab.tscn)、[exploration.tscn](../game/world/exploration.tscn)|先用隔离实验区分靠近、允许和结果，再在林路拿钥匙、到门前按E。|门和钥匙已接入主游戏；实验文件与主游戏存档完全隔离。|
+|[C11 存档与设置：能恢复比能写入更重要](lessons/C11.md)|OpenMAIC先理解；Godot真实对照|[interaction_lab.tscn](../game/labs/interaction_lab.tscn)、[exploration.tscn](../game/world/exploration.tscn)|先在实验测试缺失/损坏文件，再在主游戏主动保存、退出并继续。|主游戏有独立版本存档和备份；恢复到安全检查点，不保存攻击中间帧；不承诺抗所有断电故障。|
+|[C12 交付：别人电脑上第一次运行](lessons/C12.md)|OpenMAIC先理解；Godot真实对照|[exploration.tscn](../game/world/exploration.tscn)|先运行完整三段主线和暂停菜单，再按自己的目标平台实际导出验收。|源码与自动测试不是全部设备体验认证；发布包仍须目标设备检查。|
 |[D01 资产套装二开：从基底拼装成自己的道具](lessons/D01.md)|Blender现成副本|[kitbash_style_lab.blend](../blender/labs/kitbash_style_lab.blend)|先另存副本，选Variant_Roof只改一项比例，比较Base。|原创几何二开样例，不是已购买的完整资产套装。|
 |[D02 风格统一：配色、材质、边缘与细节密度](lessons/D02.md)|OpenMAIC先理解；Godot/Blender各验相关部分|[kitbash_style_lab.blend](../blender/labs/kitbash_style_lab.blend)、[material_lab.tscn](../game/labs/material_lab.tscn)|固定光照，先统一一件变体色彩，再单独调粗糙度。|支持局部材质观察，不等于整库风格已经统一。|
 |[D03 长期资产库：主套装、基底、变体与组合规则](lessons/D03.md)|Blender现成副本|[kitbash_style_lab.blend](../blender/labs/kitbash_style_lab.blend)|为一件变体记录源、用途、版本、引用和预览机位。|样例不自带完整商业资产库，按本地实际资源建立。|
-|[D04 美术结业：用套装二开拼出自己的童话场景](lessons/D04.md)|OpenMAIC先理解；Godot/Blender各验相关部分|[kitbash_style_lab.blend](../blender/labs/kitbash_style_lab.blend)、[main.tscn](../game/scenes/main.tscn)|挑一个小区域组合已合格部件，固定机位做减法。|当前文件只是起点，不是已验收美术结业作品。|
+|[D04 美术结业：用套装二开拼出自己的童话场景](lessons/D04.md)|OpenMAIC先理解；Godot/Blender各验相关部分|[kitbash_style_lab.blend](../blender/labs/kitbash_style_lab.blend)、[exploration.tscn](../game/world/exploration.tscn)|用现成原创GLB库替换或调整一处，固定机位作前后对照，再走完整路线。|三段原创生产参考已接入12类静态资产；不是已购买外部套装或最终美术签收。|
 |[D05 动作资源复用：动作包兼容、重定向与融合](lessons/D05.md)|OpenMAIC先理解；Godot/Blender各验相关部分|[animation_fixture.blend](../blender/labs/animation_fixture.blend)、[animation_lab.tscn](../game/labs/animation_lab.tscn)|先直接播放原创角色的三段现成片段，观察骨骼/网格关系，再到Godot比较导入和融合。|有真实骨架、蒙皮与动作；不是外部动作库或通用重定向，新角色仍先做一段兼容小试。|
-|[D06 轻战斗融入：现成攻击动作与可重复训练木桩](lessons/D06.md)|OpenMAIC先理解；Godot真实对照|[animation_lab.tscn](../game/labs/animation_lab.tscn)、[main.tscn](../game/scenes/main.tscn)|先播放一次攻击并中断，比较目标在内/在外与重复输入下的命中次数。|现成窗口/距离/一次性规则实验；未把攻击接入主游戏控制器，关闭训练角后的十星回归仍要自己集成后验证。|
-|[D07 精致Demo结业：完整探索关卡与可选训练角](lessons/D07.md)|已有游戏参考/自己的工程/目标设备|[main.tscn](../game/scenes/main.tscn)|按已选范围检查自己的完整构建和真实试玩，不增新玩法。|现有参考不代表精致三段地图已完成。|
-|[E01 导航选修：画得出路径还要走得到](lessons/E01.md)|参考/概念讨论；所选专项另备实际样本|本课不需要专用3D文件，或专项按需|有真实寻路需要时，先分清可画路径与角色能通过。|导航选修无专用Lab，不阻塞基础版。|
-|[E02 高级测量：用证据决定技术投入](lessons/E02.md)|已有游戏参考/自己的工程/目标设备|[main.tscn](../game/scenes/main.tscn)|先固定实际设备与构建，定义要解决的一个性能问题。|参考场景不是通用性能测试集。|
-|[E03 Shader选修：能控制效果，不必重造渲染器](lessons/E03.md)|参考/概念讨论；所选专项另备实际样本|本课不需要专用3D文件，或专项按需|有明确视觉缺口时准备隔离样例和可关闭的单效果。|Shader专项无预置完整效果库。|
+|[D06 轻战斗融入：现成攻击动作与可重复训练木桩](lessons/D06.md)|OpenMAIC先理解；Godot真实对照|[animation_lab.tscn](../game/labs/animation_lab.tscn)、[exploration.tscn](../game/world/exploration.tscn)|先看隔离命中窗口，再在主游戏面对木桩按J；比较远处/背对/关闭训练。|动作、命中、恢复控制已整合；训练可关闭且不影响十星，不是完整敌人/战斗系统。|
+|[D07 精致Demo结业：完整探索关卡与可选训练角](lessons/D07.md)|OpenMAIC先理解；Godot真实对照|[exploration.tscn](../game/world/exploration.tscn)|从庭院经过林路拿钥匙到观景台，完成十星；测试保存、继续、重开与训练关闭。|这是可玩的完整参考版本；儿童掌握、商业视觉质量与全部设备兼容仍需独立验收。|
+|[E01 导航选修：画得出路径还要走得到](lessons/E01.md)|OpenMAIC先理解；Godot真实对照|[navigation_lab.tscn](../game/labs/navigation_lab.tscn)|保持导航半径，调大真实碰撞球；先猜路径存在是否等于能过窄门。|使用真实NavigationServer与碰撞；网格是预制规则生成，非自动烘焙或动态避障系统。|
+|[E02 高级测量：用证据决定技术投入](lessons/E02.md)|OpenMAIC先理解；Godot真实对照|[large_scene_lab.tscn](../game/labs/large_scene_lab.tscn)、[exploration.tscn](../game/world/exploration.tscn)|固定机位与渲染器，单独切批量或LOD，重新采样并记录条件。|界面帧间隔和draw calls是真实当前运行值；无渲染模式不代表GPU性能，不保证每项优化都会更快。|
+|[E03 Shader选修：能控制效果，不必重造渲染器](lessons/E03.md)|OpenMAIC先理解；Godot真实对照|[shader_lab.tscn](../game/labs/shader_lab.tscn)|先保持左侧参考不变，只在右侧启用条纹、边缘强调或风摆一项。|真实空间Shader含关闭与冻结；不是完整Shader效果库或材质自动转换。|
 |[E04 复杂旋转选修：轨迹对，比公式背得熟重要](lessons/E04.md)|OpenMAIC先理解；Godot真实对照|[lab.tscn](../game/scenes/lab.tscn)|先用现有门轴说明预期轨迹，再定义复杂旋转问题。|基础Lab不能代替复杂旋转专项验证。|
-|[E05 大场景选修：批量、剔除与加载各治什么](lessons/E05.md)|参考/概念讨论；所选专项另备实际样本|本课不需要专用3D文件，或专项按需|先以测量确认批量/加载问题，再选择专项，不先扩大地图。|大场景无完整样例，基础项目无需强做。|
+|[E05 大场景选修：批量、剔除与加载各治什么](lessons/E05.md)|OpenMAIC先理解；Godot真实对照|[large_scene_lab.tscn](../game/labs/large_scene_lab.tscn)|只切分块驻留并移动相机，观察远区节点实际创建/释放，再分别对照MultiMesh和LOD。|9区块432物体的有界实验；另有真实场景异步读取按钮；共享资源可能缓存，不等于无限地图或全部显存卸载。|
 |[E06 多人认识专题：先知道为什么会复杂](lessons/E06.md)|OpenMAIC/对话即可，全K|本课不需要专用3D文件，或专项按需|只解释联网增加了哪类协调问题，以及本项目是否需要。|全K，只理解用途，不要求实操或背诵。|
 |[E07 高级专项结业：一个问题，一份可信决策](lessons/E07.md)|参考/概念讨论；所选专项另备实际样本|本课不需要专用3D文件，或专项按需|选一个真实专项问题，整理已测、未测和采用理由。|用自己的专项证据，不凭目录存在宣布通过。|
 
 ## 不把缺材料当孩子不会
 
-A01/B10的参考必须真实可查看；没拿到图片先用文字/原创体块表达，不虚构大师画面。E01导航、E03专项Shader、E05大场景等没有完整专用包；未选不阻塞主线，选定后围绕实际需求由成人/AI补最小样本，不强迫孩子先重造系统。
+A01/B10的参考必须真实可查看；没拿到图片先用文字/原创体块表达，不虚构大师画面。E01导航、E03单效果Shader、E05分块/批量/LOD现在都有真实场景；未选仍不阻塞主线，不要求先重造系统。新的高级需求超出该切片时，再补局部样本。
 
-C01/C02/D04/D07的三段地图、正式资产统一与最终试玩是孩子作品的生产任务，参考场景和实验不能代替该作品交付。C08并未提供Fog/Glow/DOF全套开关；非当前必要效果不为凑课强加。
+C01/C02/D04/D07可直接观察已实现的三段原创资产参考，再到自己的副本迁移。C08已有普通Fog、Glow与景深控件，景深按真实渲染器禁用或启用；这些不是儿童掌握、商业美术或所有设备通过的证明。
 
 需要亲手理解的是选择、预测、改变条件、观察、恢复和验收；不是把生成器已经能完成的空场景搭建逐步抄一遍。构建关系本身是学习目标时，在现成副本做一次局部修改即可。

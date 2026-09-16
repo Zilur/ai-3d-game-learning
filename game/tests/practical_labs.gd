@@ -35,7 +35,7 @@ func open_scene(path: String) -> Node:
 func run() -> void:
 	print("Practical suite: ", Engine.get_version_info().get("string"))
 	var hub = await open_scene("res://labs/lab_hub.tscn")
-	check(hub.LABS.size() == 12, "hub exposes all intended ready scenes")
+	check(hub.LABS.size() == 17, "hub exposes all intended ready scenes")
 	var lab = await open_scene("res://labs/camera_lab.tscn")
 	check(lab.camera.projection == Camera3D.PROJECTION_PERSPECTIVE, "perspective default")
 	lab.controls["projection"].button_pressed = true

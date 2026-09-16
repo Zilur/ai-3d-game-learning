@@ -1,0 +1,6 @@
+Original Starlight Village Kit v1
+The newly authored geometry in this directory is dedicated to the public domain
+under CC0 1.0 Universal. No third-party models, textures or fonts are included.
+https://creativecommons.org/publicdomain/zero/1.0/
+This dedication covers this new geometry only, not third-party reference works,
+the Godot engine, or any separately licensed content elsewhere in this repository.

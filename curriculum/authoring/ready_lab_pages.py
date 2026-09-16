@@ -3,9 +3,9 @@ from __future__ import annotations
 
 START = '''# 现成实验入口：先打开、试一试，不从零搭建
 
-打开完整仓库的 `game/project.godot`，使用 **Godot 4.7.2**。在文件面板打开 **`labs/lab_hub.tscn`**，按 **F6（运行当前场景）**；也可F5进入主游戏后点 `Concept labs`。F5是运行整个项目，不一定运行你选中的实验。
+打开完整仓库的 `game/project.godot`，使用 **Godot 4.7.2**。在文件面板打开 **`labs/lab_hub.tscn`**，按 **F6（运行当前场景）**；也可F5进入新主游戏，按Esc后进入概念实验；旧参考仍保留 `Concept labs`。F5是运行整个项目，不一定运行你选中的实验。
 
-实验目录共12个入口，含已有参考与A03起点；不是新增12套独立课程。每课只用0A指向的一个模式，先预测，再改一项。新实验的中文侧栏可滚动、可键盘聚焦；旧参考界面中保留的英文可对照逐课说明，不要求背按钮名。
+实验目录共17个入口，含已有参考与A03起点；不是新增17套独立课程。每课只用0A指向的一个模式，先预测，再改一项。新实验的中文侧栏可滚动、可键盘聚焦；旧参考界面中保留的英文可对照逐课说明，不要求背按钮名。
 
 **孩子不需要先写脚本、搭完整场景、创建测试骨架或下载角色。** 实验脚本在运行时装配的节点，可在运行后的Remote场景树看见；编辑器启动前看到一个根节点不表示场景没做完。要保留修改请另存副本/记录参数，Remote临时修改不是保存到原场景。
 
@@ -24,7 +24,12 @@ START = '''# 现成实验入口：先打开、试一试，不从零搭建
 |移动平台和角色关系|`game/labs/platform_lab.tscn`|站稳后比较跟随，起跳和离开；角色不是平台的子节点|
 |靠近、允许、交互结果、保存恢复|`game/labs/interaction_lab.tscn`|靠近但没钥匙、拿钥匙、重复开门；再试正常/缺失/坏档/旧档|
 |骨骼、蒙皮、动作片段、融合和命中窗口|`game/labs/animation_lab.tscn`；`blender/labs/animation_fixture.blend`|现成原创角色的待机/行走融合；攻击/中断/远近各一次，不先绑骨架|
-|真实收集、走跑跳、UI与项目回归|`game/scenes/main.tscn`|WASD移动，Shift跑，空格跳，R重开；这是参考工程，不是孩子已完成的作品|
+|导航与真实通行|`game/labs/navigation_lab.tscn`|分别改变导航预留半径与真实碰撞半径，比较路径和窄门通行|
+|单效果Shader|`game/labs/shader_lab.tscn`|只开条纹、边缘强调或风摆，保留左侧参考；可冻结与关闭|
+|Fog／Glow／景深|`game/labs/effects_lab.tscn`|原生参数对照；Compatibility无景深时禁用，Forward+／Mobile再验|
+|批量、LOD、剔除、分块与异步读取|`game/labs/large_scene_lab.tscn`|保持分布不变逐项对照；再异步读一个真实场景，观察驻留变化|
+|三段地图、钥匙门、战斗与存档|`game/world/exploration.tscn`|F5启动；真实走通十星，试可选训练和主动保存；详见WORLD-START|
+|旧收集参考、走跑跳、UI与回归|`game/scenes/main.tscn`|WASD移动，Shift跑，空格跳，R重开；这是参考工程，不是孩子已完成的作品|
 
 ## Blender：直接开已有文件，不先运行生成器
 
@@ -52,9 +57,9 @@ START = '''# 现成实验入口：先打开、试一试，不从零搭建
 
 新实验的“恢复全部初值”会恢复参数、对象、开关和动画/事件状态；运动另有保参重播。门实验是例外：**重置场景保留专用存档**，删除按钮只操作`user://teaching_interaction_lab_v1.json`，不读取你的其他游戏存档。测试坏档也只写这个实验文件；先看按钮文字，不使用个人唯一存档做测试。
 
-事件Lab通过按钮注入请求，不伪装物理碰撞。动作Lab使用真实蒙皮/AnimationTree和窗口/距离判定，不含与主游戏合体的完整战斗。新资产是原创教学样本，不是最终选型、通用重定向或成品美术。
+事件Lab通过按钮注入请求，不伪装物理碰撞。动作Lab使用真实蒙皮/AnimationTree和窗口/距离判定，现在可在新主游戏对照整合后的木桩训练。新主游戏使用12类原创GLB生产参考资产，不虚构采购外部包，也不把参考美术当成最终审美验收；不包含通用重定向。
 
-[逐课配套核对表](curriculum/practical-resource-audit.md) · [验证与未验证项](docs/practical-lab-validation.md) · [家庭学习](FAMILY-START.md) · [全部课程](curriculum/lesson-index.md)
+[三段主游戏](WORLD-START.md) · [逐课配套核对表](curriculum/practical-resource-audit.md) · [验证与未验证项](docs/practical-lab-validation.md) · [家庭学习](FAMILY-START.md) · [全部课程](curriculum/lesson-index.md)
 '''
 
 def make_pages(bindings, by_id, order):
@@ -74,14 +79,16 @@ def make_pages(bindings, by_id, order):
         title=by_id[ident]['title'].replace('|','／')
         rows.append(f'|[{ident} {title}](lessons/{ident}.md)|{mode}|{files}|{first}|{limit}|')
     rows += ['', '## 不把缺材料当孩子不会', '',
-             'A01/B10的参考必须真实可查看；没拿到图片先用文字/原创体块表达，不虚构大师画面。E01导航、E03专项Shader、E05大场景等没有完整专用包；未选不阻塞主线，选定后围绕实际需求由成人/AI补最小样本，不强迫孩子先重造系统。', '',
-             'C01/C02/D04/D07的三段地图、正式资产统一与最终试玩是孩子作品的生产任务，参考场景和实验不能代替该作品交付。C08并未提供Fog/Glow/DOF全套开关；非当前必要效果不为凑课强加。', '',
+             'A01/B10的参考必须真实可查看；没拿到图片先用文字/原创体块表达，不虚构大师画面。E01导航、E03单效果Shader、E05分块/批量/LOD现在都有真实场景；未选仍不阻塞主线，不要求先重造系统。新的高级需求超出该切片时，再补局部样本。', '',
+             'C01/C02/D04/D07可直接观察已实现的三段原创资产参考，再到自己的副本迁移。C08已有普通Fog、Glow与景深控件，景深按真实渲染器禁用或启用；这些不是儿童掌握、商业美术或所有设备通过的证明。', '',
              '需要亲手理解的是选择、预测、改变条件、观察、恢复和验收；不是把生成器已经能完成的空场景搭建逐步抄一遍。构建关系本身是学习目标时，在现成副本做一次局部修改即可。', '']
     godot = '''# Godot共享实验目录
 
 [统一入口与分工](../../LABS-START.md) · [逐课核对](../../curriculum/practical-resource-audit.md)
 
-打开`lab_hub.tscn`按F6；主游戏`Concept labs`按钮也进入此目录。相邻课共享实验，只看当前任务。新增侧栏中文、可滚动，固定相机避免不必要的镜头控制。
+打开`lab_hub.tscn`按F6；新主游戏按Esc选择概念实验；旧参考`Concept labs`按钮也进入此目录。相邻课共享实验，只看当前任务。新增侧栏中文、可滚动，固定相机避免不必要的镜头控制。
+
+新增navigation：真实导航与碰撞半径；shader：已编译空间Shader；effects：雾/辉光/景深；large_scene：MultiMesh/LOD/遮挡/驻留与真实异步请求。
 
 camera：真实透视/正交和方向；event：按钮注入的条件/状态/反馈/重开；interaction：实际Area/门条件/专用存档及异常；platform：真实物理承载；animation：已导入原创骨架、蒙皮、三动作与AnimationTree。
 
@@ -104,4 +111,42 @@ collision补真实Layer/Mask与装饰对照，Reset同时恢复开关；motion�
 
 `build_labs.py`与`build_practical_labs.py`是**作者复建/验证工具**，不是孩子开始课程的步骤。新增构建器会将同一原创角色导出`game/assets/practice_robot_roundtrip.glb`，为往返检查提供已完成样本；真正改动后的项目仍由学员验收。所有样本保留源，软件课程完成不代表正式美术库已完成。
 '''
-    return {'LABS-START.md':START,'curriculum/practical-resource-audit.md':'\n'.join(rows),'game/labs/README.md':godot,'blender/labs/README.md':blender}
+    result = {'LABS-START.md':START,'curriculum/practical-resource-audit.md':'\n'.join(rows),'game/labs/README.md':godot,'blender/labs/README.md':blender}
+
+    result['curriculum/delivery-status.md'] = """# 当前交付状态：原生实验与三段参考已经接通
+
+47课、M/K与课程源保持一致；按用户安排，本轮不生成OpenMAIC课堂成品。
+
+|范围|已提供|还需要人或目标环境确认|
+|---|---|---|
+|课程与路径|学生稿、教师输入、对话卡及47课资源绑定|孩子真实理解与隔次迁移|
+|原生实验|17个入口，含导航、Shader、C08雾/辉光/景深、大场景分块实验|目标显卡实际效果与体验；不支持的控件明确禁用|
+|三段地图|新默认主场景：庭院—林路—观景台；十星、钥匙与门|最终美术满意度和非作者试玩|
+|生产参考资产|12类可复用原创GLB；现有骨架加角色外观包装|不是采购的第三方套装，不代表任何外部包自动兼容|
+|战斗和保存|可关木桩训练、有效窗口/方向/距离；版本化存档、备份与恢复|不是完整敌人系统、网络服务或所有断电场景认证|
+|兼容与交付|固定Godot版本、实际运行测试脚本和设备记录表|运行日志只证明所测环境，不扩称所有设备已通过|
+
+[直接运行](../WORLD-START.md) · [实验入口](../LABS-START.md) · [本轮验证与边界](../docs/production-validation.md)
+"""
+    result['docs/improvements.md'] = """# 下一步只根据真实证据完善
+
+当前原生配套缺口已经落实到实验，三段参考及战斗/存档已整合。不要继续沿用旧轮次“全部未做”的清单。
+OpenMAIC课堂成品由家庭稍后自行生成，本轮不执行。
+
+优先使用[主游戏](../WORLD-START.md)与[当前课实验](../LABS-START.md)，记录首个真实卡点：概念不清、操作定位困难、画面遮挡、保存恢复问题，分别处理，不统一追加作业。
+
+儿童试教、非作者试玩、最终美术取舍和目标设备检查不可用自动测试伪造。具体检查表在[本轮验证](production-validation.md)。每次只修一处高影响问题，再回归旧流程；已经有可靠证据的能力不重复练习。
+
+参考关卡不是必须照抄的孩子作品。继续沿用固定/有限视角、资产复用、局部二开策略，未来商业成长仍看[成长指南](../learning-system/commercial-growth.md)。
+"""
+    result['game/README.md'] = """# 星光小庭院：主游戏与原生实验
+
+使用Godot 4.7.2导入`project.godot`，F5运行`world/exploration.tscn`。
+默认主游戏已连接庭院、林路、观景台，包含十星收集、钥匙门、可选木桩训练、暂停、静音/低运动与主动保存继续。
+
+按Esc进入菜单或实验目录；也可打开`labs/lab_hub.tscn`按F6。
+旧`scenes/main.tscn`和A03起点保持，供原课程与回归使用，不和新主游戏混称。
+
+[主游戏操作和恢复规则](../WORLD-START.md) · [17个共享入口](../LABS-START.md) · [验证范围](../docs/production-validation.md)
+"""
+    return result

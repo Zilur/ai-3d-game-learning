@@ -2,8 +2,8 @@
 config_version=5
 
 [application]
-config/name="AI 3D Learning - Concept Labs"
-run/main_scene="res://scenes/main.tscn"
+config/name="Starlight Village - Learning & Play"
+run/main_scene="res://world/exploration.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
 [display]

@@ -2,7 +2,9 @@
 
 [统一入口与分工](../../LABS-START.md) · [逐课核对](../../curriculum/practical-resource-audit.md)
 
-打开`lab_hub.tscn`按F6；主游戏`Concept labs`按钮也进入此目录。相邻课共享实验，只看当前任务。新增侧栏中文、可滚动，固定相机避免不必要的镜头控制。
+打开`lab_hub.tscn`按F6；新主游戏按Esc选择概念实验；旧参考`Concept labs`按钮也进入此目录。相邻课共享实验，只看当前任务。新增侧栏中文、可滚动，固定相机避免不必要的镜头控制。
+
+新增navigation：真实导航与碰撞半径；shader：已编译空间Shader；effects：雾/辉光/景深；large_scene：MultiMesh/LOD/遮挡/驻留与真实异步请求。
 
 camera：真实透视/正交和方向；event：按钮注入的条件/状态/反馈/重开；interaction：实际Area/门条件/专用存档及异常；platform：真实物理承载；animation：已导入原创骨架、蒙皮、三动作与AnimationTree。
 

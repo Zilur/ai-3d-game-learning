@@ -47,3 +47,7 @@ novice_learning.py/novice_pages.py是单课Lab绑定、记忆索引和学习路�
 ## 现成配套维护
 
 现成实验优先于重复搭建；ready_lab_pages.py与BINDINGS维护入口、首步和局限。修改game/labs要在Godot4.7.2运行practical_labs及原回归；Blender5.2.0重开已提交四个文件，不能由生成器存在代替实物。骨架动作、UV纹理都是原创样本，不冒充最终美术。实验完成、学员掌握和正式项目交付分开。
+
+## 三段生产参考
+
+默认主场景为game/world/exploration.tscn，旧main保留作教学回归。修改须同时运行production_suite和全部原测试；12类原创GLB由build_world_assets.py复建。普通雾/辉光/景深按实际渲染器核对，不假启用不支持的效果。OpenMAIC课堂由用户稍后自行生成。不要记录虚构儿童试教或全设备通过。

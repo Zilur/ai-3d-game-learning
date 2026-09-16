@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "origin": "Original geometry authored for this repository; no third-party asset pack.",
+  "units": "metres",
+  "up_axis": "+Y",
+  "license": "CC0-1.0 for newly authored village geometry; separate inherited robot terms remain in practice-asset-notes.md",
+  "scope": "Reusable production reference kit, not a claim of final commercial visual acceptance.",
+  "assets": [
+    {
+      "file": "cottage.glb",
+      "sha256": "211c69be15d38a652f3c181089575d89ab4c7ca685c35088f5970e08e0d58d53",
+      "triangles": 332
+    },
+    {
+      "file": "broadleaf.glb",
+      "sha256": "c427a5903781b320941958f6bb3d73656b0cde6a54015104dbe15f9d1439e546",
+      "triangles": 332
+    },
+    {
+      "file": "pine.glb",
+      "sha256": "a7c481ec08da1420f1017d1e937d4bad9105f6fbbefc2f706a191265d2784cd0",
+      "triangles": 122
+    },
+    {
+      "file": "rock_cluster.glb",
+      "sha256": "600deb9b41642d4de8ad93e3320f3772ca3f2fd91cd432f6ae666c3bbe75beef",
+      "triangles": 200
+    },
+    {
+      "file": "flower_patch.glb",
+      "sha256": "2e7f52acad93953dcef6ad78a65db74eb915773e5d70984854271894b3e8b446",
+      "triangles": 820
+    },
+    {
+      "file": "bridge.glb",
+      "sha256": "e5e2a7fffe210bd7e05c5f75deca41ee92605b236bc1c333b7750e9147f59b03",
+      "triangles": 132
+    },
+    {
+      "file": "fence.glb",
+      "sha256": "38a81971c4eaa34c2fcf57d8588aa947e81519d03879fe7baf4a69e53fa32486",
+      "triangles": 72
+    },
+    {
+      "file": "lantern.glb",
+      "sha256": "56cc1366d1cf085fdd13434477e17ce62c37be3e22644184971881e7a78e15df",
+      "triangles": 152
+    },
+    {
+      "file": "signpost.glb",
+      "sha256": "f7ccfb8228bde58938dcb22fd2bb059886539bf7965932b7d14a463ecc5e1f24",
+      "triangles": 60
+    },
+    {
+      "file": "training_dummy.glb",
+      "sha256": "38021ec99f672f4b66d78e2d53c8ef407adc195b57ad5a20f02fe5112c737242",
+      "triangles": 136
+    },
+    {
+      "file": "lookout_deck.glb",
+      "sha256": "3e8291cb4401a1ff36740275d3ce9c637cba2d4d9a31f48bfe7502cd5e5b9799",
+      "triangles": 288
+    },
+    {
+      "file": "beacon.glb",
+      "sha256": "81c7c38e90f8fe678e29937e2fea8424c4c99f317824333939483f77f1aebed4",
+      "triangles": 152
+    }
+  ]
+}

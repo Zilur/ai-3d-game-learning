@@ -25,3 +25,7 @@
 运行`python3 tools/growth_workshop.py plan`选择当前阶段；`python3 tools/growth_workshop.py session independent --cycle first-small-game`生成一轮本地任务。仍然是先预测、补必要知识、做小实验、讲给爸爸、真实验证，再决定下一步。
 
 [本轮项目复查与下一项工作](learning-system/project-review-2026-09-16.md)
+
+## 现成主游戏与专项实验
+
+[主游戏操作](WORLD-START.md)与[实验入口](LABS-START.md)已经接通。F5运行三段参考；先体验和解释，再在副本中作局部改动，不必从空场景准备。OpenMAIC课堂按家庭安排稍后生成。
