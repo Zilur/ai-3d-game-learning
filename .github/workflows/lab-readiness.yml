@@ -14,6 +14,8 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
+      - name: Install pinned Godot with official digest
+        run: python3 tools/install_godot_ci.py
       - name: Package public source snapshot for practical audit
         run: git archive HEAD --format=zip --output=source-snapshot.zip
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -21,3 +23,10 @@ jobs:
           name: practical-audit-source
           path: source-snapshot.zip
           retention-days: 7
+      - name: Package test runtime
+        run: zip -j -6 godot-test-runtime.zip "$(command -v godot)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: godot-test-runtime
+          path: godot-test-runtime.zip
+          retention-days: 1
