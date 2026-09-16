@@ -1,0 +1,82 @@
+name: Production game and native electives
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: production-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025, macos-15]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - name: Keep authored text bytes consistent
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Verify course and actual ready asset hashes
+        run: |
+          python tools/build_course_materials.py --check
+          python tools/check_practical_labs.py
+          python tools/check_production.py
+      - name: Install official pinned desktop runtime
+        run: python tools/install_godot_desktop_ci.py
+      - name: Run old and new suites plus cross-process save roundtrip
+        shell: bash
+        run: python tools/run_production_checks.py --godot "$GODOT_BINARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-${{ matrix.os }}
+          path: build/production-evidence
+          retention-days: 7
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Keep authored text bytes consistent
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Install software graphics drivers and pinned engine
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb mesa-vulkan-drivers libgl1-mesa-dri fonts-noto-cjk
+          python3 tools/install_godot_desktop_ci.py
+      - name: Import then capture Compatibility and actual Forward+
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/render-evidence
+          "$GODOT_BINARY" --headless --path game --editor --import > build/render-evidence/import.log 2>&1
+          export LIBGL_ALWAYS_SOFTWARE=1
+          export PRODUCTION_CAPTURE_DIR="$PWD/build/render-evidence/compatibility"
+          xvfb-run -a "$GODOT_BINARY" --path game --audio-driver Dummy --rendering-method gl_compatibility --script res://tests/capture_production.gd 2>&1 | tee build/render-evidence/compatibility.log
+          export PRODUCTION_CAPTURE_DIR="$PWD/build/render-evidence/compatibility-effects"
+          xvfb-run -a "$GODOT_BINARY" --path game --audio-driver Dummy --rendering-method gl_compatibility --script res://tests/capture_production.gd -- effects-only 2>&1 | tee build/render-evidence/compatibility-effects.log
+          python3 tools/check_effect_captures.py "$PRODUCTION_CAPTURE_DIR"
+          export PRODUCTION_CAPTURE_DIR="$PWD/build/render-evidence/forward-plus"
+          export VK_DRIVER_FILES="$(find /usr/share/vulkan/icd.d -name '*lvp*json' | head -1)"
+          test -n "$VK_DRIVER_FILES"
+          xvfb-run -a "$GODOT_BINARY" --path game --audio-driver Dummy --rendering-method forward_plus --rendering-driver vulkan --script res://tests/capture_production.gd -- effects-only require-forward 2>&1 | tee build/render-evidence/forward-plus.log
+          grep -q 'ACTUAL RENDERER: forward_plus' build/render-evidence/forward-plus.log
+          python3 tools/check_effect_captures.py "$PRODUCTION_CAPTURE_DIR" --require-dof
+          if grep -E 'SCRIPT ERROR|Parse Error|ERROR:' build/render-evidence/*.log; then exit 1; fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: actual-native-rendering
+          path: build/render-evidence
+          retention-days: 7
