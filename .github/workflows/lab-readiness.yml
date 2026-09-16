@@ -1,0 +1,23 @@
+name: Practical lab readiness
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Package public source snapshot for practical audit
+        run: git archive HEAD --format=zip --output=source-snapshot.zip
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: practical-audit-source
+          path: source-snapshot.zip
+          retention-days: 7
