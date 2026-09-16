@@ -86,7 +86,7 @@ func _test_motion() -> void:
 	_check(is_equal_approx(lab.speed, 6.0), "speed slider changes units-per-second parameter")
 	lab._start_run()
 	await _physics_steps(30)
-	var moved := lab.runner.position.x - lab.RUN_START
+	var moved: float = lab.runner.position.x - lab.RUN_START
 	_check(moved > 2.7 and moved < 3.3, "runner moves approximately speed x half-second")
 
 	lab._set_jump_velocity(8.0)
