@@ -20,6 +20,8 @@ jobs:
           persist-credentials: false
       - name: Validate unified content and resources
         run: python3 tools/validate_repo.py
+      - name: Validate learning pathway and evidence reports
+        run: python3 tools/check_learning_pathway.py
       - name: Install pinned official Godot
         run: python3 tools/install_godot_ci.py
       - name: Import project
