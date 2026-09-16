@@ -12,6 +12,7 @@ AUTHOR = ROOT / 'curriculum/authoring'
 DATA = runpy.run_path(str(AUTHOR / 'session_readiness.py'))
 STARTS, REFERENCES, FALLBACKS = (DATA[key] for key in ('STARTS','REFERENCES','FALLBACKS'))
 FADE = DATA['SUPPORT_FADE']
+MODES = runpy.run_path(str(AUTHOR / 'lesson_modes.py'))
 
 
 def validate_session_data(by_id, starts=None, references=None):
@@ -43,6 +44,7 @@ def validate_session_data(by_id, starts=None, references=None):
 def session_card(row, display):
     ident = row['id']
     kind, material = STARTS[ident]
+    if MODES['BINDINGS'][ident][0]: material = '直接打开：' + '、'.join(MODES['BINDINGS'][ident][0])
     lines = ['## 0. 开始前：只准备本课需要的东西', '',
              '**本次起点：** ' + material,
              '**缺材料时：** ' + FALLBACKS[kind],
@@ -64,9 +66,14 @@ def cold_start_context(row, scenarios, plans):
     ident = row['id']
     kind, material = STARTS[ident]
     first, gate, second, _graph = plans[ident]
+    if row['m']:
+        first, gate, second = MODES['experience_plan'](ident)
+        paths = MODES['BINDINGS'][ident][0]
+        if paths: material = '直接使用：' + '、'.join(paths)
     d = scenarios[ident]
     lines = ['本课入场材料：' + material,
-             '材料不足的处理：' + FALLBACKS[kind],
+             '材料不足的处理：' + ('没有真实文件就说明缺失；先作明示模拟，不布置重建工程作业。' if row['m'] else FALLBACKS[kind]),
+             ('当前目的：体验模式。只有明确说我要改自己的作品，才切换到作品模式。' if row['m'] else '当前目的：全K用途讨论，不开启网络实现。'),
              '以下是本课连续推进卡，不是一次性执行授权；收到我的观察后每轮最多推进一个有意义的小步。']
     if not row['m']:
         lines += ['用途任务：' + first, '结束判断：' + gate,

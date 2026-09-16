@@ -22,7 +22,7 @@ func _ready() -> void:
 	setup("现成实验目录", "只选择当前课需要的实验。多个课程共用场景，不用逐课重新建模或搭节点。")
 	controls["hub"].hide()
 	controls["reset"].hide()
-	status.text = "Godot 4.7.2｜实验不是完整商业成品\n旧场景返回：停止运行，再F6本目录。"
+	status.text = "Godot 4.7.2｜实验不是完整商业成品\n旧场景也可从右上角返回实验目录。"
 	for entry in LABS:
 		button(entry[1], entry[0], open_lab.bind(entry[1]))
 	text("Blender文件在仓库blender/labs：门轴、套装二开、UV材质、动画骨架。直接打开副本即可；不必执行生成脚本。")
@@ -30,4 +30,8 @@ func _ready() -> void:
 	box(stage, "Roof", Vector3(1.6, 2, 0), Vector3(2.8, 0.4, 2.4), Color("985b42"))
 
 func open_lab(path: String) -> void:
-	get_tree().change_scene_to_file(path)
+	var session := get_node("/root/StudySession")
+	if path == "res://world/exploration.tscn" and not session.suspended.is_empty():
+		session.resume_world()
+	else:
+		get_tree().change_scene_to_file(path)

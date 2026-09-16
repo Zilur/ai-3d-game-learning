@@ -29,3 +29,11 @@
 ## 现成主游戏与专项实验
 
 [主游戏操作](WORLD-START.md)与[实验入口](LABS-START.md)已经接通。F5运行三段参考；先体验和解释，再在副本中作局部改动，不必从空场景准备。OpenMAIC课堂按家庭安排稍后生成。
+
+## 把自己的改变留下来
+
+需要改游戏时，在完整仓库运行`python3 tools/workspace.py create my-world`，只维护这一份工作副本。每课不重新建场景；在Inspector或已给标记上改一项、保存、重开、解释。
+
+家庭会话默认生成给孩子的`TODAY-课号.md`和给AI的`SESSION-课号.md`，两份用途不同。爸爸用`observe 课号`生成短观察单，记录真实发现；新记录仍需确认，不自动打分。
+
+[保存保护、工作副本、学习接续与独立运行](docs/usability-closeout.md)

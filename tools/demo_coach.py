@@ -10,6 +10,7 @@ EXT = runpy.run_path(str(AUTHOR / 'demo_extension.py'))
 COACH = runpy.run_path(str(AUTHOR / 'conversation_plans.py'))
 PLANS, DIAGRAMS = COACH['PLANS'], COACH['DIAGRAMS']
 ORDER = EXT['ORDER']
+MODES = runpy.run_path(str(AUTHOR / 'lesson_modes.py'))
 prepare_lessons = EXT['prepare_lessons']
 
 def next_lesson(ident):
@@ -36,6 +37,9 @@ def dialogue_card(row, data, display):
     first, gate, second, graph = PLANS[ident]
     label = display[ident]
     k_only = not row['m']
+    project_first, project_second = first, second
+    if not k_only:
+        first, gate, second = MODES['experience_plan'](ident)
     lines = ['## 2A. 场景、概念图与逐步AI对话', '',
         f"**实际位置：** {data['place']}。", '',
         '|操作前的问题|本课希望得到的结果|', '|---|---|',
@@ -54,7 +58,7 @@ def dialogue_card(row, data, display):
               '先读取我已提供的进度和材料，只问真正缺失的一项。需要软件操作时核对实际版本、当前截图或场景树、可访问的工具；不要求我发密钥或整个电脑。\n'
               '先给一个预测问题并等我回答，再给一个最小步骤。不跳课、不自动做整款游戏。能执行才说已执行，否则给明确操作单或脚本，并标未执行。\n'
               '后续每轮用四项回应：现在是哪一步；只改什么/怎样恢复；我应观察什么；目前还缺什么证据。没有证据不要替我勾通过。'), '',
-        '**AI此时应做：** 确认当前场景与学习范围，不直接输出几十个文件。已经提供过的版本、素材和约束应复用，不重复问。', '',
+        '**AI此时应做：** 确认默认体验模式和现成文件；不要先输出脚本或建场景。已经提供过的版本、素材和约束应复用，不重复问。', '',
         '### 对话2｜先理解一个因果关系', '',
         block(f"先问我：{row['questions'][0][1]}\n等我写预测和理由后，再指出一个证据缺口，只给一个提示，不先公布完整答案。用词不专业时先确认意思，再补术语。"), '',
         '**转入下一步：** 有自己的预测即可；预测错可以用实验纠正，不要求先背定义。', '']
@@ -64,12 +68,12 @@ def dialogue_card(row, data, display):
             '**结束证据：** ' + gate,
             '**本课全K：** 不出现软件执行门槛、六步实操或M成绩。', '']
     else:
-        lines += ['### 对话3｜AI只完成第一小步', '',
-            block('沿用已确认的版本、材料和修改边界。现在只做：' + first + '\n先列影响对象和原值，再提供一个可撤销初稿。没有实际软件连接时给我可执行的局部操作单/脚本，不说已经修改。做完先停下。'), '',
+        lines += ['### 对话3｜在现成材料里完成第一项对照', '',
+            block('沿用已确认的版本、材料和修改边界。现在只做：' + first + '\n只找现成控件并记录原值，不创建节点、不写初始化脚本；缺文件就说明缺失，不让学员临时搭场景。软件执行必须有实际观察。做完先停下。'), '',
             '**预计看到／拿到：** ' + gate,
             '**不是自动保证：** 这是验收目标，取决于实际模型、工具和输入；结果不同就走下方“不符”分支。', '',
-            '### 对话4｜人观察与亲调，再继续第二小步', '',
-            block('这是我刚才的实际结果：我会附一张当前图、短演示或必要日志，并用一句话描述差异。\n先检查是否满足：' + gate + '\n本课可用的微调项：\n' + '\n'.join('入口：' + entry + '；操作：' + action + '；观察：' + observe for entry, action, observe in data['tweaks']) + '\n若满足，先指导我选择其中一项亲调；我回报观察后才继续：' + second + '\n一次只动一项可见参数。方向接近就手调；结构有误才给局部修复，不能不断重生成整个场景。'), '',
+            '### 对话4｜观察与亲调，不追加一轮搭建', '',
+            block('这是我刚才的实际结果：我会附一张当前图、短演示或必要日志，并用一句话描述差异。\n先检查是否满足：' + gate + '\n本课可用的微调项（引擎属性供定位；体验先用现成控件，不为匹配表格重建场景）：\n' + '\n'.join('入口：' + entry + '；操作：' + action + '；观察：' + observe for entry, action, observe in data['tweaks']) + '\n若满足，先指导我选择其中一项亲调；我回报观察后才继续：' + second + '\n一次只动一项可见参数。方向接近就手调；结构有误才给局部修复，不能不断重生成整个场景。'), '',
             '|选中哪里与参数性质|这次亲自试什么|观察与停手依据|', '|---|---|---|']
         for entry, action, observe in data['tweaks']:
             lines.append(f'|{entry}|{action}|{observe}|')
@@ -83,6 +87,8 @@ def dialogue_card(row, data, display):
             '### 对话6｜存进度，下一次接着做', '',
             block(f"请总结本课{label}（{ident}）的进度卡，不把预测当已完成。\n记录：真实软件版本/渲染器；当前场景与变更对象；选定参数和原值；我做的判断；实际证据；通过/待验证；使用过的提示；恢复方法；下一步唯一任务。\n只有实际验证才标通过，没有生成或真机执行就明确写模拟/待验证。给我一段可以复制到新AI对话的摘要，不假称你已持久保存。\n先核对下一课前置和我的已选路线，未完成就停在当前步骤，不催着扩范围。"), '',
             '**学员保存：** 把进度卡存本地或私人笔记；下次粘贴进度卡和下一课第1框。不要公开API Key、账户、本地私密路径或个人录像。', '']
+    if not k_only:
+        lines += [MODES['project_note'](project_first, project_second), '']
     lines += ['### 当前风险与长期责任', '',
         '**本课风险检查：** ' + data['risk'],
         '这是需要在当前工具版本下核验的风险，不是所有AI必然失败的排行榜，也不预测何时改善。长期保留需求、参考选择、影响范围、结果认可与取舍责任；测量、批量设置和重复验证可以由AI协助。',

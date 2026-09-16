@@ -92,3 +92,13 @@ python3 tools/growth_workshop.py session prototype --cycle route-test --openmaic
 ## 现成主游戏与专项实验
 
 [主游戏操作](../WORLD-START.md)与[实验入口](../LABS-START.md)已经接通。F5运行三段参考；先体验和解释，再在副本中作局部改动，不必从空场景准备。OpenMAIC课堂按家庭安排稍后生成。
+
+## 当次入口与短观察
+
+`session A04`默认只发体验模式给AI，实际排除作品制作段落。孩子只看生成的`TODAY-A04.md`，不阅读教师协议和评分JSON。要改自己的作品才用`session A04 --purpose project`。
+
+`python3 tools/family_learning.py observe A04`生成私人`OBSERVE-A04.md`。爸爸记录本次讲解/演示、提示和下一次例子即可；交给AI整理为原报告草稿后核对保存。观察单不自动评分，不覆盖已有记录。
+
+下一次摘要携带最多两条本课具体错因和变式建议，不只给分数。内容来自已确认记录，成人先预览；自动省略常见路径/联系信息不代表完全匿名。未见变式仍由陪伴者核对。
+
+[安全切换与自己的工作副本](../docs/usability-closeout.md)

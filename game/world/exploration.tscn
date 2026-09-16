@@ -1,7 +1,21 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=9 format=3]
 [ext_resource type="Script" path="res://world/exploration.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2"]
 [ext_resource type="Script" path="res://world/adventure_player.gd" id="3"]
+[sub_resource type="StandardMaterial3D" id="PreviewMat"]
+albedo_color = Color(0.5, 0.68, 0.5, 1)
+[sub_resource type="BoxMesh" id="PreviewFloor"]
+material = SubResource("PreviewMat")
+size = Vector3(18, 0.05, 58)
+[sub_resource type="StandardMaterial3D" id="PreviewGold"]
+albedo_color = Color(1, 0.75, 0.15, 1)
+[sub_resource type="SphereMesh" id="PreviewStar"]
+material = SubResource("PreviewGold")
+radius = 0.25
+height = 0.5
+[sub_resource type="BoxMesh" id="PreviewRoad"]
+material = SubResource("PreviewGold")
+size = Vector3(2.6, 0.06, 55)
 [node name="StarlightVillage" type="Node3D"]
 script = ExtResource("1")
 [node name="Gameplay" type="Node3D" parent="."]
@@ -9,3 +23,83 @@ process_mode = 1
 [node name="Player" parent="Gameplay" instance=ExtResource("2")]
 position = Vector3(0, 1, 4)
 script = ExtResource("3")
+
+[node name="StarLayout" type="Node3D" parent="."]
+
+[node name="courtyard_0" type="Marker3D" parent="StarLayout"]
+position = Vector3(0, 1, 2)
+gizmo_extents = 0.7
+
+[node name="courtyard_1" type="Marker3D" parent="StarLayout"]
+position = Vector3(-2, 1, -3)
+gizmo_extents = 0.7
+
+[node name="courtyard_2" type="Marker3D" parent="StarLayout"]
+position = Vector3(2, 1, -8)
+gizmo_extents = 0.7
+
+[node name="forest_0" type="Marker3D" parent="StarLayout"]
+position = Vector3(-1, 1, -15)
+gizmo_extents = 0.7
+
+[node name="forest_1" type="Marker3D" parent="StarLayout"]
+position = Vector3(-3, 1, -19)
+gizmo_extents = 0.7
+
+[node name="forest_2" type="Marker3D" parent="StarLayout"]
+position = Vector3(3, 1, -23)
+gizmo_extents = 0.7
+
+[node name="forest_3" type="Marker3D" parent="StarLayout"]
+position = Vector3(0, 1, -27)
+gizmo_extents = 0.7
+
+[node name="lookout_0" type="Marker3D" parent="StarLayout"]
+position = Vector3(0, 1, -34)
+gizmo_extents = 0.7
+
+[node name="lookout_1" type="Marker3D" parent="StarLayout"]
+position = Vector3(2, 1, -39)
+gizmo_extents = 0.7
+
+[node name="lookout_2" type="Marker3D" parent="StarLayout"]
+position = Vector3(0, 1, -44)
+gizmo_extents = 0.7
+
+[node name="LayoutPreview" type="Node3D" parent="StarLayout"]
+[node name="GroundGuide" type="MeshInstance3D" parent="StarLayout/LayoutPreview"]
+position = Vector3(0, -0.1, -21)
+mesh = SubResource("PreviewFloor")
+[node name="RoadGuide" type="MeshInstance3D" parent="StarLayout/LayoutPreview"]
+position = Vector3(0, -0.05, -21)
+mesh = SubResource("PreviewRoad")
+
+[node name="EditorGuide" type="MeshInstance3D" parent="StarLayout/courtyard_0"]
+mesh = SubResource("PreviewStar")
+
+[node name="EditorGuide" type="MeshInstance3D" parent="StarLayout/courtyard_1"]
+mesh = SubResource("PreviewStar")
+
+[node name="EditorGuide" type="MeshInstance3D" parent="StarLayout/courtyard_2"]
+mesh = SubResource("PreviewStar")
+
+[node name="EditorGuide" type="MeshInstance3D" parent="StarLayout/forest_0"]
+mesh = SubResource("PreviewStar")
+
+[node name="EditorGuide" type="MeshInstance3D" parent="StarLayout/forest_1"]
+mesh = SubResource("PreviewStar")
+
+[node name="EditorGuide" type="MeshInstance3D" parent="StarLayout/forest_2"]
+mesh = SubResource("PreviewStar")
+
+[node name="EditorGuide" type="MeshInstance3D" parent="StarLayout/forest_3"]
+mesh = SubResource("PreviewStar")
+
+[node name="EditorGuide" type="MeshInstance3D" parent="StarLayout/lookout_0"]
+mesh = SubResource("PreviewStar")
+
+[node name="EditorGuide" type="MeshInstance3D" parent="StarLayout/lookout_1"]
+mesh = SubResource("PreviewStar")
+
+[node name="EditorGuide" type="MeshInstance3D" parent="StarLayout/lookout_2"]
+mesh = SubResource("PreviewStar")

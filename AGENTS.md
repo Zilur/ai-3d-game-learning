@@ -44,6 +44,10 @@ AI实施遵循 [实战AI指挥手册](curriculum/ai-build-playbook.md)：一次�
 
 novice_learning.py/novice_pages.py是单课Lab绑定、记忆索引和学习路径的作者源。概念Lab、提交快照检查、真实生产三种模式不能混用。检测先只读，不替学员改好再判会；缺证据为待验证，K不升级。早做导出/性能/角色兼容小试，最后做完整验收；不把全部47课变为进入项目的门槛。个人学习记录放.learning/或仓库外；learning_review.py只校验整理，不是自动判卷模型。
 
+## 使用收尾维护
+
+lesson_modes.py控制体验/作品分流，默认会话物理移除作品段落；TODAY是孩子短卡，SESSION是教练输入。StudySession仅保留内存游戏状态；变更必须运行study_safety和原275项回归。workspace只写私人副本，恢复先备份；独立导出必须运行release模板，不把编辑器运行说成成品。
+
 ## 现成配套维护
 
 现成实验优先于重复搭建；ready_lab_pages.py与BINDINGS维护入口、首步和局限。修改game/labs要在Godot4.7.2运行practical_labs及原回归；Blender5.2.0重开已提交四个文件，不能由生成器存在代替实物。骨架动作、UV纹理都是原创样本，不冒充最终美术。实验完成、学员掌握和正式项目交付分开。

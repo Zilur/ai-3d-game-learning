@@ -213,6 +213,10 @@ def enrich_pathway(output: dict, by_id: dict, order: list) -> dict:
             text = text.replace('以下是后续真机操作的对应范围，不要求本轮打开软件。', '以下是软件操作的对应范围；优先使用0A已给出的实验，尚无配套的部分如实标待验证。')
             text = text.replace('按用户安排，当前先完成全部课件，之后再统一补素材、Godot/Blender起始与参考工程。',
                                 '已有Lab先随课使用；完整生产按任务单推进，未交付的逐课配套不冒充完成。')
+            if row['m']:
+                mode = runpy.run_path(str(AUTHOR/'lesson_modes.py'))
+                text = text.replace('## 7. 正式项目迁移（达到相应阶段再做）', mode['PROJECT_OPEN'] + '## 7. 正式项目迁移（达到相应阶段再做）', 1)
+                text = text.replace('## 9. 复现与延迟检查', mode['PROJECT_CLOSE'] + '\n## 9. 复现与延迟检查', 1)
             if folder == 'openmaic/lessons':
                 text = ('> 新手教学循环：先用一个现象和控件随练，再转0A指定软件样例；根据结果渐撤提示。AI诊断先引用证据并追问，不能直接代做后判掌握。下面的维护规则和提示词不逐字朗读成课。\n\n' + text)
             output[key] = text
@@ -263,6 +267,7 @@ def enrich_pathway(output: dict, by_id: dict, order: list) -> dict:
         if name in output:
             prefix = '../' if name.count('/') == 1 else ''
             output[name] = '> **现成配套更新：** 共享实验、四个Blender文件和操作分工见[实验入口](' + prefix + 'LABS-START.md)。旧轮次的待做说明不代表本轮文件仍缺失；项目迁移与真实试教依然分别取证。\n\n' + output[name]
+    output['AGENTS.md'] += '\n## 使用收尾维护\n\nlesson_modes.py控制体验/作品分流，默认会话物理移除作品段落；TODAY是孩子短卡，SESSION是教练输入。StudySession仅保留内存游戏状态；变更必须运行study_safety和原275项回归。workspace只写私人副本，恢复先备份；独立导出必须运行release模板，不把编辑器运行说成成品。\n'
     output['AGENTS.md'] += '\n## 现成配套维护\n\n现成实验优先于重复搭建；ready_lab_pages.py与BINDINGS维护入口、首步和局限。修改game/labs要在Godot4.7.2运行practical_labs及原回归；Blender5.2.0重开已提交四个文件，不能由生成器存在代替实物。骨架动作、UV纹理都是原创样本，不冒充最终美术。实验完成、学员掌握和正式项目交付分开。\n'
     for name in ('README.md','START-HERE.md'):
         output[name] = '> **现成场景入口：** [直接打开Godot / Blender实验](LABS-START.md) · [亲子学习](FAMILY-START.md)。不需要先从空项目搭建。\n\n' + output[name]

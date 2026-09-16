@@ -8,7 +8,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 ERRORS = re.compile(r'SCRIPT ERROR|Parse Error|ERROR:|PRODUCTION CHECK FAILED|ObjectDB instances leaked|resources still in use')
 SUITES = [('smoke','SMOKE PASS'), ('visual_lab','VISUAL LAB PASS'), ('concept_labs','CONCEPT LAB PASS'),
-          ('b02','B02 PASS'), ('practical_labs','PRACTICAL LAB PASS'), ('production_suite','PRODUCTION SUITE PASS')]
+          ('b02','B02 PASS'), ('practical_labs','PRACTICAL LAB PASS'), ('production_suite','PRODUCTION SUITE PASS'), ('study_safety','STUDY SAFETY PASS')]
 
 
 def run(command: list[str], log: Path, marker: str | None = None) -> None:
@@ -30,7 +30,7 @@ def main() -> None:
     run([args.godot, '--version'], args.logs / 'engine.log', '4.7.2.stable')
     base = [args.godot, '--headless', '--audio-driver', 'Dummy', '--path', str(ROOT / 'game')]
     run(base + ['--editor', '--import'], args.logs / 'import.log')
-    for suite, marker in SUITES[-1:] if args.new_only else SUITES:
+    for suite, marker in SUITES[-2:] if args.new_only else SUITES:
         run(base + ['--fixed-fps', '60', '--script', f'res://tests/{suite}.gd'], args.logs / (suite+'.log'), marker)
     for phase in ('write', 'read'):
         run(base + ['--script', 'res://tests/save_roundtrip.gd', '--', phase],

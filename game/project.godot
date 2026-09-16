@@ -19,3 +19,6 @@ textures/default_filters/use_nearest_mipmap_filter=false
 [layer_names]
 3d_physics/layer_1="World"
 3d_physics/layer_2="Player"
+
+[autoload]
+StudySession="*res://world/study_session.gd"

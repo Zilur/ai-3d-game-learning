@@ -5,6 +5,14 @@ const STAR = preload("res://scenes/star.tscn")
 const ASSET_ROOT := "res://assets/village/"
 const STAR_POSITIONS := [Vector3(0,1,2), Vector3(-2,1,-3), Vector3(2,1,-8), Vector3(-1,1,-15), Vector3(-3,1,-19), Vector3(3,1,-23), Vector3(0,1,-27), Vector3(0,1,-34), Vector3(2,1,-39), Vector3(0,1,-44)]
 const SPAWNS := {"courtyard": Vector3(0,0.95,4), "forest": Vector3(0,0.95,-15), "lookout": Vector3(0,0.95,-34)}
+const Creation = preload("res://world/creation_settings.gd")
+@export var creation: Resource = preload("res://world/creation.tres")
+var saved_snapshot: Dictionary = {}
+var pending_action := ""
+var guard: ConfirmationDialog
+var guard_discard: Button
+var guard_was_paused := false
+var design_notice := ""
 var store = SaveStore.new()
 var seen_ids: Dictionary = {}
 var has_key := false
@@ -44,11 +52,14 @@ var scenic: Node3D
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	add_to_group("production_world")
 	world = $Gameplay
 	get_viewport().msaa_3d = Viewport.MSAA_2X
 	player = $Gameplay/Player
 	player.strike_window.connect(_try_hit)
 	player.get_node("Orbit/SpringArm3D/Camera3D").current = false
+	_hide_layout_preview()
+	_apply_creation()
 	_build_environment()
 	_build_map()
 	_build_ui()
@@ -56,7 +67,10 @@ func _ready() -> void:
 	spawn_stars()
 	_update_progress()
 	camera_snap()
-	show_message("欢迎来到星光小庭院。收集十颗星星；林路上的钥匙能打开观景台。", 7)
+	saved_snapshot = snapshot().duplicate(true)
+	var resumed: bool = get_node("/root/StudySession").restore(self)
+	show_message("已继续刚才的游戏，回到区域安全点。未写盘的变化仍需保存。" if resumed else "欢迎来到星光小庭院。收集十颗星星；林路上的钥匙能打开观景台。", 7)
+	if not design_notice.is_empty(): show_message(design_notice, 12)
 
 func _build_environment() -> void:
 	var we := WorldEnvironment.new()
@@ -245,7 +259,7 @@ func build_path(points: Array[Vector3], width: float) -> void:
 	var node := MeshInstance3D.new()
 	node.mesh = surface.commit()
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color("ceaf7d")
+	mat.albedo_color = creation.path_color
 	mat.roughness = 1
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	node.material_override = mat
@@ -261,7 +275,8 @@ func spawn_stars() -> void:
 		var star = STAR.instantiate()
 		star.pickup_id = id
 		star.name = id
-		star.position = STAR_POSITIONS[i]
+		var marker := get_node_or_null("StarLayout/" + id) as Marker3D
+		star.position = marker.position if marker != null else STAR_POSITIONS[i]
 		star.collected.connect(collect_star)
 		stars.add_child(star)
 
@@ -332,6 +347,7 @@ func snapshot() -> Dictionary:
 func save_game() -> bool:
 	var result: Dictionary = store.write_snapshot(snapshot())
 	show_message(result.message,5)
+	if result.ok: saved_snapshot = snapshot().duplicate(true)
 	return result.ok
 
 func load_game(backup: bool = false) -> bool:
@@ -339,7 +355,8 @@ func load_game(backup: bool = false) -> bool:
 	if not result.ok:
 		show_message(result.message,5)
 		return false
-	apply_snapshot(result.data)
+	if not apply_snapshot(result.data): return false
+	saved_snapshot = snapshot().duplicate(true)
 	show_message(("已恢复备份。" if backup else "继续游戏。")+result.message,5)
 	return true
 
@@ -398,16 +415,18 @@ func camera_snap() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not event is InputEventKey or not event.pressed or event.echo:return
 	if event.physical_keycode==KEY_ESCAPE:
+		if not pending_action.is_empty():
+			cancel_action()
+			get_viewport().set_input_as_handled()
+			return
 		pause_game(not get_tree().paused)
 		get_viewport().set_input_as_handled()
 	elif not get_tree().paused:
 		match event.physical_keycode:
 			KEY_E:interact()
 			KEY_F9:save_game()
-			KEY_F10:load_game()
-			KEY_R:
-				pause_game(true)
-				confirmation.popup_centered()
+			KEY_F10:request_action("load")
+			KEY_R: request_action("new")
 
 func pause_game(value: bool) -> void:
 	get_tree().paused=value
@@ -425,8 +444,7 @@ func new_game() -> void:
 	get_tree().reload_current_scene()
 
 func open_labs() -> void:
-	pause_game(false)
-	get_tree().change_scene_to_file("res://labs/lab_hub.tscn")
+	request_action("labs")
 
 func _build_ui() -> void:
 	var canvas:=CanvasLayer.new()
@@ -484,8 +502,9 @@ func _build_ui() -> void:
 	ui_label(menu,"暂停 · 进度由你决定何时保存",22)
 	ui_button(menu,"返回游戏",func():pause_game(false))
 	ui_button(menu,"保存当前进度",save_game)
-	ui_button(menu,"继续主存档",func():load_game())
-	ui_button(menu,"主存档损坏时：尝试备份",func():load_game(true))
+	ui_button(menu,"继续主存档",func():request_action("load"))
+	ui_button(menu,"主存档损坏时：尝试备份",func():request_action("backup"))
+	ui_button(menu,"恢复读取前保护副本",func():request_action("recover"))
 	training_toggle=CheckButton.new()
 	training_toggle.text="开启可选木桩训练（不影响十星）"
 	training_toggle.button_pressed=true
@@ -504,10 +523,11 @@ func _build_ui() -> void:
 	volume_slider.value=volume
 	volume_slider.value_changed.connect(func(v):volume=v)
 	menu.add_child(volume_slider)
-	ui_button(menu,"进入概念实验（请先保存）",open_labs)
-	ui_button(menu,"重新开始（保留磁盘存档）",func():confirmation.popup_centered())
-	ui_button(menu,"退出（未保存的变化不会写入）",func():get_tree().quit())
+	ui_button(menu,"进入实验（保留本次暂存）",open_labs)
+	ui_button(menu,"重新开始（保留磁盘存档）",func():request_action("new"))
+	ui_button(menu,"退出游戏",func():request_action("quit"))
 	pause_panel.hide()
+	_build_guard(root)
 	confirmation=ConfirmationDialog.new()
 	confirmation.title="重新开始？"
 	confirmation.dialog_text="当前未保存的进度会丢失。已有磁盘存档保留，除非你之后主动保存覆盖。"
@@ -561,3 +581,121 @@ func _exit_tree() -> void:
 		if is_instance_valid(tone):
 			tone.stop()
 			tone.stream = null
+
+func _apply_creation() -> void:
+	if creation == null or creation.get_script() != Creation or not creation.problem().is_empty():
+		design_notice = "创作配置无效；本次使用原基线，请检查world/creation.tres。"
+		creation = Creation.new()
+	player.walk_speed = creation.walk_speed
+	player.run_speed = creation.run_speed
+	player.jump_velocity = creation.jump_velocity
+	player.gravity = creation.gravity
+
+func has_unsaved_changes() -> bool:
+	return snapshot() != saved_snapshot
+
+func _build_guard(parent: Node) -> void:
+	guard = ConfirmationDialog.new()
+	guard.title = "先保护当前进度"
+	guard.cancel_button_text = "取消，留在这里"
+	guard.dialog_hide_on_ok = false
+	guard_discard = guard.add_button("不保存继续", false, "discard")
+	guard.confirmed.connect(func(): resolve_action(true))
+	guard.custom_action.connect(func(action):
+		if action == "discard": resolve_action(false))
+	guard.canceled.connect(cancel_action)
+	parent.add_child(guard)
+
+func request_action(action: String) -> void:
+	if not ["labs", "quit", "new", "load", "backup", "recover"].has(action): return
+	if not pending_action.is_empty(): return
+	guard_was_paused = get_tree().paused
+	pending_action = action
+	pause_game(true)
+	if not has_unsaved_changes() and action != "new":
+		_perform_action()
+		return
+	var reading := ["load", "backup", "recover"].has(action)
+	guard.ok_button_text = "另存保护副本后读取" if reading else "保存后继续"
+	guard_discard.text = "暂不写盘，进入实验" if action == "labs" else "不保存当前变化，继续"
+	guard.dialog_text = ("读取会替换当前进度。保护副本与要读取的旧档分开，原主档与备份不会被覆盖。" if reading else
+		"进入实验会暂存本次进度；可从右上角返回。暂存只在本次程序运行中有效。" if action == "labs" else
+		"继续会结束当前这次游戏。未保存的变化会丢失；磁盘存档不删除。")
+	guard.dialog_text += "\n保存失败会留在这里；可取消。"
+	guard.popup_centered(Vector2i(620, 220))
+
+func cancel_action() -> void:
+	pending_action = ""
+	guard.hide()
+	pause_game(guard_was_paused)
+
+func resolve_action(save_first: bool) -> bool:
+	if pending_action.is_empty(): return false
+	if save_first:
+		if ["load", "backup", "recover"].has(pending_action):
+			# Preserve the selected old snapshot BEFORE writing the separate rescue copy.
+			var chosen: Dictionary = _read_target(pending_action)
+			if not chosen.ok:
+				guard.dialog_text = chosen.message + "\n尚未写入保护副本；仍留在这里。"
+				return false
+			var rescue := SaveStore.new()
+			rescue.file_path = store.file_path + ".before-load"
+			var result: Dictionary = rescue.write_snapshot(snapshot())
+			if not result.ok:
+				guard.dialog_text = result.message + "\n保护失败，未读取旧档。"
+				return false
+			return _finish_read(chosen)
+		elif not save_game():
+			guard.dialog_text = message.text + "\n保存失败，未离开。可重试或取消。"
+			return false
+	return _perform_action()
+
+func _read_target(action: String) -> Dictionary:
+	if action == "recover":
+		var rescue := SaveStore.new()
+		rescue.file_path = store.file_path + ".before-load"
+		return rescue.read_snapshot()
+	return store.read_snapshot(action == "backup")
+
+func _finish_read(result: Dictionary) -> bool:
+	if not result.ok:
+		show_message(result.message, 8)
+		cancel_action()
+		return false
+	var reading := pending_action
+	if not apply_snapshot(result.data): return false
+	# Main save matches disk. Backup/recovery may differ from the primary: keep it dirty.
+	if reading == "load": saved_snapshot = snapshot().duplicate(true)
+	else: saved_snapshot = {}
+	pending_action = ""
+	guard.hide()
+	pause_game(guard_was_paused)
+	show_message("已读取。" + ("保护副本保留了读取前的进度。" if FileAccess.file_exists(store.file_path + ".before-load") else ""), 8)
+	return true
+
+func _perform_action() -> bool:
+	var action := pending_action
+	if ["load", "backup", "recover"].has(action): return _finish_read(_read_target(action))
+	pending_action = ""
+	guard.hide()
+	match action:
+		"labs":
+			get_node("/root/StudySession").retain(self)
+			pause_game(false)
+			var error := get_tree().change_scene_to_file("res://labs/lab_hub.tscn")
+			if error != OK:
+				pause_game(true)
+				show_message("实验未能打开，游戏仍在这里。", 8)
+				return false
+		"new": new_game()
+		"quit": get_tree().quit()
+	return true
+
+func _hide_layout_preview() -> void:
+	var layout := get_node_or_null("StarLayout")
+	if layout == null: return
+	for child in layout.get_children():
+		if child is Marker3D:
+			for visual in child.get_children():
+				if visual is Node3D: visual.hide()
+		elif child is Node3D: child.hide()

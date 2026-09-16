@@ -26,7 +26,13 @@
 
 专用位置为`user://starlight_village_v1/save.json`；与旧交互实验文件和私人学习记录分离。临时文件写入并校验后再替换，保留上一份有效`.bak`。损坏主档不覆盖有效备份，暂停菜单有“尝试备份”。读取失败不改变当前游戏。未来版本不认识时拒绝而不自动清空。原v1示例格式有明确迁移；不声称兼容任意旧游戏存档或任何断电故障。
 
-换机器请由成人备份这个目录。退出、打开实验或重新开始之前，需要保留本次变化就先保存。测试脚本只用`production_test_only`，不使用个人唯一存档。
+换机器请由成人备份这个目录。有未保存变化时，退出、打开实验、重新开始和读取旧档先提供确认；保存失败会留在原处。实验右上角可以继续刚才的暂存游戏。暂存只在本次程序运行中有效，强制结束进程不受正常退出确认保护。测试脚本只用`production_test_only`，不使用个人唯一存档。
+
+## 先创建自己的副本，再改一个参数
+
+在完整仓库运行`python3 tools/workspace.py create my-world`，打开生成的`.learning/projects/my-world/game/project.godot`。只调`world/creation.tres`的一个参数，或移动`world/exploration.tscn`里StarLayout的一个标记，Ctrl+S保存，再重开验证。编辑定位示意运行时隐藏；原参考不会被改坏。详见[工作副本与使用收尾](docs/usability-closeout.md)。
+
+读取旧档前的保护副本保存在`.before-load`，不覆盖待读取的主档/备份；菜单提供恢复入口。
 
 ## 原创资产如何二开
 

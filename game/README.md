@@ -9,3 +9,5 @@
 旧`scenes/main.tscn`和A03起点保持，供原课程与回归使用，不和新主游戏混称。
 
 [主游戏操作和恢复规则](../WORLD-START.md) · [17个共享入口](../LABS-START.md) · [验证范围](../docs/production-validation.md)
+
+[自己的工作副本、保存保护与独立运行包](../docs/usability-closeout.md)。
