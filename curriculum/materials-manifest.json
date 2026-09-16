@@ -505,6 +505,7 @@
     "curriculum/authoring/conversation_plans.py": "09ab632d239c0e6b0d5e17fadb62766a5809cf840cd94b489a9a4995711730ac",
     "curriculum/authoring/demo_extension.py": "dcb98927061eeffa8142ee319ed5697fbf6422f97c769a084ec3faf22f90e465",
     "curriculum/authoring/demo_pages.py": "2f2abc11e20704ea94d342de566e83389cba6dc771b487b18f2d440274b50277",
+    "curriculum/authoring/family_cards.py": "cc07c6da36f0c1129213bfb5855598f9d661981e3d4b889aa63e7260c8be36c5",
     "curriculum/authoring/fixed_view_effects.py": "115ad6b3dc15a532bbca917f059f37a569f7e9a653f826632662b7d1d20b52d2",
     "curriculum/authoring/fixed_view_strategy.py": "48ccbd9f799b8fac27310a32ea10fe07d6bc568fd5b359b6cf0a839b40bb6104",
     "curriculum/authoring/intermediate.py": "96ebb4067075baa3c37c9de81f894c2762ed0ce629b3ebdc4a7ac7a39c7a1617",
