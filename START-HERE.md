@@ -1,3 +1,5 @@
+> **第一次学习：** [三段学习路径](curriculum/learning-journey.md) → [核心记忆卡](print/essential-memory.md) → [单元/阶段检查](assessments/unit-checkpoints.md)。A/B基础后即可按[生产任务单](curriculum/production-work-orders.md)开发；C/D按需继续，不等47课全学完。
+
 # 从A01开始：学一课，和AI推进一个小步骤
 
 **[打开47课索引](curriculum/lesson-index.md)**。按A01、A02……往下学。ABCDE仅是先后分组；标题、文件名和课内引用使用同一个课号。

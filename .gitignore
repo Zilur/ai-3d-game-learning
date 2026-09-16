@@ -25,3 +25,6 @@ __pycache__/
 Thumbs.db
 .vscode/
 .idea/
+
+# Private learner submissions, feedback and recordings
+.learning/

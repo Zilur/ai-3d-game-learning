@@ -1,3 +1,5 @@
+> **第一次学习：** [三段学习路径](curriculum/learning-journey.md) → [核心记忆卡](print/essential-memory.md) → [单元/阶段检查](assessments/unit-checkpoints.md)。A/B基础后即可按[生产任务单](curriculum/production-work-orders.md)开发；C/D按需继续，不等47课全学完。
+
 # AI时代3D游戏学习
 
 围绕固定或有限镜头、风格化卡通和资产套装二开，从方块庭院到可探索的卡通小关卡，再按需加入一段攻击与训练木桩。

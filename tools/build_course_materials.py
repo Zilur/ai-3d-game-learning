@@ -196,7 +196,8 @@ def generated(lessons, sources, by_id):
     output.update(practical_pages)
     enrich_fixed_view(output, by_id, ORDER, ROWS)
     enrich_fixed_view_effects(output, by_id, ORDER, ROWS)
-    manifest = {'version':'fixed-view-effects-2026-09-15','date':'2026-09-15','lesson_count':47,
+    runpy.run_path(str(AUTHOR / 'novice_learning.py'))['enrich_pathway'](output, by_id, ORDER)
+    manifest = {'version':'novice-learning-pathway-2026-09-16','date':'2026-09-16','lesson_count':47,
         'units':[{'id':ident,'display':DISPLAY[ident],'dialogue':'curriculum/dialogues/'+ident+'.md','prerequisites':by_id[ident]['prereq'],'concepts':by_id[ident]['concepts'],
                   'status':'manuscript-reviewed; classroom-not-generated; learner-not-tested'} for ident in ORDER],
         'source_sha256':{path.relative_to(ROOT).as_posix():hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(AUTHOR.glob('*.py'))},

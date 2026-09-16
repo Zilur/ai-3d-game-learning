@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "notice": "教学构造示例，不是真人测评；未实际调用AI或软件。",
+  "target_objectives": [
+    "A04.M1",
+    "A04.M2"
+  ],
+  "items": [
+    {
+      "objective": "A04.M1",
+      "observations": {
+        "recall": {
+          "score": null,
+          "support": "L0",
+          "evidence_ids": []
+        },
+        "reasoning": {
+          "score": 0,
+          "support": "L0",
+          "evidence_ids": [
+            "answer-1"
+          ]
+        },
+        "application": {
+          "score": null,
+          "support": "L0",
+          "evidence_ids": []
+        },
+        "transfer": {
+          "score": null,
+          "support": "L0",
+          "evidence_ids": []
+        }
+      },
+      "evidence": [
+        {
+          "id": "answer-1",
+          "kind": "answer",
+          "reference": "本文件构造答复1",
+          "summary": "“隐藏墙之后肯定能穿过，因为墙已经没了。”"
+        }
+      ],
+      "diagnosis": {
+        "status": "hypothesis",
+        "basis": "答复可能把外观与阻挡混淆；软件行为尚未观察，不能判应用失败。",
+        "next_question": "这次改的是哪个对象的哪个属性？其他形状的状态是什么？",
+        "next_task": "在collision_roles_lab中只隐藏外观并观察，再单独禁用形状；先预测，不直接改正式地图。",
+        "recheck": "下次会话改用不可见边界检查；若已提示根因，保留L2，不立即判独立2分。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,363 @@
+{
+  "schema_version": 1,
+  "bindings": {
+    "A01": {
+      "paths": [],
+      "first": "从自己提供的参考中选一个可见特征，说出借鉴与不借鉴什么。",
+      "limits": "参考分析，无软件Lab门槛；没有图不捏造作品内容。",
+      "production": "P0"
+    },
+    "A02": {
+      "paths": [
+        "game/scenes/lab.tscn"
+      ],
+      "first": "固定父空间，只改对象Position的一个轴，再恢复。",
+      "limits": "空间子实验；不一次操作所有模式。",
+      "production": "P1"
+    },
+    "A03": {
+      "paths": [
+        "game/scenes/main.tscn"
+      ],
+      "first": "先只观察参考场景树，指出整体与外观子节点；另建小副本再改。",
+      "limits": "完整参考不是隔离起始工程，不阅读后半程答案来完成检查。",
+      "production": "P1"
+    },
+    "A04": {
+      "paths": [
+        "game/labs/collision_roles_lab.tscn"
+      ],
+      "first": "把目标移到墙另一侧；比较只隐藏墙外观和只禁用阻挡，再恢复。",
+      "limits": "开关Lab先覆盖职责；Layer/Mask与排除装饰球需Inspector及对照对象，不能由M1替M2。",
+      "production": "P1/P2"
+    },
+    "A05": {
+      "paths": [
+        "game/labs/motion_lab.tscn"
+      ],
+      "first": "只改Speed，按同一跑动按钮，比较相同时间的距离。",
+      "limits": "简化运动实验，不等同于完整CharacterBody控制器验收。",
+      "production": "P2"
+    },
+    "A06": {
+      "paths": [
+        "game/labs/motion_lab.tscn"
+      ],
+      "first": "固定Gravity，改变Jump velocity，比较腾空与落地，再重播。",
+      "limits": "重播位置不等于参数恢复；需要基线时重开场景。",
+      "production": "P2"
+    },
+    "A07": {
+      "paths": [
+        "game/scenes/lab.tscn",
+        "blender/labs/transform_origin_lab.blend"
+      ],
+      "first": "任选门轴实验，闭门位置相同，再分别观察中心/侧边旋转。",
+      "limits": "Godot与Blender坐标轴不同，按文件实际轴观察，不背同一个轴名。",
+      "production": "P1"
+    },
+    "A08": {
+      "paths": [
+        "game/scenes/visual_lab.tscn"
+      ],
+      "first": "固定相机位置，只改FOV，解释看见范围与物体屏幕大小。",
+      "limits": "现有Lab只有透视FOV；正交Size与事件镜头不冒充已经配套。",
+      "production": "P1"
+    },
+    "B01": {
+      "paths": [
+        "blender/labs/kitbash_style_lab.blend"
+      ],
+      "first": "固定视图先比较Base与Variant大形，不先画纹理。",
+      "limits": "小屋比例示例，不是商业品质标杆。",
+      "production": "P4/P6"
+    },
+    "B02": {
+      "paths": [
+        "blender/labs/transform_origin_lab.blend"
+      ],
+      "first": "选一个静态对象检查Dimensions、Scale与Origin；先保存副本。",
+      "limits": "静态门轴/缩放样本，不包含绑定角色修复。",
+      "production": "P4"
+    },
+    "B03": {
+      "paths": [
+        "blender/labs/kitbash_style_lab.blend"
+      ],
+      "first": "固定机位光照，只调整变体一处颜色，先看焦点和大色块。",
+      "limits": "原生材质参数练习，不自带自动色彩评分器。",
+      "production": "P4/P8"
+    },
+    "B04": {
+      "paths": [
+        "game/labs/material_lab.tscn"
+      ],
+      "first": "只改左球Roughness，对照右球，保持灯光不动。",
+      "limits": "现有两球使用独立材质；共享实验需另建共享样本，不能声称本Lab已覆盖共享M。",
+      "production": "P4/P6"
+    },
+    "B05": {
+      "paths": [
+        "blender/labs/kitbash_style_lab.blend",
+        "game/scenes/main.tscn"
+      ],
+      "first": "在副本中选一个静态部件导出，再接到自己的游戏视觉包装。",
+      "limits": "给出源样本与参考工程；学员GLB往返、原点与功能保持仍须实际做。",
+      "production": "P4/P7"
+    },
+    "B06": {
+      "paths": [
+        "game/scenes/main.tscn"
+      ],
+      "first": "先预测重复请求的结果，再在自己的副本检查一次性收集。",
+      "limits": "这是完整参考；时序故障需隔离副本，不用读实现代替自己判断。",
+      "production": "P2"
+    },
+    "B07": {
+      "paths": [
+        "game/scenes/main.tscn"
+      ],
+      "first": "观察一次收集后的状态与可见反馈，区分成功规则与表现。",
+      "limits": "基础反馈参考，不包含完整打击感效果库。",
+      "production": "P2/P9"
+    },
+    "B08": {
+      "paths": [
+        "game/scenes/main.tscn"
+      ],
+      "first": "完整收集后重开，再拾取第一颗，看实际计数而不只看标题。",
+      "limits": "布局/窗口变化和重开要分别验，不用一张图证明。",
+      "production": "P2/P3"
+    },
+    "B09": {
+      "paths": [
+        "game/scenes/visual_lab.tscn"
+      ],
+      "first": "固定FOV，只改主光强度，对照亮面、暗部和目标。",
+      "limits": "光强样例，不包含所有环境光/阴影配置。",
+      "production": "P4/P9"
+    },
+    "B10": {
+      "paths": [
+        "game/scenes/visual_lab.tscn"
+      ],
+      "first": "将一条参考规则用于同机位对照，解释为什么不继续加细节。",
+      "limits": "参考来源由学员提供；Lab是原创示意，不是假大师截图。",
+      "production": "P4/P8"
+    },
+    "B11": {
+      "paths": [
+        "game/scenes/main.tscn"
+      ],
+      "first": "记录实际设备/分辨率/路线，再测一次基线，不先盲目优化。",
+      "limits": "不自带已验证性能收益；结果来自你的设备。",
+      "production": "P2/P11"
+    },
+    "B12": {
+      "paths": [
+        "game/scenes/main.tscn"
+      ],
+      "first": "在副本中检查一个局部改动及恢复点，先提出可验证假设。",
+      "limits": "源码和自动测试仅提供部分证据，不证明学员判断。",
+      "production": "P3"
+    },
+    "B13": {
+      "paths": [
+        "game/scenes/main.tscn"
+      ],
+      "first": "沿本课任务换一种可用物品，先写允许改与必须保留项。",
+      "limits": "完整参考用于比较；检查使用自己的快照和未揭示变式。",
+      "production": "P3"
+    },
+    "C01": {
+      "paths": [
+        "game/scenes/main.tscn"
+      ],
+      "first": "先画主路与返回路径，用代理块在副本扩一个区域。",
+      "limits": "当前主场景不是已完成的庭院/林路/观景台三段地图。",
+      "production": "P1/P7"
+    },
+    "C02": {
+      "paths": [
+        "game/scenes/visual_lab.tscn"
+      ],
+      "first": "只切换Clutter，指出焦点、路径和留白变化。",
+      "limits": "密度样例；不包含全套视差/背景层实现。",
+      "production": "P4/P8"
+    },
+    "C03": {
+      "paths": [],
+      "first": "先列已选角色的尺寸、骨架、动作与许可条件，再试一个片段。",
+      "limits": "无预置正式角色包；没有资源时先做选择任务，接入待验证。",
+      "production": "P4/P10"
+    },
+    "C04": {
+      "paths": [],
+      "first": "用已有兼容角色先比较待机与走路，不同时加所有动作。",
+      "limits": "无完整动画融合样例；需先满足C03入场条件。",
+      "production": "P10"
+    },
+    "C05": {
+      "paths": [
+        "blender/labs/kitbash_style_lab.blend"
+      ],
+      "first": "观察两件部件的数据/材质引用，先决定共享或独立。",
+      "limits": "静态样例；动画资源共享另在实际角色副本验证。",
+      "production": "P6/P7"
+    },
+    "C06": {
+      "paths": [
+        "game/scenes/lab.tscn"
+      ],
+      "first": "先观察门轴，再把相同职责用于自己的门包装。",
+      "limits": "门轴有样例，移动平台承载/速度尚无完整配套。",
+      "production": "P2/P7"
+    },
+    "C07": {
+      "paths": [
+        "blender/labs/kitbash_style_lab.blend"
+      ],
+      "first": "先测模块尺寸与连接位置，再检查实际使用的纹理。",
+      "limits": "本文件不提供完整棋盘格UV实验，UV部分需另备样本。",
+      "production": "P6"
+    },
+    "C08": {
+      "paths": [
+        "game/scenes/visual_lab.tscn"
+      ],
+      "first": "先对照主光基线，再按设备与渲染器选择一个效果。",
+      "limits": "Fog/Glow/DOF等不在现有Lab中，不能把目录当已实现控件。",
+      "production": "P4/P9"
+    },
+    "C09": {
+      "paths": [
+        "game/scenes/main.tscn"
+      ],
+      "first": "对同一构建/机位选择一项真实测量，不改多种设置。",
+      "limits": "基准由目标设备提供，headless不代表GPU画面性能。",
+      "production": "P7/P11"
+    },
+    "C10": {
+      "paths": [
+        "game/labs/collision_roles_lab.tscn"
+      ],
+      "first": "先说明检测与允许交互的区别，再准备自己的交互对象。",
+      "limits": "这里只提供检测对照，非完整提示/条件/结果系统。",
+      "production": "P2/P7"
+    },
+    "C11": {
+      "paths": [],
+      "first": "先列应恢复的状态和可接受的异常处理，再准备最小存取副本。",
+      "limits": "主项目重开不是存档系统；无完整存档实验。",
+      "production": "P2/P11"
+    },
+    "C12": {
+      "paths": [
+        "game/scenes/main.tscn"
+      ],
+      "first": "核对目标平台和当前导出条件，再生成自己的可运行包。",
+      "limits": "有项目源码不等于已给出跨平台成品包。",
+      "production": "P11"
+    },
+    "D01": {
+      "paths": [
+        "blender/labs/kitbash_style_lab.blend"
+      ],
+      "first": "先另存副本，选Variant_Roof只改一项比例，比较Base。",
+      "limits": "原创几何二开样例，不是已购买的完整资产套装。",
+      "production": "P6"
+    },
+    "D02": {
+      "paths": [
+        "blender/labs/kitbash_style_lab.blend",
+        "game/labs/material_lab.tscn"
+      ],
+      "first": "固定光照，先统一一件变体色彩，再单独调粗糙度。",
+      "limits": "支持局部材质观察，不等于整库风格已经统一。",
+      "production": "P6/P8"
+    },
+    "D03": {
+      "paths": [
+        "blender/labs/kitbash_style_lab.blend"
+      ],
+      "first": "为一件变体记录源、用途、版本、引用和预览机位。",
+      "limits": "样例不自带完整商业资产库，按本地实际资源建立。",
+      "production": "P5/P7"
+    },
+    "D04": {
+      "paths": [
+        "blender/labs/kitbash_style_lab.blend",
+        "game/scenes/main.tscn"
+      ],
+      "first": "挑一个小区域组合已合格部件，固定机位做减法。",
+      "limits": "当前文件只是起点，不是已验收美术结业作品。",
+      "production": "P8"
+    },
+    "D05": {
+      "paths": [],
+      "first": "锁定一个角色和一段许可合适的动作，先测兼容。",
+      "limits": "无预置动作包，不能把静态模型当重定向已成功。",
+      "production": "P4/P10"
+    },
+    "D06": {
+      "paths": [],
+      "first": "先完成一段攻击和恢复移动，再加一次有效命中规则。",
+      "limits": "无完整木桩/动作工程；未选增强路线无需做。",
+      "production": "P10"
+    },
+    "D07": {
+      "paths": [
+        "game/scenes/main.tscn"
+      ],
+      "first": "按已选范围检查自己的完整构建和真实试玩，不增新玩法。",
+      "limits": "现有参考不代表精致三段地图已完成。",
+      "production": "P11"
+    },
+    "E01": {
+      "paths": [],
+      "first": "有真实寻路需要时，先分清可画路径与角色能通过。",
+      "limits": "导航选修无专用Lab，不阻塞基础版。",
+      "production": "按需专项"
+    },
+    "E02": {
+      "paths": [
+        "game/scenes/main.tscn"
+      ],
+      "first": "先固定实际设备与构建，定义要解决的一个性能问题。",
+      "limits": "参考场景不是通用性能测试集。",
+      "production": "P11"
+    },
+    "E03": {
+      "paths": [],
+      "first": "有明确视觉缺口时准备隔离样例和可关闭的单效果。",
+      "limits": "Shader专项无预置完整效果库。",
+      "production": "P9"
+    },
+    "E04": {
+      "paths": [
+        "game/scenes/lab.tscn"
+      ],
+      "first": "先用现有门轴说明预期轨迹，再定义复杂旋转问题。",
+      "limits": "基础Lab不能代替复杂旋转专项验证。",
+      "production": "按需专项"
+    },
+    "E05": {
+      "paths": [],
+      "first": "先以测量确认批量/加载问题，再选择专项，不先扩大地图。",
+      "limits": "大场景无完整样例，基础项目无需强做。",
+      "production": "按需专项"
+    },
+    "E06": {
+      "paths": [],
+      "first": "只解释联网增加了哪类协调问题，以及本项目是否需要。",
+      "limits": "全K，只理解用途，不要求实操或背诵。",
+      "production": "不加入单机生产门槛"
+    },
+    "E07": {
+      "paths": [],
+      "first": "选一个真实专项问题，整理已测、未测和采用理由。",
+      "limits": "用自己的专项证据，不凭目录存在宣布通过。",
+      "production": "按需专项"
+    }
+  }
+}
