@@ -15,3 +15,11 @@
 先让AI给一个小挑战，不一次讲完整课。完成后，让孩子用自己的话说“是什么、我改了什么、为什么这样判断”，并让爸爸试一下。最后由成人记录真实观察；没有观察到的就留待验证，不宣布已经掌握。
 
 有一天忘记了，不需要补完所有旧题。下次最多取一至两项，重新找回即可。
+
+## 第一件小作品之后
+
+家长按需查看[从入门到小型商业级游戏的成长指南](learning-system/commercial-growth.md)与[知识深度/学习方法地图](learning-system/growth-knowledge-map.md)。不是要求孩子现在学完或必须收费发布。
+
+运行`python3 tools/growth_workshop.py plan`选择当前阶段；`python3 tools/growth_workshop.py session independent --cycle first-small-game`生成一轮本地任务。仍然是先预测、补必要知识、做小实验、讲给爸爸、真实验证，再决定下一步。
+
+[本轮项目复查与下一项工作](learning-system/project-review-2026-09-16.md)

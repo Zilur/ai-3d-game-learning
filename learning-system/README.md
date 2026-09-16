@@ -72,3 +72,19 @@ python3 tools/family_learning.py reminders --morning 07:30 --evening 19:30 --day
 先使用A04、A05、B04、C02中的已具备前置条件的代表课，不要求孩子为了试验跳过必要基础。记第一处卡点、孩子能否独立解释、隔天是否记得、是否愿意再做，以及成人记录花费的时间。没有孩子的真实试学记录前，不称为最优教学模式。
 
 [爸爸陪伴脚本](parent-guide.md) · [教学理念](design.md) · [AI教练协议](coach.md) · [后续优先级](audit-and-next.md)
+
+## 7. 学完入门之后：走向商业作品，但不换学习方法
+
+[未来商业成长指南](commercial-growth.md)讲六个阶段：独立小作品、玩法原型、目标品质样段、受控生产、候选发布、发布后维护；[知识成长地图](growth-knowledge-map.md)讲每阶段要深入什么、怎样学、何时停。商业化是未来选择，不是儿童毕业要求。
+
+```sh
+python3 tools/growth_workshop.py plan
+python3 tools/growth_workshop.py session independent --cycle first-small-game
+python3 tools/growth_workshop.py session prototype --cycle route-test --openmaic
+```
+
+无需先init家庭记录。只生成`.learning/growth/<cycle>.md`，同名文件拒绝覆盖。普通模式是当前阶段的AI工作坊任务；`--openmaic`是生成一个短互动课的教师输入，不是已经生成课堂。两者均不读取私人历史、不评分、不修改游戏、不启用提醒。Windows可按本机配置用`python`或`py -3`。
+
+一轮只选一个问题，不把整本成长指南投喂成孩子的必读课。阶段标识不是新增课号；原M/K不变。任意新专题先用自由MD写观察与下次复测，不假称旧调度器已经支持自动追踪。发布前另用[发布检查单](templates/release-readiness.md)，产品质量和孩子理解分别看。
+
+[项目复查与工作优先级](project-review-2026-09-16.md)区分了已写好的设计/工具、尚缺的工程与必须真实执行的试学。

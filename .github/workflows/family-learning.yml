@@ -19,3 +19,7 @@ jobs:
         run: python3 tools/family_learning.py check
       - name: Test evidence, scheduling, storage, and calendar export
         run: python3 -m unittest discover -s tools -p 'test_family_learning.py' -v
+      - name: Validate growth route, existing lesson references and handoff
+        run: python3 tools/growth_workshop.py check
+      - name: Test private, non-overwriting growth worksheets
+        run: python3 -m unittest discover -s tools -p 'test_growth_workshop.py' -v
