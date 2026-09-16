@@ -60,7 +60,7 @@ jobs:
       - name: Import and verify original and new native behaviors
         run: |
           python3 tools/install_godot_ci.py
-          python3 tools/run_production_checks.py --logs build/usability-evidence
+          python3 tools/run_production_checks.py --godot "$RUNNER_TEMP/godot-verified/godot" --logs build/usability-evidence
       - name: Commit only validated authored files and registered outputs
         env:
           GH_TOKEN: ${{ github.token }}
