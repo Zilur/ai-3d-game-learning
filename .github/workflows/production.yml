@@ -34,6 +34,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: python tools/install_godot_desktop_ci.py
+      - name: Supply a real CJK system font on the clean macOS runner
+        if: runner.os == 'macOS'
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: '1'
+          HOMEBREW_NO_ANALYTICS: '1'
+        run: brew install --cask font-noto-sans-cjk-sc
       - name: Run old and new suites plus cross-process save roundtrip
         shell: bash
         run: python tools/run_production_checks.py --godot "$GODOT_BINARY"
