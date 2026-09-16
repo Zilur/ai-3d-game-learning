@@ -92,7 +92,10 @@ def render(report: dict, objectives: dict) -> str:
         cells = []
         for axis in AXES:
             obs = item['observations'][axis]
-            cells.append('待验证' if obs['score'] is None else f"{obs['score']} / {obs['support']}")
+            if objectives[item['objective']]['level'] == 'K' and axis != 'reasoning':
+                cells.append('不要求')
+            else:
+                cells.append('待验证' if obs['score'] is None else f"{obs['score']} / {obs['support']}")
         ident = item['objective']
         lines.append('|'+clean(ident + ' ' + objectives[ident]['text'])+'|'+'|'.join(cells)+'|')
     missing = [x for x in report['target_objectives'] if x not in {i['objective'] for i in items}]
@@ -100,7 +103,10 @@ def render(report: dict, objectives: dict) -> str:
         lines += ['', '**尚无记录（不是0分）：** ' + '、'.join(missing)]
     lines += ['', '## 下一次只处理一至两项', '',
               '下列顺序是整理规则，不是已证实的最优学习算法；优先修明确错误，再处理提示依赖和证据缺口。']
-    for item in sorted(items, key=priority)[:2]:
+    candidates = [i for i in sorted(items, key=priority) if i['diagnosis']['status'] != 'no-gap-observed']
+    if not candidates:
+        lines += ['', '已提交证据中暂无待补练项；未测部分不等于已通过，也不因此自动追加作业。']
+    for item in candidates[:2]:
         ident, d = item['objective'], item['diagnosis']
         lines += ['', '### ' + clean(ident),
                   '**证据/假设：** ' + clean(d['basis']),
@@ -141,6 +147,10 @@ def self_test() -> None:
     k = copy.deepcopy(sample)
     k['target_objectives'] = ['E06.K1']; k['items'][0]['objective'] = 'E06.K1'
     validate(k, objectives)
+    require('|不要求|2 / L0|不要求|不要求|' in render(k, objectives), 'K implementation must be not-required, not pending')
+    no_gap = copy.deepcopy(k)
+    no_gap['items'][0]['diagnosis']['status'] = 'no-gap-observed'
+    require('暂无待补练项' in render(no_gap, objectives), 'no invented remediation for no-gap')
     k['items'][0]['observations']['application'] = {'score': 1, 'support': 'L3', 'evidence_ids': ['e1']}
     cases.append(k)
     for i, bad in enumerate(cases):
