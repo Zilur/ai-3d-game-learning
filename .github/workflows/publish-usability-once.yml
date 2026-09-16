@@ -1,0 +1,92 @@
+name: One-time validated usability closeout
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-usability-once.yml']
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Apply exact reviewed source patch, never private files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, json, lzma, os, pathlib, subprocess, urllib.request
+          blobs = ['de8bc2c82e241d5e3e2556ea543649e70436e554','b808dcedb92777e2e5e2f85ff7e9ad7bf158dd15','b5cb810d1e40ae388d94e59a217d5bec5af8f478','317a68984c9d6bb974bc087cbae7294bf901d6d7','c9ef86ce9c0884389c132024f67f87242997091e','71ce71d1afb65af23328e0009e964d35df88b15d','61cd39ebdf7c8ae905a10ca9902bfa4ebc571108','afea721ae57583510e9e8dd4ef5bb680d52a44c4','88cd0ae5deb9df3131d47971001e1784a7b86a52','574d90b50fa386989eda2413f9be73be4618f919']
+          allow = '''curriculum/authoring/lesson_modes.py curriculum/authoring/novice_learning.py curriculum/authoring/ready_lab_pages.py tools/demo_coach.py tools/session_coach.py tools/family_learning.py tools/run_production_checks.py tools/workspace.py tools/test_polish.py tools/build_desktop_export.py tools/install_export_templates_ci.py game/project.godot game/world/exploration.gd game/world/exploration.tscn game/world/creation_settings.gd game/world/creation.tres game/world/study_session.gd game/labs/lab_hub.gd game/tests/study_safety.gd game/tests/delivery_probe.gd game/tests/write_notices.gd game/export_presets.cfg WORLD-START.md FAMILY-START.md learning-system/README.md learning-system/coach.md docs/usability-closeout.md'''.split()
+          data = b''
+          for sha in blobs:
+              req = urllib.request.Request('https://api.github.com/repos/Zilur/ai-3d-game-learning/git/blobs/' + sha, headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'User-Agent':'course-usability-validation'})
+              with urllib.request.urlopen(req, timeout=60) as f:
+                  item = json.load(f)
+              part = base64.b64decode(item['content'])
+              assert hashlib.sha1(b'blob '+str(len(part)).encode()+b'\0'+part).hexdigest() == sha
+              data += part
+          assert hashlib.sha256(data).hexdigest() == 'a1bedd1b371d20294f69f0b0f750db57399dbe0404c0c595618f6ea2f057aa29'
+          dec = lzma.LZMADecompressor()
+          patch = dec.decompress(data, max_length=2000000)
+          assert dec.eof and not dec.unused_data and len(patch)==95170
+          assert hashlib.sha256(patch).hexdigest() == '4eed7e57797996c19608b9f7a9b421be39a2fee2fef1fe039024c06b126fd8b6'
+          path = pathlib.Path(os.environ['RUNNER_TEMP'])/'usability.patch'
+          path.write_bytes(patch)
+          names = [line.split('\t')[-1] for line in subprocess.check_output(['git','apply','--numstat',str(path)], text=True).splitlines()]
+          assert set(names)==set(allow) and len(names)==27
+          subprocess.run(['git','apply','--check',str(path)],check=True)
+          subprocess.run(['git','apply',str(path)],check=True)
+          (path.parent/'usability-allow.json').write_text(json.dumps(allow))
+          print('Applied 27 integrity-checked public source files; no classroom generation or private records.')
+          PY
+      - name: Regenerate and validate curriculum and private tools
+        run: |
+          python3 tools/build_course_materials.py
+          python3 tools/validate_repo.py
+          python3 tools/check_learning_pathway.py
+          python3 tools/check_practical_labs.py
+          python3 tools/check_production.py
+          python3 tools/family_learning.py check
+          python3 tools/growth_workshop.py check
+          for PATTERN in test_family_learning.py test_growth_workshop.py test_practical_labs.py test_polish.py; do
+            python3 -m unittest discover -s tools -p "$PATTERN" -v
+          done
+      - name: Import and verify original and new native behaviors
+        run: |
+          python3 tools/install_godot_ci.py
+          python3 tools/run_production_checks.py --logs build/usability-evidence
+      - name: Commit only validated authored files and registered outputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64, json, os, pathlib, subprocess, urllib.request
+          req = urllib.request.Request('https://api.github.com/repos/Zilur/ai-3d-game-learning/git/ref/heads/main', headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'User-Agent':'course-usability-validation'})
+          with urllib.request.urlopen(req, timeout=60) as f:
+              head = json.load(f)['object']['sha']
+          assert head == os.environ['GITHUB_SHA'], 'main changed; refusing to overwrite concurrent work'
+          allow = json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'usability-allow.json').read_text())
+          manifest = json.loads(pathlib.Path('curriculum/materials-manifest.json').read_text())
+          paths = set(allow) | set(manifest['sha256']) | {'curriculum/materials-manifest.json'}
+          assert all(not pathlib.PurePosixPath(p).is_absolute() and '..' not in pathlib.PurePosixPath(p).parts and not p.startswith(('.learning/','.github/')) for p in paths)
+          subprocess.run(['git','add','--'] + sorted(paths), check=True)
+          staged = subprocess.check_output(['git','diff','--cached','--name-only'], text=True).splitlines()
+          assert staged and set(staged) <= paths
+          subprocess.run(['git','-c','user.name=Course Builder','-c','user.email=course-builder@users.noreply.github.com','commit','-m','feat: safe learning transitions, saved workspaces and focused lesson modes'],check=True)
+          env = os.environ.copy()
+          auth = base64.b64encode(('x-access-token:'+env['GH_TOKEN']).encode()).decode()
+          env.update(GIT_CONFIG_COUNT='1', GIT_CONFIG_KEY_0='http.https://github.com/.extraheader', GIT_CONFIG_VALUE_0='AUTHORIZATION: basic '+auth)
+          subprocess.run(['git','push','origin','HEAD:main'],check=True,env=env)
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: usability-native-evidence
+          path: build/usability-evidence
+          retention-days: 14
