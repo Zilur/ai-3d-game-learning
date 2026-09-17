@@ -1,0 +1,109 @@
+name: Publish verified directory migration once
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/layout-once.yml']
+permissions:
+  contents: write
+concurrency:
+  group: publish-verified-layout
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.repository == 'Zilur/ai-3d-game-learning'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - name: Reconstruct, validate and publish exact reviewed tree
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONUTF8: '1'
+        run: |
+          python - <<'PY'
+          import base64, hashlib, io, json, lzma, os, shutil, subprocess, tarfile, tempfile, urllib.request
+          from pathlib import Path, PurePosixPath
+          BASE_SHA = '59d248ce4ffb6f89006a169e9e70459f5a54d73f'
+          REPO = 'Zilur/ai-3d-game-learning'
+          BLOBS = ['efd353892b33bad115ff1199d3293e8d8aa27888','cec09289e3a440f1f6267031010abe7bde54939e','463f34adc67a449457ea3abef030d04e6e649670','72474eeb40049151ee11a91dd5286838ca1a0f79','b07fca21755a831bebb30d8d3e1596a58cd88efa','8000bb3e9b63b2045e6e61cad0e1de2ee182730a','8c83e97494da71709af352cfd0ea9f56db46ace3']
+          SHA256 = '766cc169cbb44030b7ae0bee34fc8c3497e2a89cbf8aed4284998ca4efac5ac6'
+          def blob_sha(b):
+              return hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()
+          def safe(p):
+              q = PurePosixPath(p)
+              if q.is_absolute() or '..' in q.parts or not q.parts or '\\' in p or q.parts[0] in ('.git','.learning','build','dist'):
+                  raise ValueError('Unsafe path: '+p)
+              return p
+          assert os.environ['GITHUB_REPOSITORY'] == REPO
+          assert os.environ['GITHUB_REF'] == 'refs/heads/main'
+          head = subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+          assert head == os.environ['GITHUB_SHA']
+          assert subprocess.check_output(['git','rev-parse','HEAD^'],text=True).strip() == BASE_SHA
+          changed = subprocess.check_output(['git','diff','--name-only',BASE_SHA,head],text=True).splitlines()
+          assert changed == ['.github/workflows/layout-once.yml'], changed
+          chunks=[]
+          for sha in BLOBS:
+              req=urllib.request.Request('https://api.github.com/repos/'+REPO+'/git/blobs/'+sha,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'})
+              with urllib.request.urlopen(req,timeout=30) as response:
+                  obj=json.load(response)
+              assert obj['encoding']=='base64'
+              b=base64.b64decode(obj['content']);assert blob_sha(b)==sha
+              chunks.append(b)
+          packed=b''.join(chunks)
+          assert len(packed)==81012 and hashlib.sha256(packed).hexdigest()==SHA256
+          payload=json.loads(lzma.decompress(packed))
+          assert payload['base']==BASE_SHA and len(payload['expected'])==251
+          with tempfile.TemporaryDirectory() as td:
+              td=Path(td);base=td/'base';stage=td/'stage';base.mkdir();stage.mkdir()
+              archive=subprocess.check_output(['git','archive',BASE_SHA])
+              with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
+                  for item in tar.getmembers():
+                      safe(item.name)
+                      assert item.isfile() or item.isdir()
+                      target=base/item.name
+                      if item.isdir():target.mkdir(parents=True,exist_ok=True)
+                      else:
+                          target.parent.mkdir(parents=True,exist_ok=True)
+                          target.write_bytes(tar.extractfile(item).read())
+              exec(compile(payload['generate'],'verified-course-migration','exec'),{'BASE':base,'R':stage,'__name__':'migration'})
+              for op in payload['operations']:
+                  target=stage/safe(op[0]);target.parent.mkdir(parents=True,exist_ok=True)
+                  if op[1]=='text':data=op[2].encode('utf-8')
+                  elif op[1] in ('copy','edit'):
+                      data=(base/safe(op[2])).read_bytes();assert blob_sha(data)==op[3],op[2]
+                      if op[1]=='edit':
+                          lines=data.decode('utf-8').splitlines(keepends=True)
+                          for start,end,replace in reversed(op[4]):lines[start:end]=[replace]
+                          data=''.join(lines).encode('utf-8')
+                  else:raise ValueError('unknown operation')
+                  target.write_bytes(data)
+              for path,expected in payload['expected'].items():
+                  file=stage/safe(path)
+                  assert file.is_file() and not file.is_symlink() and blob_sha(file.read_bytes())==expected,path
+              # A clean pinned checkout; only tracked files are replaced.
+              for name in subprocess.check_output(['git','ls-files','-z']).decode().split('\0'):
+                  if name:Path(safe(name)).unlink()
+              for directory in sorted(Path('.').rglob('*'),key=lambda p:len(p.parts),reverse=True):
+                  if directory.is_dir() and '.git' not in directory.parts:
+                      try:directory.rmdir()
+                      except OSError:pass
+              for path in payload['expected']:
+                  target=Path(path);target.parent.mkdir(parents=True,exist_ok=True)
+                  shutil.copyfile(stage/path,target)
+          subprocess.run(['python','tools/check.py'],check=True)
+          subprocess.run(['git','add','-A'],check=True)
+          index={}
+          for line in subprocess.check_output(['git','ls-files','--stage'],text=True).splitlines():
+              prefix,path=line.split('\t',1);index[path]=prefix.split()[1]
+          assert index==payload['expected'],'staged tree differs from verified source'
+          subprocess.run(['git','diff','--cached','--check'],check=True)
+          subprocess.run(['git','fetch','origin','main'],check=True)
+          assert subprocess.check_output(['git','rev-parse','origin/main'],text=True).strip()==head,'Concurrent update; refusing to push'
+          subprocess.run(['git','config','user.name','Course Builder'],check=True)
+          subprocess.run(['git','config','user.email','course-builder@users.noreply.github.com'],check=True)
+          subprocess.run(['git','commit','-m','refactor: consolidate self-study course, practice and OpenMAIC delivery'],check=True)
+          subprocess.run(['git','push','origin','HEAD:main'],check=True)
+          print('PUBLISHED VERIFIED 251-FILE TREE:',subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip())
+          PY
