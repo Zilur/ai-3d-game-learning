@@ -1,5 +1,7 @@
 > **新主游戏：** [庭院—林路—观景台](WORLD-START.md)，F5直接开始；旧参考和实验全部保留。
 
+**使用平台：仅 macOS 与 Windows。** 独立体验包和桌面导出仅面向这两个平台；上课与修改作品使用完整工程。
+
 > **现成场景入口：** [直接打开Godot / Blender实验](LABS-START.md) · [亲子学习](FAMILY-START.md)。不需要先从空项目搭建。
 
 > **第一次学习：** [三段学习路径](curriculum/learning-journey.md) → [核心记忆卡](print/essential-memory.md) → [单元/阶段检查](assessments/unit-checkpoints.md)。A/B基础后即可按[生产任务单](curriculum/production-work-orders.md)开发；C/D按需继续，不等47课全学完。

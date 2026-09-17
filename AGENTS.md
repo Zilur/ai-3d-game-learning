@@ -55,3 +55,8 @@ lesson_modes.py控制体验/作品分流，默认会话物理移除作品段落�
 ## 三段生产参考
 
 默认主场景为game/world/exploration.tscn，旧main保留作教学回归。修改须同时运行production_suite和全部原测试；12类原创GLB由build_world_assets.py复建。普通雾/辉光/景深按实际渲染器核对，不假启用不支持的效果。OpenMAIC课堂由用户稍后自行生成。不要记录虚构儿童试教或全设备通过。
+
+## 使用平台与OpenMAIC学情边界
+
+
+用户交付仅macOS与Windows；不得恢复Linux导出预设/体验包。Linux可作内部无窗口/渲染测试，不是支持承诺。OpenMAIC最新能力按openmaic/capability-audit.md所核对版本描述；保留vendor原字节。生成规格、运行事实、能力判断和复习调度分开。公开输入默认无私人历史；可选openmaic_handoff摘要先预览确认，不上传、不评分，不宣称已经实现上游记录自动回传。

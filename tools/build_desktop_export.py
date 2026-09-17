@@ -1,4 +1,4 @@
-"""Export a native release and test its executable/PCK without editor or source path.
+"""Export a Mac or Windows release, then test it without editor or source path.
 Requires the pinned engine and matching installed export templates. No uploads.
 """
 from __future__ import annotations
@@ -14,6 +14,14 @@ import subprocess
 import tempfile
 import zipfile
 ROOT = Path(__file__).resolve().parents[1]
+SUPPORTED_TARGETS = {'Windows': ('Windows', 'Starlight.exe'), 'Darwin': ('macOS', 'Starlight-macOS.zip')}
+
+
+def release_target(system: str) -> tuple[str, str]:
+    if system not in SUPPORTED_TARGETS:
+        raise ValueError('Standalone packages support macOS and Windows only.')
+    return SUPPORTED_TARGETS[system]
+
 ERRORS = re.compile(r'SCRIPT ERROR|Parse Error|ERROR:|DELIVERY FAILED|ObjectDB instances leaked|resources still in use')
 
 
@@ -40,10 +48,9 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--godot', default=os.environ.get('GODOT_BINARY', 'godot'))
     p.add_argument('--out', type=Path, default=Path('build/desktop'))
-    p.add_argument('--render', action='store_true')
     a = p.parse_args()
     system = platform.system()
-    preset = {'Linux': 'Linux', 'Windows': 'Windows', 'Darwin': 'macOS'}[system]
+    preset, filename = release_target(system)
     license_path = ROOT / 'game/assets/village/LICENSE.txt'
     if not license_path.is_file():
         raise ValueError('Original asset license is missing; export refused.')
@@ -55,7 +62,7 @@ def main():
     run([a.godot, '--version'], evidence / 'version.log', ROOT, marker='4.7.2.stable')
     base = [a.godot, '--headless', '--audio-driver', 'Dummy', '--path', str(ROOT / 'game')]
     run(base + ['--editor', '--import'], evidence / 'import.log', ROOT)
-    target = package / {'Linux': 'Starlight.x86_64', 'Windows': 'Starlight.exe', 'Darwin': 'Starlight-macOS.zip'}[system]
+    target = package / filename
     run(base + ['--export-release', preset, str(target)], evidence / 'export.log', ROOT)
     if system == 'Darwin':
         subprocess.run(['ditto', '-x', '-k', str(target), str(package)], check=True)
@@ -69,7 +76,7 @@ def main():
     shutil.copy2(ROOT / 'game/assets/practice-asset-notes.md', package / 'PRACTICE-ASSET-NOTES.md')
     (package / 'README.txt').write_text(
         '星光小庭院｜亲子课程独立体验包\n\n'
-        '解压整个目录，不要只移动exe或pck。Windows运行Starlight.exe；Linux运行Starlight.x86_64；macOS打开.app。\n'
+        '解压整个目录，不要只移动exe或pck。Windows运行Starlight.exe；macOS打开.app。\n'
         '需要操作系统提供中文字体；不随包分发字体。WASD移动，Shift跑，空格跳，E交互，J训练，Esc暂停，F9保存，F10读档。\n'
         '窗口关闭和实验往返已有保存保护；内存暂存不是磁盘存档。仅教学试玩，未经商店签名/公证；遇系统拦截由成人核对来源并使用源码项目，不关闭系统安全保护。\n'
         '行为自动测试不等于所有设备、听感、儿童学习或商业品质已验收。\n', encoding='utf-8')
@@ -92,16 +99,6 @@ def main():
         for phase in ('write', 'read'):
             run([str(exe), '--headless', '--audio-driver', 'Dummy', '--fixed-fps', '60', '--', '--delivery-check=' + phase],
                 evidence / (phase + '.log'), detached, runtime_env, 'EXPORTED DELIVERY ' + phase.upper() + ' PASS')
-        if a.render and system == 'Linux':
-            runtime_env['DELIVERY_CAPTURE_DIR'] = str(evidence / 'captures')
-            runtime_env['LIBGL_ALWAYS_SOFTWARE'] = '1'
-            run(['xvfb-run', '-a', '-s', '-screen 0 1280x720x24', str(exe), '--audio-driver', 'Dummy',
-                 '--rendering-method', 'gl_compatibility', '--', '--delivery-check=render'],
-                evidence / 'render.log', detached, runtime_env, 'EXPORTED DELIVERY RENDER PASS')
-            for name in ('release-courtyard.png', 'release-save-guard.png'):
-                shot = evidence / 'captures' / name
-                if not shot.is_file() or shot.stat().st_size < 1000:
-                    raise RuntimeError('Exported package did not produce its expected screenshot: ' + name)
     files = {x.relative_to(package).as_posix(): hashlib.sha256(x.read_bytes()).hexdigest()
              for x in sorted(package.rglob('*')) if x.is_file()}
     (out / 'SHA256.json').write_text(json.dumps(files, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')

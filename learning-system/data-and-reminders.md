@@ -11,6 +11,7 @@
   TODAY.md                  派生的复习清单和四轴看板
   SESSION-A04.md            本课学生材料、教练协议、最小弱项摘要
   OPENMAIC-A04.md           教师生成规格；不含私人记录
+  OPENMAIC-CONTEXT-A04.md   可选私人学情附件；成人预览确认后另行生成，不自动上传
   report-A04.json            待核对的暂存报告
   reminders.ics             日历提醒，不含知识弱项或孩子姓名
   cards/                    按需生成的47张逐课亲子卡
@@ -78,3 +79,7 @@ python3 tools/family_learning.py void 2026-09-16-A04-01 --reason "之前把观�
 只记录可修正的学习现象，如“本次混淆隐藏与阻挡”，不推断智力、心理状态、人格或成长诊断。AI生成的弱点必须有证据，并可由成人更正或作废。
 
 孩子可以不录音、不录像、不公开作品；用成人简短观察也可取证。分享给外部AI前由成人查看SESSION内容，仅上传当前任务需要的材料，不批量发送全部个人历史。
+
+## 与OpenMAIC运行记录的区别
+
+OpenMAIC的作答/反馈/讨论记录不自动写进state.md；本地记录器也不是OpenMAIC内部的定时任务。`tools/openmaic_handoff.py`仅提供成人确认后的最小私人摘要，不改变记录、不宣称自动同步。完整边界与上游证据见[OpenMAIC能力核查](../openmaic/capability-audit.md)。

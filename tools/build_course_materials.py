@@ -197,6 +197,7 @@ def generated(lessons, sources, by_id):
     enrich_fixed_view(output, by_id, ORDER, ROWS)
     enrich_fixed_view_effects(output, by_id, ORDER, ROWS)
     runpy.run_path(str(AUTHOR / 'novice_learning.py'))['enrich_pathway'](output, by_id, ORDER)
+    runpy.run_path(str(AUTHOR / 'platform_learning_handoff.py'))['enrich'](output)
     manifest = {'version':'novice-learning-pathway-2026-09-16','date':'2026-09-16','lesson_count':47,
         'units':[{'id':ident,'display':DISPLAY[ident],'dialogue':'curriculum/dialogues/'+ident+'.md','prerequisites':by_id[ident]['prereq'],'concepts':by_id[ident]['concepts'],
                   'status':'manuscript-reviewed; classroom-not-generated; learner-not-tested'} for ident in ORDER],
