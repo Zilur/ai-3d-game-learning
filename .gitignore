@@ -1,30 +1,27 @@
-# Engine caches / generated local exports
+# Private data and non-deterministic outputs: ignored DOES NOT mean disposable.
+/.learning/
+/openmaic/output/
+/dist/
+# Rebuildable caches only
+/build/
 .godot/
 .export/
-build/
 exports/
-export_credentials.cfg
-# Keep project.godot, .tscn, .tres, .gd and .uid files.
-# Secrets: never commit provider config with keys.
-.env
-.env.*
-!.env.example
-server-providers.yml
-# Local evidence / personal notes
-local-notes/
-*.log
-*.tmp
 __pycache__/
 *.pyc
-# Blender backups, not source .blend assets
+*.log
+*.tmp
 *.blend1
 *.blend2
 *.blend@
 *.blend~
+.env
+.env.*
+!.env.example
+export_credentials.cfg
+server-providers.yml
+local-notes/
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
-
-# Private learner submissions, feedback and recordings
-.learning/

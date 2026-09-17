@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://labs/scene_nodes/stage.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://labs/scene_nodes/module.tscn" id="2"]
+
+[node name="B02Reference" type="Node3D"]
+
+[node name="Stage" parent="." instance=ExtResource("1")]
+
+[node name="ModuleA" parent="." instance=ExtResource("2")]
+position = Vector3(-2, 0, 0)
+
+[node name="ModuleB" parent="." instance=ExtResource("2")]
+position = Vector3(2, 0, 0)

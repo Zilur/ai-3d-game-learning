@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3D 空间实验室 · 先预测，再操作</title>
+<style>
+:root{font-family:system-ui,sans-serif;color:#e7edf6;background:#101725}body{margin:0 auto;max-width:1200px;padding:24px}h1{font-size:28px;margin-bottom:6px}p{line-height:1.7;color:#b9c8dc}main{display:grid;grid-template-columns:minmax(290px,360px) 1fr;gap:20px}.card{background:#1a2639;border:1px solid #34435a;border-radius:14px;padding:20px}label{display:block;margin:14px 0 6px}input[type=range]{width:100%}output{float:right;font-variant-numeric:tabular-nums}button,select,textarea{font:inherit;border-radius:7px;border:1px solid #536885;padding:10px;background:#243a56;color:#fff}button{cursor:pointer;margin:4px 2px}button:hover{background:#365777}button:focus-visible,input:focus-visible{outline:3px solid #82d9cf}textarea{width:100%;box-sizing:border-box;min-height:70px}canvas{width:100%;height:430px;display:block;background:#101b2c;border-radius:10px}pre{white-space:pre-wrap;line-height:1.8;background:#101b2c;padding:12px;border-radius:8px}.note{font-size:14px}#feedback{min-height:50px;color:#9cebd4}.tabs{margin:18px 0}.tabs button[aria-pressed=true]{background:#147664}.hidden{display:none}a{color:#9cdfed}@media(max-width:760px){main{grid-template-columns:1fr}canvas{height:330px}}
+</style>
+<h1>3D 空间实验室</h1><p>世界、父节点、自身方向不是同一回事。先写预测，再按一次按钮，最后解释发生了什么。</p>
+<div class="tabs"><button id="spaceTab" aria-pressed="true">C03 · 三种空间</button><button id="doorTab" aria-pressed="false">C04 · 门的旋转轴</button><button id="reset">重置本实验</button></div>
+<main><section class="card">
+<div id="spaceControls">
+<label>父节点世界 X <output id="parentXOut"></output><input id="parentX" aria-label="父节点世界X" type="range" min="-5" max="5" step=".5" value="3"></label>
+<label>父节点 Y 旋转（度）<output id="parentYawOut"></output><input id="parentYaw" aria-label="父节点Y旋转" type="range" min="-180" max="180" step="15" value="0"></label>
+<label>物体相对父节点 Y 旋转（度）<output id="objectYawOut"></output><input id="objectYaw" aria-label="物体相对父节点Y旋转" type="range" min="-180" max="180" step="15" value="45"></label>
+<p class="note">每次走 1 单位。物体自身缩放固定为1；父节点无缩放。蓝色物体上的箭头标记自身 +X。</p>
+<button id="parentStep">沿父空间 +X</button><button id="selfStep">沿自身 +X</button><button id="worldStep">沿世界 +X</button>
+</div>
+<div id="doorControls" class="hidden"><label>门轴位置 <select id="pivot"><option value="hinge">左侧铰链 x=0</option><option value="center">门中心 x=1</option></select></label><label>门旋转角度（度）<output id="doorAngleOut"></output><input id="doorAngle" aria-label="门旋转角度" type="range" min="0" max="120" step="15" value="0"></label><p class="note">门关闭时始终覆盖 x=0…2、高度0…2。改变轴，不改变关闭姿态；橙色点才是当前旋转轴。</p></div>
+<label for="prediction">我的预测（至少写一句）</label><textarea id="prediction" placeholder="例如：父节点转90°后，沿父X移动会改变世界Z。"></textarea>
+<button id="explain">显示本实验核对要点</button><div id="feedback" aria-live="polite"></div>
+</section><section class="card"><canvas id="view" aria-label="带XYZ世界轴的三维正交投影实验"></canvas><pre id="readout" aria-live="polite"></pre><p class="note">这是数学空间演示，不是 Godot 运行时，不模拟物理或PBR。Godot以Y向上；Blender默认Z向上。本页不保存、不上传输入，不需要外部资源。</p></section></main>
+<section class="card" style="margin-top:20px"><h2>换场景再考自己</h2><p id="transfer">A02：父节点旋转90°后，为什么不能把父位置与子position直接逐项相加？请用本页数值证明，而不只说“因为Local不同”。</p><p>实战入口：<code>course/lessons/A02.md</code>。参考反馈在course/teacher-notes.md，不因点击完按钮自动判定掌握。</p></section>
+<script>
+'use strict';
+const $=id=>document.getElementById(id), canvas=$('view'),ctx=canvas.getContext('2d');
+let tab='space',local=[1,0,0];
+const rad=d=>d*Math.PI/180;
+function ry(v,degrees){const a=rad(degrees),c=Math.cos(a),s=Math.sin(a);return[c*v[0]+s*v[2],v[1],-s*v[0]+c*v[2]];}
+const add=(a,b)=>a.map((v,i)=>v+b[i]);
+const fmt=a=>a.map(x=>(Math.abs(x)<.00005?0:x).toFixed(2)).join(', ');
+function state(){const px=+$('parentX').value,py=+$('parentYaw').value,oy=+$('objectYaw').value;return{px,py,oy,world:add([px,0,0],ry(local,py))};}
+function project(v){const scale=Math.min(38,(canvas.width-90)/10);return[canvas.width*.49+(v[0]-.7*v[2])*scale,canvas.height*.60-(v[1]-.28*v[0]-.36*v[2])*scale];}
+function line(a,b,color,width=2){const p=project(a),q=project(b);ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=width;ctx.moveTo(...p);ctx.lineTo(...q);ctx.stroke();}
+function text(s,p,color='#eef5ff'){ctx.fillStyle=color;ctx.font='15px sans-serif';const [x,y]=project(p);ctx.fillText(s,x+5,y-5);}
+function dot(p,color){const q=project(p);ctx.fillStyle=color;ctx.beginPath();ctx.arc(...q,5,0,Math.PI*2);ctx.fill();}
+function draw(){
+ const rect=canvas.getBoundingClientRect();canvas.width=Math.round(rect.width);canvas.height=Math.round(rect.height);ctx.clearRect(0,0,canvas.width,canvas.height);
+ for(let k=-7;k<=7;k++){line([k,0,-7],[k,0,7],'#24334b',1);line([-7,0,k],[7,0,k],'#24334b',1);}
+ for(const [end,label,color]of[[[6,0,0],'+X','#f89996'],[[0,4,0],'+Y','#9cdb9b'],[[0,0,5],'+Z','#9ecaff']]){line([0,0,0],end,color);text(label,end,color);}dot([0,0,0],'white');
+ if(tab==='space'){
+ const s=state();for(const id of ['parentX','parentYaw','objectYaw'])$(id+'Out').textContent=$(id).value;
+ dot([s.px,0,0],'#ffca84');text('父节点',[s.px,0,0]);line([s.px,0,0],s.world,'#ffca84',2);
+ const transform=v=>add(s.world,ry(v,s.py+s.oy));
+ const pts=[[-.45,0,-.35],[.45,0,-.35],[.45,.9,-.35],[-.45,.9,-.35],[-.45,0,.35],[.45,0,.35],[.45,.9,.35],[-.45,.9,.35]].map(transform);
+ for(const [a,b]of[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]])line(pts[a],pts[b],'#75ddd5',3);
+ line(transform([0,1,0]),transform([1.2,1,0]),'#fff2a1',3);text('自身+X',transform([1.2,1,0]),'#fff2a1');
+ $('readout').textContent=`子节点 position（相对父节点）= (${fmt(local)})\nglobal_position（世界）= (${fmt(s.world)})\n世界朝向 = 父节点 ${s.py}° + 子节点 ${s.oy}°\n注意：沿自身轴移动 ≠ 直接给 position.x 加1。`;
+ }else{
+ const angle=+$('doorAngle').value,pivot=$('pivot').value==='hinge'?0:1;
+ $('doorAngleOut').textContent=angle;const closed=[[0,0,0],[2,0,0],[2,2,0],[0,2,0]];
+ const pts=closed.map(v=>add([pivot,0,0],ry([v[0]-pivot,v[1],v[2]],angle)));
+ for(let k=0;k<4;k++){line(closed[k],closed[(k+1)%4],'#67768c',1);line(pts[k],pts[(k+1)%4],'#75ddd5',4);}line([pivot,0,0],[pivot,2.6,0],'#ffca84',3);dot([pivot,0,0],'#ffca84');
+ $('readout').textContent=`旋转轴 x=${pivot}，角度 ${angle}°\n左下角世界位置 = (${fmt(pts[0])})\n右下角世界位置 = (${fmt(pts[1])})\n灰线是关闭姿态。铰链模式下左边缘不移动。`;
+ }
+}
+function setTab(value){tab=value;$('spaceControls').classList.toggle('hidden',tab!=='space');$('doorControls').classList.toggle('hidden',tab!=='door');$('spaceTab').setAttribute('aria-pressed',tab==='space');$('doorTab').setAttribute('aria-pressed',tab==='door');$('feedback').textContent='';$('prediction').value='';$('transfer').textContent=tab==='space'?'A02：父节点旋转90°后，为什么不能直接逐项相加位置？用数值验证。':'C04-T：风车围绕中心是对的，门围绕中心却不对。你如何向AI描述“正确轴心”的判断条件？';draw();}
+$('spaceTab').onclick=()=>setTab('space');$('doorTab').onclick=()=>setTab('door');
+for(const id of ['parentX','parentYaw','objectYaw','pivot','doorAngle'])$(id).addEventListener('input',draw);
+$('parentStep').onclick=()=>{local=add(local,[1,0,0]);draw();};
+$('selfStep').onclick=()=>{local=add(local,ry([1,0,0],state().oy));draw();};
+$('worldStep').onclick=()=>{local=add(local,ry([1,0,0],-state().py));draw();};
+$('reset').onclick=()=>{local=[1,0,0];$('parentX').value=3;$('parentYaw').value=0;$('objectYaw').value=45;$('doorAngle').value=0;$('pivot').value='hinge';$('feedback').textContent='';$('prediction').value='';draw();};
+$('explain').onclick=()=>{if($('prediction').value.trim().length<4){$('feedback').textContent='先写一句预测，再核对。';return;}$('feedback').textContent=tab==='space'?'核对：position在父空间；世界位置要先旋转偏移再平移；沿自身方向还要考虑自身朝向。请指出你预测中成立的条件和一个反例。':'核对：绕轴的点保持不动；门铰链与网格相对位置决定轨迹。Blender工具Pivot不等于导出Origin。请换成风车解释。';};
+window.addEventListener('resize',draw);draw();
+// Pure functions are also exposed for deterministic tests, not for scoring mastery.
+window.labMath={ry,state,getLocal:()=>[...local]};
+</script></html>

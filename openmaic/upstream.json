@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "repository": "THU-MAIC/OpenMAIC",
+  "code_audits": [
+    {
+      "ref": "2cbd011c1f08d963c94e7b4478c44c750ea6ed6e",
+      "scope": "Skill discovery, runtime store, quiz and PBL source review only"
+    },
+    {
+      "ref": "f7b8769e7fff49a083a5f655ed84cf800ab0b135",
+      "scope": "native .maic.zip export type source review only"
+    }
+  ],
+  "previous_reference_ref": "ee7a7b64df9abbccf939e109ae850e63bc075392",
+  "verified_deployment": null,
+  "classrooms_generated": false,
+  "upgrade_policy": "Review upstream changes, test a representative course, then explicitly update the deployed version; no automatic paid regeneration."
+}

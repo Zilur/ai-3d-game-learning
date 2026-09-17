@@ -1,0 +1,56 @@
+name: Mac and Windows detached release checks
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  PYTHONUTF8: "1"
+jobs:
+  export:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2025, macos-15]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Preserve authored text bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Install official pinned runtime and matching release templates
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python tools/ci/install_godot_desktop_ci.py
+          python tools/ci/install_export_templates_ci.py
+      - name: macOS system CJK font for minimal test image
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          mkdir -p "$HOME/Library/Fonts"
+          curl --fail --location --retry 3 'https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf' -o "$HOME/Library/Fonts/NotoSansCJKsc-Regular.otf"
+      - name: Check current sources and safe packaging
+        shell: bash
+        run: python tools/check.py
+      - name: Build release, detach from sources and test saved progress
+        shell: bash
+        run: |
+          python tools/release.py desktop --godot "$GODOT_BINARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: success()
+        with:
+          name: standalone-${{ runner.os }}
+          path: |
+            dist/desktop/*/Starlight-*.zip
+            dist/desktop/*/SHA256.json
+          retention-days: 14
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: standalone-evidence-${{ runner.os }}
+          path: dist/desktop/*/evidence
+          retention-days: 14

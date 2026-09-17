@@ -42,7 +42,8 @@ def target(name: str, home: Path, root=ROOT) -> Path:
 def create(name: str, home: Path, root=ROOT) -> Path:
     dest = target(name, home, root)
     if dest.exists(): raise ValueError('已有同名副本，不覆盖。请继续使用，或换一个副本名。')
-    source = root / 'game'
+    source = root / 'practice/godot'
+    if not (source / 'project.godot').is_file(): raise ValueError('源Godot工程不完整；未创建副本。')
     files = []
     for path in source.rglob('*'):
         rel = path.relative_to(source)
@@ -103,7 +104,7 @@ def restore(name: str, key: str, home: Path, confirm=False, root=ROOT) -> Path |
     stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
     backup = backup_dir / (stamp + '-' + current.name)
     with backup.open('xb') as f: f.write(current.read_bytes())
-    from family_learning import atomic_write
+    from lib.learning_state import atomic_write
     atomic_write(current, baseline.read_text(encoding='utf-8'))
     return backup
 
