@@ -1,0 +1,79 @@
+name: One-time validated Mac and Windows scope
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-macwin-once.yml']
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Apply only the integrity-checked public platform and teaching patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, json, lzma, os, pathlib, subprocess, urllib.request
+          blobs = ['279e5f073dbf87c45f3c68f5339eee0815620c5e','906d39e02f468412c237f47535b31a8936c1e9ea','ba6b9331b563b9e7cbe57ac201cb4b615b16a9a5','e82163020d342b63c736eeff8c037dba200ad9e9']
+          allow = '''.github/workflows/desktop-release.yml .github/workflows/family-learning.yml .github/workflows/production.yml .github/workflows/retire-linux-experience.yml AGENTS.md FAMILY-START.md LABS-START.md README.md WORLD-START.md curriculum/authoring/platform_learning_handoff.py curriculum/materials-manifest.json docs/usability-closeout.md game/README.md game/export_presets.cfg learning-system/data-and-reminders.md openmaic/README.md openmaic/capability-audit.md openmaic/generation-guide.md tools/build_course_materials.py tools/build_desktop_export.py tools/install_export_templates_ci.py tools/openmaic_handoff.py tools/test_openmaic_handoff.py tools/test_supported_platforms.py'''.split()
+          data = b''
+          for sha in blobs:
+              req = urllib.request.Request('https://api.github.com/repos/Zilur/ai-3d-game-learning/git/blobs/' + sha, headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'User-Agent':'course-platform-validation'})
+              with urllib.request.urlopen(req, timeout=60) as response:
+                  item = json.load(response)
+              part = base64.b64decode(item['content'])
+              assert hashlib.sha1(b'blob '+str(len(part)).encode()+b'\0'+part).hexdigest() == sha
+              data += part
+          assert hashlib.sha256(data).hexdigest() == '49262794b215bdaa1952589cf407a38c8d17730286b6c8d3b23cdbbb5d3752b3'
+          dec = lzma.LZMADecompressor()
+          patch = dec.decompress(data, max_length=2000000)
+          assert dec.eof and not dec.unused_data and len(patch) == 52193
+          assert hashlib.sha256(patch).hexdigest() == '38c9e252d168d2f701238a1334242b1f066c1e065e95a1cb19f6bac1640c7e60'
+          path = pathlib.Path(os.environ['RUNNER_TEMP'])/'macwin.patch'
+          path.write_bytes(patch)
+          names = [line.split('\t')[-1] for line in subprocess.check_output(['git','apply','--numstat',str(path)], text=True).splitlines()]
+          assert set(names) == set(allow) and len(names) == 24
+          subprocess.run(['git','apply','--check',str(path)],check=True)
+          subprocess.run(['git','apply',str(path)],check=True)
+          (path.parent/'macwin-allow.json').write_text(json.dumps([p for p in allow if not p.startswith('.github/')]))
+          print('APPLIED: public platform and teaching patch; no classroom, network learning service or personal records.')
+          PY
+      - name: Verify source contracts and all local learning-tool tests
+        run: |
+          python3 tools/build_course_materials.py --check
+          python3 tools/validate_repo.py
+          python3 tools/check_learning_pathway.py
+          python3 tools/check_practical_labs.py
+          python3 tools/check_production.py
+          for PATTERN in test_family_learning.py test_growth_workshop.py test_practical_labs.py test_polish.py test_supported_platforms.py test_openmaic_handoff.py; do
+            python3 -m unittest discover -s tools -p "$PATTERN" -v
+          done
+      - name: Publish validated source without staging workflows or private files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64, json, os, pathlib, subprocess, urllib.request
+          req = urllib.request.Request('https://api.github.com/repos/Zilur/ai-3d-game-learning/git/ref/heads/main', headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'User-Agent':'course-platform-validation'})
+          with urllib.request.urlopen(req, timeout=60) as response:
+              head = json.load(response)['object']['sha']
+          assert head == os.environ['GITHUB_SHA'], 'main changed; refusing to overwrite concurrent work'
+          paths = json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'macwin-allow.json').read_text())
+          assert len(paths) == 20 and all(not pathlib.PurePosixPath(p).is_absolute() and '..' not in pathlib.PurePosixPath(p).parts and not p.startswith(('.learning/','.github/')) for p in paths)
+          subprocess.run(['git','add','--']+paths,check=True)
+          staged = subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines()
+          assert set(staged) == set(paths)
+          subprocess.run(['git','-c','user.name=Course Builder','-c','user.email=course-builder@users.noreply.github.com','commit','-m','feat: limit user releases to Mac and Windows and document OpenMAIC learning handoff'],check=True)
+          env = os.environ.copy()
+          auth = base64.b64encode(('x-access-token:'+env['GH_TOKEN']).encode()).decode()
+          env.update(GIT_CONFIG_COUNT='1', GIT_CONFIG_KEY_0='http.https://github.com/.extraheader', GIT_CONFIG_VALUE_0='AUTHORIZATION: basic '+auth)
+          subprocess.run(['git','push','origin','HEAD:main'],check=True,env=env)
+          print('MACWIN SOURCE PUBLICATION PASS; workflow updates are installed separately')
+          PY
