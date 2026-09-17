@@ -88,6 +88,9 @@ def check_export(path: Path) -> dict:
         require(sum(x.file_size for x in infos)<=1024**3,'ZIP解压大小超过1GiB')
         seen=set()
         for i in infos:
+            # ZIP readers normalize platform separators and truncate at NUL.
+            # Reject altered raw member names before checking the normalized path.
+            require(i.orig_filename == i.filename and '\0' not in i.orig_filename,'ZIP含被规范化的不安全路径')
             n=PurePosixPath(i.filename)
             require(not n.is_absolute() and '..' not in n.parts and '\\' not in i.filename and ':' not in i.filename,'ZIP含不安全路径')
             require(i.filename not in seen,'ZIP含重复文件名');seen.add(i.filename)

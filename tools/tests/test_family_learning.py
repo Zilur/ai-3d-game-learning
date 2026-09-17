@@ -201,7 +201,8 @@ class FamilyRules(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             with self.assertRaises(ValueError): f.private_home(root / 'public-logs', root)
-            self.assertEqual(f.private_home(root / '.learning/family', root), root / '.learning/family')
+            # macOS /var and Windows short user names may resolve to canonical aliases.
+            self.assertEqual(f.private_home(root / '.learning/family', root), (root / '.learning/family').resolve())
 
     def test_calendar_utc_and_folding(self):
         data = f.calendar_text('Asia/Tokyo', DAY, 2, '07:30', '19:30')

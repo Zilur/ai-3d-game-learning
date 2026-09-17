@@ -37,7 +37,12 @@ def container(path, *, version=1, missing=False, extras=()):
           'mediaIndex':{'test':{'missing':True}} if missing else {}}
     with zipfile.ZipFile(path,'w') as z:
         z.writestr('manifest.json',json.dumps(data))
-        for name,value in extras:z.writestr(name,value)
+        for name,value in extras:
+            # Explicit metadata retains deliberately unsafe fixture names on Windows.
+            # ZipInfo's constructor otherwise normalizes os.sep before the reader sees it.
+            info=zipfile.ZipInfo('fixture-entry')
+            info.filename=name;info.orig_filename=name
+            z.writestr(info,value)
     return path
 
 
@@ -136,9 +141,20 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaises(ValueError):om.check_export(src)
 
     def test_zip_traversal_and_absolute_paths_refused(self):
-        for name in ('../secret','/etc/test','folder\\secret','C:/secret'):
-            src=container(Path(self.temp.name)/'bad.maic.zip',extras=[(name,'x')])
-            with self.assertRaises(ValueError):om.check_export(src)
+        for name in ('../secret','/etc/test','folder\\secret','C:/secret','safe\0secret'):
+            with self.subTest(member=name):
+                src=container(Path(self.temp.name)/'bad.maic.zip',extras=[(name,'x')])
+                # Verify the on-disk member, before ZipInfo normalizes it at read time.
+                raw=src.read_bytes()
+                self.assertEqual(raw.count(name.encode('utf-8')),2)
+                with self.assertRaises(ValueError):om.check_export(src)
+                # Exercise Windows reader normalization even on the Linux CI host.
+                original_init=zipfile.ZipInfo.__init__
+                def windows_init(info,*args,**kwargs):
+                    original_init(info,*args,**kwargs)
+                    info.filename=info.filename.replace('\\','/')
+                with patch.object(zipfile.ZipInfo,'__init__',windows_init):
+                    with self.assertRaises(ValueError):om.check_export(src)
 
     def test_duplicate_zip_names_refused(self):
         with warnings.catch_warnings():
