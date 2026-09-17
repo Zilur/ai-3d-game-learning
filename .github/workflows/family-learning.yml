@@ -23,3 +23,8 @@ jobs:
         run: python3 tools/growth_workshop.py check
       - name: Test private, non-overwriting growth worksheets
         run: python3 -m unittest discover -s tools -p 'test_growth_workshop.py' -v
+
+      - name: Check read-only OpenMAIC context handoff and supported release targets
+        run: |
+          python3 -m unittest discover -s tools -p test_openmaic_handoff.py -v
+          python3 -m unittest discover -s tools -p test_supported_platforms.py -v
