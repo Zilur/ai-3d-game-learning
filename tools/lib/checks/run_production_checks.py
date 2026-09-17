@@ -8,7 +8,9 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[3]
 ERRORS = re.compile(r'SCRIPT ERROR|Parse Error|ERROR:|PRODUCTION CHECK FAILED|ObjectDB instances leaked|resources still in use')
 SUITES = [('smoke','SMOKE PASS'), ('visual_lab','VISUAL LAB PASS'), ('concept_labs','CONCEPT LAB PASS'),
-          ('scene_nodes','SCENE NODES PASS'), ('practical_labs','PRACTICAL LAB PASS'), ('production_suite','PRODUCTION SUITE PASS'), ('study_safety','STUDY SAFETY PASS')]
+          ('scene_nodes','SCENE NODES PASS'), ('practical_labs','PRACTICAL LAB PASS'),
+          ('discovery_lab','DISCOVERY LAB PASS'),
+          ('production_suite','PRODUCTION SUITE PASS'), ('study_safety','STUDY SAFETY PASS')]
 
 
 def run(command: list[str], log: Path, marker: str | None = None) -> None:
