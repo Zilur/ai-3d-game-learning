@@ -3,20 +3,23 @@ on:
   push:
     branches: [course/reasoned-questions-20260918]
 permissions:
-  contents: read
+  contents: write
 jobs:
-  source:
+  apply:
     runs-on: ubuntu-24.04
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-        with:
-          persist-credentials: false
-      - name: Archive tracked public teaching sources
+      - name: Apply only reviewed exact-byte changes
+        run: python3 tools/_apply_question_review.py
+      - name: Check all course and source contracts
+        run: python3 tools/check.py
+      - name: Commit only the validated source changes
         run: |
-          mkdir -p build/question-review
-          git archive --format=zip --output=build/question-review/source.zip HEAD README.md AGENTS.md .gitignore .gitattributes .github course docs openmaic practice tools
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: question-review-source
-          path: build/question-review/source.zip
-          retention-days: 1
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -u
+          git add tools/tests/test_question_design.py
+          git diff --cached --check
+          git commit -m 'feat(course): teach evidence-based questions and calibrate practice difficulty'
+          git push origin HEAD:refs/heads/course/reasoned-questions-20260918
