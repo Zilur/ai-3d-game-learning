@@ -46,7 +46,7 @@ class LearnerExperienceTests(unittest.TestCase):
                 self.assertLess(len(card), 1600)
 
     def test_current_card_does_not_start_with_old_gaps(self):
-        with tempfile.TemporaryDirectory() as d:
+        with tempfile.TemporaryDirectory(dir=Path(tempfile.gettempdir()).resolve()) as d:
             target = learn.start(Path(d)/'private', 'B13')
             text = target.read_text(encoding='utf-8')
             opening = text.split('<details>', 1)[0]
@@ -63,7 +63,7 @@ class LearnerExperienceTests(unittest.TestCase):
             with self.subTest(lesson=ident):
                 self.assertIn(header, teacher_section(ident))
                 self.assertIn(header, build_input(ident)[0])
-        with tempfile.TemporaryDirectory() as d:
+        with tempfile.TemporaryDirectory(dir=Path(tempfile.gettempdir()).resolve()) as d:
             root = Path(d)
             for folder in ('course', 'openmaic', 'practice'):
                 shutil.copytree(ROOT/folder, root/folder,
