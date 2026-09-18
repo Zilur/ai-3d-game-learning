@@ -1,0 +1,22 @@
+name: Temporary question source audit
+on:
+  push:
+    branches: [course/reasoned-questions-20260918]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Archive tracked public teaching sources
+        run: |
+          mkdir -p build/question-review
+          git archive --format=zip --output=build/question-review/source.zip HEAD README.md AGENTS.md .gitignore .gitattributes .github course docs openmaic practice tools
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: question-review-source
+          path: build/question-review/source.zip
+          retention-days: 1
