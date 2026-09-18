@@ -111,7 +111,8 @@ def read_lesson(ident: str, root: Path = ROOT) -> dict:
     binding=(meta['labs'],field(body,'从哪里开始'),field(body,'材料边界'),production.group(1) if production else '用途讨论')
     require(ident!='E06' or not meta['labs'],'全K课程不要求软件实验')
     return dict(meta=meta,body=body,raw=raw,title=title.group(1),goal=field(body,'今天做什么'),
-                objectives=objectives,questions=qids,card=cards,binding=binding)
+                objectives=objectives,questions=qids,card=cards,binding=binding,
+                entry=field(body,'先从这里开始'))
 
 
 def catalog(root: Path = ROOT):
@@ -125,18 +126,22 @@ def catalog(root: Path = ROOT):
 
 def partner_text(lesson, cards):
     terms,demo,question=cards[lesson]
-    return ('## 讲给爸爸听\n\n用自己的话讲讲：'+terms+'。\n\n**给他演示：** '+demo+
+    return ('## 讲给爸爸听\n\n可演示一个选择、发现或疑问，不要求完整讲课。用自己的话讲讲：'+terms+'。\n\n**给他演示：** '+demo+
             '\n\n**你们一起问：** '+question+'\n\n爸爸还有问题就接着问，你也可以问爸爸。一起看、一起试，不必背稿、打分或填表。爸爸暂时不在就稍后分享，不影响继续自学。\n')
 
 
-def short_card(lesson, cards, bindings, purpose='experience'):
+def short_card(lesson, cards, bindings, purpose='experience', root: Path=ROOT):
+    """A learner opening, not a dump of demonstrations, review cues or teacher answers."""
+    row=read_lesson(lesson,root)
     paths,first,limits,_=bindings[lesson]
-    return ('# '+lesson+'｜今天只做这一小步\n\n**今天的挑战：** '+cards[lesson][1]+'\n\n**打开：** '+
-            ('、'.join('`'+p+'`' for p in paths) or '讨论，不新建工程')+'\n\n**首步：** '+first+
-            '\n\n先观察或预测，再试一项；完全陌生可以先看小示范。\n\n'+partner_text(lesson,cards)+
-            '\n'+('全K：只聊用途，不要求软件实操，不强制背诵。' if lesson=='E06' else '可以暂停；备用题不必全做。')+
-            '\n\n'+('体验现成材料，不重造Lab。' if purpose=='experience' else '只改自己的工作副本。')+
-            '\n\n材料边界：'+limits+'\n')
+    return ('# '+lesson+'｜今天只做这一小步\n\n**今天先试：** '+row['entry']+
+            '\n\n**打开：** '+('、'.join('`'+p+'`' for p in paths) or '讨论，不新建工程')+
+            '\n\n可以要线索、看示范或直接请解释；可以短答、指认或演示，也可以暂停。\n\n'+
+            '<details>\n<summary>需要时找操作入口与材料边界</summary>\n\n**首步：** '+first+
+            '\n\n材料边界：'+limits+'\n\n</details>\n\n'+
+            '<details>\n<summary>想分享时再打开</summary>\n\n'+partner_text(lesson,cards)+'\n</details>\n\n'+
+            ('全K：只聊用途，不要求软件实操，不强制背诵。' if lesson=='E06' else '备用题按需要选，不必全做。')+
+            '\n\n'+('体验现成材料，不重造Lab。' if purpose=='experience' else '只改自己的工作副本。')+'\n')
 
 
 def memory_sections(root: Path = ROOT) -> dict[str,str]:
@@ -156,7 +161,9 @@ def memory_cues(lesson: str, root: Path = ROOT) -> str:
 
 
 def teacher_section(lesson: str, root: Path = ROOT) -> str:
-    return section(read_text(root/'course/teacher-notes.md'),lesson)
+    text=read_text(root/'course/teacher-notes.md')
+    common=text.partition('\n## ')[0].strip()
+    return common+'\n\n## '+lesson+'\n\n'+section(text,lesson)
 
 
 def build_input(lesson: str, *, purpose: str='experience', root: Path=ROOT) -> tuple[str,dict]:

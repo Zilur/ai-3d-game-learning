@@ -100,9 +100,11 @@ def start(home: Path, lesson: str, root: Path = ROOT) -> Path:
         # Only our acquired lock is present. Never silently replace a broken store.
         state = f.load_state(home) if (home/'state.md').exists() else f.new_state()
         today = today_for(state)
-        card = f.today_card(lesson, cards, bindings)
+        card = f.today_card(lesson, cards, bindings, root=root)
         title, _, body = card.partition('\n')
-        result = title+'\n\n'+review_text(state, objectives, today)+'\n'+body+'\n'+memory_cues(lesson, root)
+        result = title+'\n'+body
+        result += ('\n<details>\n<summary>需要时回看旧问题和概念，不是入场测验</summary>\n\n'+
+                   review_text(state, objectives, today)+'\n'+memory_cues(lesson, root)+'\n</details>\n')
         result += ('\n完整讲解：`course/lessons/'+lesson+'.md`；在OpenMAIC已进入课堂就直接继续。\n'
                    '这张卡不是教师答案或自动接入插件；没有自动同步、评分和通知。\n')
         f.atomic_write(home/'CURRENT.md', result)

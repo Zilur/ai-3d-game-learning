@@ -283,9 +283,9 @@ def session_context(state, objectives, lesson, today):
                            for n in study_notes(state) if n['lesson'] == lesson and n['closed_on'] is None][:2]}, ensure_ascii=False, indent=2)
 
 
-def today_card(lesson, cards, bindings, purpose='experience'):
+def today_card(lesson, cards, bindings, purpose='experience', root=ROOT):
     from .course import short_card
-    return short_card(lesson, cards, bindings, purpose)
+    return short_card(lesson, cards, bindings, purpose, root=root)
 
 
 def observation_note(lesson):
