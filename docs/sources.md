@@ -68,3 +68,12 @@
 [6] [Xbox Accessibility Guidelines](https://learn.microsoft.com/en-us/xbox/accessibility/guidelines)，可用性与无障碍设计参考。
 
 [7] [Godot Scene organization](https://docs.godotengine.org/en/stable/tutorials/best_practices/scene_organization.html)、[General optimization tips](https://docs.godotengine.org/en/stable/tutorials/performance/general_optimization.html)、[Saving games](https://docs.godotengine.org/en/stable/tutorials/io/saving_games.html)，职责、测量、持久化的技术参考。实际项目按仓库固定版本核对；示例教程不等于生产级异常恢复已经完成。
+
+## 本轮学习体验修订的依据与限度
+
+- **示范与解释。** [IES：Organizing Instruction and Study to Improve Student Learning](https://ies.ed.gov/ncee/wwc/PracticeGuide/1)建议交替使用示范与问题练习、连接具体与抽象表示、提出解释性问题，各项证据强度不同。用来支持“先给可理解例子，再渐进提炼”，不是每课必须执行完整提问流程，也不证明本课程已经有效。
+- **把思考策略放回学科任务。** [EEF：Metacognition and Self-Regulated Learning，第二版，2025](https://educationendowmentfoundation.org.uk/education-evidence/guidance-reports/metacognition)及[证据汇总](https://educationendowmentfoundation.org.uk/education-evidence/teaching-learning-toolkit/metacognition-and-self-regulation)强调明确教学、示范、支架与学科内应用。课程借鉴其方向，不把汇总中的平均学业增益当成儿童游戏开发的预期收益。
+- **自主、胜任与支持关系。** Bureau等的[原始元分析](https://journals.sagepub.com/doi/abs/10.3102/00346543211042426)综合144项研究，考察自主支持、心理需要和学习动机的关系。它支持重视选择与可获得的帮助；不能推断选项越多越好、取消所有规则更好，也不保证每个孩子采用同一种教学节奏。
+- **具体帮助不等于泛泛鼓励。** Munshi等的[中学科学因果建模研究](https://arxiv.org/abs/2202.09698)涉及98名学习者，报告不同支架结果并不一致，调试与模型检查的策略提示比部分鼓励提示更有用。课程据此警惕只说“再努力”；该场景不是3D开发，不将其结果直接外推为本系统效果。
+
+以上是设计依据，不是临床诊断、保证孩子惊奇的心理公式或已经完成的真人试验。每课开场、选择数量、提示时机和篇幅是可调整的产品设计；没有把它们宣称为某个年龄的普适最佳值。公开资料核对日期：2026-09-18。
