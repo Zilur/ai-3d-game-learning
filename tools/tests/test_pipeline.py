@@ -132,6 +132,48 @@ class PipelineTests(unittest.TestCase):
         self.assertNotIn('data-purpose="project"',simple);self.assertIn('data-purpose="project"',project)
         self.assertEqual(before,p.read_bytes())
 
+    def test_practice_changes_block_release_without_claiming_text_changed(self):
+        self.accepted()
+        p=self.root/'practice/godot/project.godot';p.write_text('changed engine configuration')
+        report=om.inspect('A04','test-run',self.root)
+        self.assertFalse(report['source_changed'])
+        self.assertEqual(report['practice_status'],'changed')
+        self.assertIn('practice/godot/project.godot',report['practice_changed'])
+        with self.assertRaises(ValueError):om.require_publishable('A04','test-run',self.root)
+
+    def test_added_removed_and_changed_shared_assets_are_tracked(self):
+        p=self.root/'practice/godot/assets/shared.glb';p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b'fixture')
+        self.prepared()
+        p.write_bytes(b'changed fixture')
+        self.assertIn('practice/godot/assets/shared.glb',om.inspect('A04','test-run',self.root)['practice_changed'])
+        p.unlink()
+        self.assertIn('practice/godot/assets/shared.glb',om.inspect('A04','test-run',self.root)['practice_changed'])
+        p.with_name('added.glb').write_bytes(b'new fixture')
+        self.assertIn('practice/godot/assets/added.glb',om.inspect('A04','test-run',self.root)['practice_changed'])
+
+    def test_practice_cache_and_fonts_do_not_invalidate_run(self):
+        self.prepared()
+        for rel in ('practice/godot/.godot/imported/cache','practice/font.ttf','practice/blender/backup.blend1'):
+            p=self.root/rel;p.parent.mkdir(parents=True,exist_ok=True);p.write_text('excluded')
+        self.assertEqual(om.inspect('A04','test-run',self.root)['practice_status'],'unchanged')
+
+    def test_legacy_run_is_readable_but_needs_practice_review(self):
+        p,_=self.accepted();meta=p/'run.json';row=json.loads(meta.read_text());row.pop('practice')
+        meta.write_text(json.dumps(row))
+        self.assertEqual(om.inspect('A04','test-run',self.root)['practice_status'],'untracked')
+        with self.assertRaises(ValueError):om.require_publishable('A04','test-run',self.root)
+
+    def test_k_only_discussion_does_not_require_practice_pack(self):
+        p=om.prepare('E06','discussion',root=self.root)
+        self.assertIsNone(json.loads((p/'run.json').read_text())['practice'])
+        self.assertEqual(om.inspect('E06','discussion',self.root)['practice_status'],'not-required')
+
+    def test_practice_symlink_cannot_read_external_asset(self):
+        p=self.root/'practice/linked.glb'
+        try:p.symlink_to(self.root/'README.md')
+        except OSError:self.skipTest('symlink not available')
+        with self.assertRaises(ValueError):self.prepared()
+
     def test_invalid_or_future_zip_contract_refused(self):
         for version in (2,0,True,'1'):
             src=container(Path(self.temp.name)/'bad.maic.zip',version=version)

@@ -1,5 +1,11 @@
 # 维护与验证
 
+## 分支与维护范围
+
+只保留`main`和`dev`：main保存稳定基线，日常课程与工具维护在dev。2026-10-02已比较两个旧课程分支的完整文件树，确认内容分别进入main的`039464e`和`c949048`，以`4e199b0`保留合并历史后删除旧分支，再从main建立dev。后续不为每次小修改长期留分支。
+
+按实际需要做小范围维护：修一处内容、核对关联材料、运行相应检查即可；软件补丁先验证兼容，再更新说明。没有需求不新增管理系统，不批量重做素材，也不为版本号变化重新生成全部课堂。
+
 ## 哪些文件是源
 
 `course/lessons/*.md`是47课唯一正文；教师答案在`course/teacher-notes.md`；术语、判断和思维模式在`course/memory.md`。修改相应正文即可，不再运行旧Python作者生成器。元数据用JSON流式YAML；保留课号、前置、复现课号、记忆ID和仓库相对实验路径。
@@ -15,11 +21,13 @@ python3 tools/check.py --blender /path/to/blender
 python3 tools/check.py --web
 ```
 
-默认检查教案／路径／资产结构及Python单元测试；未加原生参数不宣称软件实测。Godot运行七组原有行为测试和两个进程间的存档检查。Blender只重新打开已提交四个文件，禁止先重建再验。Web选项需要Playwright和Chromium，环境缺失时明确失败而不是伪称通过。
+默认检查教案／路径／资产结构及Python单元测试；未加原生参数不宣称软件实测。Godot运行八组行为测试和两个进程间的存档检查。Blender只重新打开已提交四个文件，禁止先重建再验。Web选项需要Playwright和Chromium，环境缺失时明确失败而不是伪称通过。
 
 `.github/workflows/check.yml`负责课程、工具、Mac/Windows原生检查与内部Linux图形/Blender检查；`release.yml`负责Mac/Windows独立release导出与脱离源码运行。内部Linux不提供用户体验包。
 
 最近一次目录迁移的真实执行结果随对应交付说明提供；CI定义存在不等于已运行。Headless行为测试不代表儿童试学、听感或所有目标显卡表现。
+
+2026-10-02本机复核：默认检查156项测试通过；Godot 4.7.2八组原生行为及跨进程存档通过；Blender 5.2.1重开四文件通过，哈希未变。三段场景的实际Compatibility画面已查看，原生日志和截图在`build/audit-20261002/`，属于可重做的验证证据。完整质量边界见[课程设计](design.md#一条主线)。
 
 ## 生成与发布
 

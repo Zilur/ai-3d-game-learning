@@ -13,7 +13,7 @@ import stat
 import sys
 import zipfile
 from urllib.parse import urlsplit
-from lib.course import ROOT, ORDER, build_input, json_text, require, read_text
+from lib.course import ROOT, ORDER, build_input, json_text, require, read_text, read_lesson
 from lib.learning_state import atomic_write, locked
 from workspace import clean_path, console
 
@@ -35,6 +35,22 @@ def digest(path: Path) -> str:
     return h.hexdigest()
 
 
+def practice_snapshot(lesson, root=ROOT):
+    """Version the shared distributable pack, including scripts and import metadata.
+
+    A scene can load resources dynamically: direct lesson links are not its full
+    dependency graph. Conservatively track the pack, not engine caches or fonts.
+    """
+    if not read_lesson(lesson,root)['meta']['labs']:
+        return None
+    from release import source_files
+    files={p.relative_to(root).as_posix():digest(p) for p in source_files(root)
+           if p.relative_to(root).parts[0]=='practice'}
+    require(files,'配套实践包为空')
+    encoded=json.dumps(files,sort_keys=True,separators=(',',':')).encode('utf-8')
+    return {'sha256':hashlib.sha256(encoded).hexdigest(),'files':files}
+
+
 def run_path(lesson: str, run_id: str, root: Path=ROOT) -> Path:
     require(lesson in ORDER,'未知课号')
     require(re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{0,63}',run_id) is not None,'运行ID限字母数字、短横线和下划线')
@@ -53,6 +69,7 @@ def load_run(lesson, run_id, root=ROOT):
 
 def prepare(lesson: str, run_id: str | None=None, *, purpose='experience', upstream_ref=None, root=ROOT):
     text,hashes=build_input(lesson,purpose=purpose,root=root)
+    practice=practice_snapshot(lesson,root)
     require(upstream_ref is None or re.fullmatch(r'[A-Za-z0-9._/-]{1,100}',upstream_ref),'上游版本使用公开版本号或提交，不填URL/密钥')
     if run_id is None:
         prefix=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
@@ -64,6 +81,7 @@ def prepare(lesson: str, run_id: str | None=None, *, purpose='experience', upstr
     row={'schema_version':1,'lesson':lesson,'run_id':run_id,'purpose':purpose,
          'created_at':datetime.now(timezone.utc).isoformat(), 'upstream_ref':upstream_ref,
          'source_hashes':hashes,'input_sha256':hashlib.sha256(text.encode()).hexdigest(),
+         'practice':practice,
          'status':'prepared','export':None}
     try:
         atomic_write(path/'input.md',text)
@@ -130,12 +148,24 @@ def inspect(lesson,run_id,root=ROOT):
     path,row=load_run(lesson,run_id,root)
     _text,hashes=build_input(lesson,purpose=row['purpose'],root=root)
     changed=[k for k in hashes if hashes[k]!=row['source_hashes'].get(k)]
+    current=practice_snapshot(lesson,root)
+    previous=row.get('practice')
+    practice_changed=[]
+    if current is None:
+        practice_status='not-required'
+    elif previous is None:
+        practice_status='untracked'
+    else:
+        old=previous['files'];new=current['files']
+        practice_changed=[name for name in sorted(old.keys()|new.keys()) if old.get(name)!=new.get(name)]
+        practice_status='changed' if practice_changed or previous['sha256']!=current['sha256'] else 'unchanged'
     export=row['export'];export_ok=False
     if export:
         require(export['file']==lesson+'.maic.zip','非法产物定位')
         p=path/export['file'];export_ok=p.is_file() and not p.is_symlink() and digest(p)==export['sha256']
     checked=set(re.findall(r'^- \[[xX]\] ('+'|'.join(CHECKS)+r'): ',read_text(path/'review.md'),re.M))
     return {'lesson':lesson,'run_id':run_id,'status':row['status'],'source_changed':changed,
+            'practice_status':practice_status,'practice_changed':practice_changed,
             'export_matches':export_ok,'review_complete':checked==set(CHECKS),
             'note':'勾选是操作者的验收声明，不是自动证明；未调用OpenMAIC。'}
 
@@ -143,6 +173,8 @@ def inspect(lesson,run_id,root=ROOT):
 def require_publishable(lesson,run_id,root=ROOT):
     report=inspect(lesson,run_id,root)
     require(not report['source_changed'],'教案或输入依赖已改变，先重新核查并建立新运行')
+    require(report['practice_status'] in ('unchanged','not-required'),
+            '实践包已改变或旧运行未记录素材版本；核查关联实验后建立新运行并重新验收，不自动生成课堂')
     require(report['export_matches'],'没有匹配的实际课堂包')
     require(report['review_complete'],'课堂实际验收尚未完成')
     path,row=load_run(lesson,run_id,root)
@@ -164,7 +196,8 @@ def register(lesson,run_id,version,url,*,confirm=False,root=ROOT):
             require(z.read(name)==(path/name).read_bytes(),'交付包与验收运行不同；不要登记过期包')
     record={'version':version,'run_id':run_id,'input_sha256':row['input_sha256'],
             'sha256':digest(bundle),'classroom_sha256':row['export']['sha256'],
-            'url':url,'upstream_ref':row['upstream_ref']}
+            'url':url,'upstream_ref':row['upstream_ref'],
+            'practice_sha256':row['practice']['sha256'] if row.get('practice') else None}
     if confirm:
         directory=clean_path(root/'openmaic')
         with locked(directory):
